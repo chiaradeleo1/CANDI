@@ -1,0 +1,8 @@
+aliases: [DDRLike]
+speed: 500
+params:
+  epsilon0: 
+case:  
+BAO_data_path: 
+SN_data_path: 
+debug_mode: False

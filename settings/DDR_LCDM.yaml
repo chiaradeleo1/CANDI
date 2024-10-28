@@ -1,0 +1,85 @@
+BBN_prior: False
+SH0ES_prior: False
+case: 0
+debug: True
+debug: debug.log
+force: True
+
+
+likelihood:
+  DDR:
+    external: DDRLike
+    BAO_data_path: ./data/DESI_table
+    SN_data_path: ./mock_data/SN_mock.txt
+
+theory:
+
+  BAOtheory:
+    external: BAOtheory
+    class: Theory
+
+  camb:
+    ignore_obsolete: True
+    extra_args:
+      num_nu_massive: 1
+      dark_energy_model: 'ppf'
+  
+
+  SNtheory:
+    external: SNtheory
+    class: Theory
+
+
+sampler:
+  mcmc:
+    oversample_power: 1  
+
+
+params: 
+  omegam:
+    latex: '\Omega_\mathrm{m}'
+    prior:
+      min: 0.001
+      max: 0.99
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.3
+      scale: 0.01
+
+  ombh2:
+    latex: '\Omega_\mathrm{b} h^2'
+    prior:
+      min: 0.005
+      max: 0.1
+    proposal: 0.0001
+    ref:
+      dist: norm
+      loc: 0.0222
+      scale: 0.0001
+
+  H0:
+    latex: 'H_0'
+    prior: 
+      max: 100.0
+      min: 20.0
+    proposal: 0.5
+    ref:
+      dist: norm
+      loc: 67.0
+      scale: 0.5
+  w: -1.
+  wa: 0.
+  mnu: 0.06
+  
+  rdrag:
+    latex: 'r_\mathrm{d}'
+    derived: True
+
+  epsilon0:
+    value: 0.0
+    prior:
+      min: -0.1
+      max: 0.1
+
+output: chains/DDR_LCDM
