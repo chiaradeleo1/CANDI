@@ -4,6 +4,7 @@ output: chains/DESI_LCDM
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: data/DESI
+SN_data:
 
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
