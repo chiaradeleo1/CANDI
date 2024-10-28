@@ -7,11 +7,9 @@ from cobaya.run import run
 from bios import read
 from copy import deepcopy
 
-from likelihood.likelihood import DDRLike
-from theory_code.BAO_theory import BAOtheory
-from theory_code.SN_theory import SNtheory
-
-sys.path.append('../')
+from likelihood.BAO_likelihood   import BAOLike
+from likelihood.SN_likelihood    import SNLike
+from theory_code.distance_theory import CalcDist
 
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -19,25 +17,35 @@ pp = pprint.PrettyPrinter(indent=4)
 
 
 info = read(sys.argv[1])
-likesets = deepcopy(info['likelihood']['DDR'])
-info['likelihood'] = {'DDR': {'external': DDRLike,
-                              'BAO_data_path': likesets['BAO_data_path'],
-                              'SN_data_path': likesets['SN_data_path']}}
 
-info['theory'] = {'BAOtheory': {'external': BAOtheory},
-                  'SNtheory': {'external': SNtheory}}
+if info['BAO_data'] != None:
+    info['likelihood'] = {'BAOLike': {'external': BAOLike,
+                                      'BAO_data_path': info['BAO_data']}}
 
+if info['SN_data'] != None:
+    info['likelihood'] = {'SNLike': {'external': SNLike,
+                                      'SN_data_path': info['SN_data']}}
 
-if info['BBN_prior']:
-    info['params']['ombh2']['prior'] = {'dist': 'norm',
-                                            'loc': 0.02218,
-                                            'scale': 0.00055}
+info['theory'] = {'CalcDist': {'external': CalcDist}}
+#                               'extra_args': {'camb_path': info['camb_path']}}}
 
 
-if info['SH0ES_prior']:
-    info['params']['H0']['prior'] = {'dist': 'norm',
-                                    'loc': 73.04,
-                                    'scale': 1.04}
+if info['sampler'] == 'MH':
+    from cobaya.run import run
+    info['sampler'] = {'mcmc': {'max_tries':100000}}
+    updated_info,sampler = run(info)
+
+elif info['sampler'] == 'Nautilus':
+    sys.exit('NOT YET!!!')
+    from samplers.samplers_interface import nautilus_interface
+    info['sampler'] = {'nautilus': {'num_threads': 1,
+                                    'pool': 1,
+                                    'n_live': 4000,
+                                    'n_batch': 512,
+                                    'n_networks': 16}}
+    nautilus = nautilus_interface(info)
+else:
+    sys.exit('Unknown sampler: {}'.format(info['sampler']))
 
 info['force'] = True
 

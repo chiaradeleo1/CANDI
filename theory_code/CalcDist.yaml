@@ -1,0 +1,17 @@
+params:
+  H0:
+  omegam:
+  omk:
+  ombh2:
+  MB:
+  epsilon0_EM:
+  epsilon0_GW: 
+  w: -1.
+  wa: 0.
+  mnu: 0.06
+  nnu: 3
+  omegaL:
+    derived: True
+  rdrag:
+    derived: True
+camb_path:

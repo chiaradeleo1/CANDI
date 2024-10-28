@@ -1,3 +1,4 @@
 __all__ = []  # list submodules
 
-from likelihood import *
+from SN_likelihood  import *
+from BAO_likelihood import *
