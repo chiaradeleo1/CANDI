@@ -18,3 +18,4 @@ camb
 /camb.egg-info
 test*ini
 *.log
+mock_data.ipynb
