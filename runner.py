@@ -29,6 +29,7 @@ if info['SN_data'] != None:
 info['theory'] = {'CalcDist': {'external': CalcDist}}
 #                               'extra_args': {'camb_path': info['camb_path']}}}
 
+info['force'] = True
 
 if info['sampler'] == 'MH':
     from cobaya.run import run
@@ -47,6 +48,3 @@ elif info['sampler'] == 'Nautilus':
 else:
     sys.exit('Unknown sampler: {}'.format(info['sampler']))
 
-info['force'] = True
-
-updated_info,sampler = run(info)
