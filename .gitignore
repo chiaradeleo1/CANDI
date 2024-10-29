@@ -4,7 +4,6 @@
 *.d
 *.mod
 chains/
-*.ipynb
 *.ipynb_checkpoints*
 *.txt
 *.dat
