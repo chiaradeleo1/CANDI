@@ -14,8 +14,8 @@ likelihood:
 
 theory:
 
-  DDRtheory:
-    external: DDRtheory
+  BAOtheory:
+    external: BAOtheory
     class: Theory
 
   camb:
@@ -24,6 +24,10 @@ theory:
       num_nu_massive: 1
       dark_energy_model: 'ppf'
   
+
+  SNtheory:
+    external: SNtheory
+    class: Theory
 
 
 sampler:
