@@ -24,19 +24,20 @@ class DDRLike(Likelihood):
 
     def get_requirements(self):
         # Requirements are the output of the theory code that you are using
-        return {'BAOtheory': { 'DM' : None,
+        return {'DDRtheory': { 'DM' : None,
                                 'DH' : None,
-                                'DV' : None },
-                'SN_theory':  {'mB_z' : None}}
-    
+                                'DV' : None ,
+                                'mB_z' : None,
+                                'rdrag': None,       # Ensure rdrag is included here
+                                'epsilon0': None }}
+        
     def logp(self, **params_values): 
         
-        BAO_theory = self.theory['BAO_theory'].get_theory()
-        SN_theory = self.theory['SN_theory'].get_theory()
+        theory = self.theory.get_theory()
 
-        BAO_theory_vec = np.concatenate([BAO_theory['DM'](self.BAO_data['z']),BAO_theory['DH'](self.BAO_data['z']) ])
-        BAO_DV_theory_vec = BAO_theory['DV'](self.BAO_DV_data['z'])
-        SN_theory_vec = SN_theory['mu_z'](self.SN_data['z'])
+        BAO_theory_vec = np.concatenate([theory['DM'](self.BAO_data['z']),theory['DH'](self.BAO_data['z']) ])
+        BAO_DV_theory_vec = theory['DV'](self.BAO_DV_data['z'])
+        SN_theory_vec = theory['mu_z'](self.SN_data['z'])
 
         BAO_data_vec = np.concatenate([self.BAO_data['DM'],self.BAO_data['DH'] ])
         BAO_DV_data_vec = self.BAO_data['DV']

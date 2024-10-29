@@ -8,8 +8,7 @@ from bios import read
 from copy import deepcopy
 
 from likelihood.likelihood import DDRLike
-from theory_code.BAO_theory import BAOtheory
-from theory_code.SN_theory import SNtheory
+from theory_code.DDRtheory import DDRtheory
 
 sys.path.append('../')
 
@@ -24,8 +23,7 @@ info['likelihood'] = {'DDR': {'external': DDRLike,
                               'BAO_data_path': likesets['BAO_data_path'],
                               'SN_data_path': likesets['SN_data_path']}}
 
-info['theory'] = {'BAOtheory': {'external': BAOtheory},
-                  'SNtheory': {'external': SNtheory}}
+info['theory'] = {'DDRtheory': {'external': DDRtheory}}
 
 
 if info['BBN_prior']:
