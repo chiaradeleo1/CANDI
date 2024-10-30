@@ -5,25 +5,33 @@ import pandas as pd
 from copy import deepcopy
 from scipy.interpolate import interp1d
 
+from theory_code.DDR_theory import DDRCalcs
+
 class TheoryCalcs:
 
     def __init__(self,settings,params):
 
-        self.zmin  = settings['zmin']
-        self.zmax  = settings['zmax']
-        self.Nz    = settings['Nz']
-        self.zdrag = settings['zdrag']
+        self.zmin      = settings['zmin']
+        self.zmax      = settings['zmax']
+        self.Nz        = settings['Nz']
+        self.zdrag     = settings['zdrag']
+        self.DDR_model = settings['DDR_model']
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
-        camb_results = self.call_camb(params)
+        try:
+            camb_results = self.call_camb(params)
+            ddr_results  = DDRCalcs(self.DDR_model,params,self.zcalc)
+        except Exception as e:
+            sys.exit('SOMETHING HORRIBLE HAPPENED!!\n {}'.format(e))
+
 
         self.DM = camb_results['DM/rd']
         self.DH = camb_results['DH/rd']
         self.DV = camb_results['DV/rd']
         #MM: this to be generalized
-        self.eta_EM = self.get_eta(params['epsilon0_EM'])
-        self.eta_GW = self.get_eta(params['epsilon0_GW'])
+        self.eta_EM = ddr_results.eta_EM 
+        self.eta_GW = ddr_results.eta_GW
         self.DL_EM  = self.get_dL(camb_results['dA'],self.eta_EM)
         self.DL_GW  = self.get_dL(camb_results['dA'],self.eta_GW)
         ###########################
@@ -43,19 +51,14 @@ class TheoryCalcs:
         del camb_params['epsilon0_GW']
 
 
-        try:
-            #MM: path to camb to be made customizable
-            import camb
-            pars = camb.set_params(**camb_params)
-            results = camb.get_background(pars)
+        #MM: path to camb to be made customizable
+        import camb
+        pars = camb.set_params(**camb_params)
+        results = camb.get_background(pars)
 
-            Hz    = results.h_of_z
-            comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
-            rdrag = results.sound_horizon(self.zdrag)
-
-        except Exception as e:
-            sys.exit('SOMETHING HORRIBLE HAPPENED!!\n {}'.format(e))
-
+        Hz    = results.h_of_z
+        comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
+        rdrag = results.sound_horizon(self.zdrag)
 
         theory = {'DM/rd': interp1d(self.zcalc,comov/rdrag),
                   'DH/rd': interp1d(self.zcalc,1/(Hz(self.zcalc)*rdrag)),
@@ -66,11 +69,6 @@ class TheoryCalcs:
 
 
         return theory
-    def get_eta(self,epsilon):
-
-        eta = interp1d(self.zcalc,(1+self.zcalc)**epsilon)
-
-        return eta
 
     def get_dL(self,dA,eta):
 
