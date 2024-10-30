@@ -7,9 +7,9 @@ from cobaya.run import run
 from bios import read
 from copy import deepcopy
 
-from likelihood.BAO_likelihood   import BAOLike
-from likelihood.SN_likelihood    import SNLike
-from theory_code.distance_theory import CalcDist
+from likelihood.BAO_likelihood         import BAOLike
+from likelihood.SN_likelihood          import SNLike
+from theory_code.cobaya_theory_wrapper import CalcDist
 
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -18,6 +18,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 info = read(sys.argv[1])
 
+#MM: we should find a better and more general way to fill the likelihood
 if info['BAO_data'] != None:
     info['likelihood'] = {'BAOLike': {'external': BAOLike,
                                       'BAO_data_path': info['BAO_data']}}
@@ -26,6 +27,7 @@ if info['SN_data'] != None:
     info['likelihood'] = {'SNLike': {'external': SNLike,
                                       'SN_data_path': info['SN_data']}}
 
+#MM: to be improved. Pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist}}
 #                               'extra_args': {'camb_path': info['camb_path']}}}
 
@@ -36,6 +38,7 @@ if info['sampler'] == 'MH':
     info['sampler'] = {'mcmc': {'max_tries':100000}}
     updated_info,sampler = run(info)
 
+#Nautilus to be added
 elif info['sampler'] == 'Nautilus':
     sys.exit('NOT YET!!!')
     from samplers.samplers_interface import nautilus_interface

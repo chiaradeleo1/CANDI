@@ -1,3 +1,3 @@
 __all__ = []  # list submodules
 
-from .distance_theory import *
+from .cobaya_theory_wrapper import *
