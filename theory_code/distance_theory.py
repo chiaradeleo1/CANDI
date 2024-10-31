@@ -5,50 +5,40 @@ import pandas as pd
 from copy import deepcopy
 from scipy.interpolate import interp1d
 
-from cobaya.theory import Theory
+from theory_code.DDR_theory import DDRCalcs
 
-class CalcDist(Theory):
+class TheoryCalcs:
 
-    def initialize(self):
-        """called from __init__ to initialize"""
+    def __init__(self,settings,params):
 
-        #MM: eventually to be made options
-        #They should be ok in most cases
-        self.zmin  = 0.001
-        self.zmax  = 5.
-        self.Nz    = 1000
-        self.zdrag = 1060
-        ##################################
+        self.zmin      = settings['zmin']
+        self.zmax      = settings['zmax']
+        self.Nz        = settings['Nz']
+        self.zdrag     = settings['zdrag']
+        self.DDR_model = settings['DDR_model']
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
-    def initialize_with_provider(self, provider):
-        """
-        Initialization after other components initialized, using Provider class
-        instance which is used to return any dependencies (see calculate below).
-        """
-        self.provider = provider
+        try:
+            camb_results = self.call_camb(params)
+            ddr_results  = DDRCalcs(self.DDR_model,params,self.zcalc)
+        except Exception as e:
+            sys.exit('SOMETHING HORRIBLE HAPPENED!!\n {}'.format(e))
 
-    def get_can_provide(self):
 
-        return ['DM','DH','DV']
-
-    def get_can_provide_params(self):
-        return ['rdrag','omegaL']
-
-    def calculate(self, state, want_derived=True, **params_values_dict):
-
-        camb_results = self.call_camb(params_values_dict)
-
-        state['DM'] = camb_results['DM/rd']
-        state['DH'] = camb_results['DH/rd']
-        state['DV'] = camb_results['DV/rd']
+        self.DM = camb_results['DM/rd']
+        self.DH = camb_results['DH/rd']
+        self.DV = camb_results['DV/rd']
         #MM: this to be generalized
-        state['DL_EM'] = self.get_dL(camb_results['dA'],params_values_dict['epsilon0_EM'])
-        state['DL_GW'] = self.get_dL(camb_results['dA'],params_values_dict['epsilon0_GW'])
+        self.eta_EM = ddr_results.eta_EM 
+        self.eta_GW = ddr_results.eta_GW
+        self.DL_EM  = self.get_dL(camb_results['dA'],self.eta_EM)
+        self.DL_GW  = self.get_dL(camb_results['dA'],self.eta_GW)
         ###########################
-        state['mB'] = self.get_mB(state['DL_EM'],params_values_dict['MB'])
-        state['derived'] = {'rdrag': camb_results['rdrag'], 'omegaL': camb_results['omegaL']}
+        self.mB = self.get_mB(self.DL_EM,params['MB'])
+        self.rdrag = camb_results['rdrag']
+        self.omegaL = camb_results['omegaL']
+
 
     def call_camb(self,params):
 
@@ -61,19 +51,14 @@ class CalcDist(Theory):
         del camb_params['epsilon0_GW']
 
 
-        try:
-            #MM: path to camb to be made customizable
-            import camb
-            pars = camb.set_params(**camb_params)
-            results = camb.get_background(pars)
+        #MM: path to camb to be made customizable
+        import camb
+        pars = camb.set_params(**camb_params)
+        results = camb.get_background(pars)
 
-            Hz    = results.h_of_z
-            comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
-            rdrag = results.sound_horizon(self.zdrag)
-
-        except Exception as e: 
-            sys.exit('SOMETHING HORRIBLE HAPPENED!!\n {}'.format(e))
-
+        Hz    = results.h_of_z
+        comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
+        rdrag = results.sound_horizon(self.zdrag)
 
         theory = {'DM/rd': interp1d(self.zcalc,comov/rdrag),
                   'DH/rd': interp1d(self.zcalc,1/(Hz(self.zcalc)*rdrag)),
@@ -85,10 +70,9 @@ class CalcDist(Theory):
 
         return theory
 
+    def get_dL(self,dA,eta):
 
-    def get_dL(self,dA,epsilon):
-        
-        dL = interp1d(self.zcalc,(1+self.zcalc)**(2+epsilon)*dA(self.zcalc))
+        dL = interp1d(self.zcalc,eta(self.zcalc)*(1+self.zcalc)**2*dA(self.zcalc))
 
         return dL
 
