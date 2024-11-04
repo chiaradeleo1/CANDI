@@ -34,7 +34,7 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV']
+        return ['DM','DH','DV','DL_EM','DL_GW','mB']
 
     def get_can_provide_params(self):
         return ['rdrag','omegaL']
