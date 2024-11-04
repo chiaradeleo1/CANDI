@@ -22,11 +22,11 @@ info = read(sys.argv[1])
 info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
-                                     'BAO_data_path': info['BAO_data']}}
+                                     'BAO_data_path': info['BAO_data']}
 
 if info['SN_data'] != None:
     info['likelihood']['SNLike'] =  {'external': SNLike,
-                                     'SN_data_path': info['SN_data']}}
+                                     'SN_data_path': info['SN_data']}
 
 #MM: to be improved. Pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist}}
