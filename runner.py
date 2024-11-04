@@ -28,6 +28,11 @@ if info['SN_data'] != None:
     info['likelihood']['SNLike'] =  {'external': SNLike,
                                      'SN_data_path': info['SN_data']}
 
+if len(list(info['likelihood'].keys())) == 0:
+    sys.exit('NO LIKELIHOOD LOADED!!!')
+else:
+    print('Likelihoods loaded: ',info['likelihood'].keys())
+
 #MM: to be improved. Pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist}}
 #                               'extra_args': {'camb_path': info['camb_path']}}}
@@ -35,13 +40,15 @@ info['theory'] = {'CalcDist': {'external': CalcDist}}
 info['force'] = True
 
 if info['sampler'] == 'MH':
+    print('Running with Metropolis-Hastings')
     from cobaya.run import run
     info['sampler'] = {'mcmc': {'max_tries':100000}}
     updated_info,sampler = run(info)
 
 #Nautilus to be added
 elif info['sampler'] == 'Nautilus':
-    sys.exit('NOT YET!!!')
+    sys.exit('NAUTILUS NOT IMPLEMENTED YET!!!')
+    print('Running with Nautilus')
     from samplers.samplers_interface import nautilus_interface
     info['sampler'] = {'nautilus': {'num_threads': 1,
                                     'pool': 1,
