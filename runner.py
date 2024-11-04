@@ -31,7 +31,7 @@ if info['SN_data'] != None:
 if len(list(info['likelihood'].keys())) == 0:
     sys.exit('NO LIKELIHOOD LOADED!!!')
 else:
-    print('Likelihoods loaded: ',info['likelihood'].keys())
+    print('Likelihoods loaded: ',list(info['likelihood'].keys()))
 
 #MM: to be improved. Pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist}}
