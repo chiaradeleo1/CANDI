@@ -19,13 +19,19 @@ pp = pprint.PrettyPrinter(indent=4)
 info = read(sys.argv[1])
 
 #MM: we should find a better and more general way to fill the likelihood
+info['likelihood'] = {}
 if info['BAO_data'] != None:
-    info['likelihood'] = {'BAOLike': {'external': BAOLike,
-                                      'BAO_data_path': info['BAO_data']}}
+    info['likelihood']['BAOLike'] = {'external': BAOLike,
+                                     'BAO_data_path': info['BAO_data']}
 
 if info['SN_data'] != None:
-    info['likelihood'] = {'SNLike': {'external': SNLike,
-                                      'SN_data_path': info['SN_data']}}
+    info['likelihood']['SNLike'] =  {'external': SNLike,
+                                     'SN_data_path': info['SN_data']}
+
+if len(list(info['likelihood'].keys())) == 0:
+    sys.exit('NO LIKELIHOOD LOADED!!!')
+else:
+    print('Likelihoods loaded: ',list(info['likelihood'].keys()))
 
 #MM: to be improved. Pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist}}
@@ -34,13 +40,15 @@ info['theory'] = {'CalcDist': {'external': CalcDist}}
 info['force'] = True
 
 if info['sampler'] == 'MH':
+    print('Running with Metropolis-Hastings')
     from cobaya.run import run
     info['sampler'] = {'mcmc': {'max_tries':100000}}
     updated_info,sampler = run(info)
 
 #Nautilus to be added
 elif info['sampler'] == 'Nautilus':
-    sys.exit('NOT YET!!!')
+    sys.exit('NAUTILUS NOT IMPLEMENTED YET!!!')
+    print('Running with Nautilus')
     from samplers.samplers_interface import nautilus_interface
     info['sampler'] = {'nautilus': {'num_threads': 1,
                                     'pool': 1,

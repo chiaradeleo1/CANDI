@@ -45,7 +45,7 @@ params:
       loc: 67.0
       scale: 0.5
   epsilon0_EM:
-    latex: '\epsilon_0^\mathrm{b}'
+    latex: '\epsilon_0^\mathrm{EM}'
     prior:
       min: -0.5
       max: 0.5
