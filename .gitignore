@@ -7,15 +7,6 @@ chains/
 *.ipynb_checkpoints*
 *.txt
 *.dat
-build/
-*egg*
-test*dat
-img/
-fortran/Release/
-fortran/Releaselib/
-camb
-/build
-/camb.egg-info
-test*ini
 *.log
-mock_data.ipynb
+data/*
+mock_data/*

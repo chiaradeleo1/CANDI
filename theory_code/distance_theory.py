@@ -38,6 +38,8 @@ class TheoryCalcs:
         self.mB = self.get_mB(self.DL_EM,params['MB'])
         self.rdrag = camb_results['rdrag']
         self.omegaL = camb_results['omegaL']
+        self.Hz = camb_results['Hz']
+        self.dA = camb_results['dA']
 
 
     def call_camb(self,params):
@@ -67,7 +69,7 @@ class TheoryCalcs:
                   'rdrag': rdrag,
                   'omegaL': results.get_Omega('de',z=0)}
 
-
+        theory['Hz'] = Hz
         return theory
 
     def get_dL(self,dA,eta):
