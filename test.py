@@ -15,8 +15,17 @@ from theory_code.cobaya_theory_wrapper import CalcDist
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
+fiducial = {'H0': 68.53,
+            'omegam': 0.2948,
+            'ombh2': 0.02218,
+            'epsilon0_EM': 0.1,
+            'epsilon0_GW': -0.1,
+            'omk': 0.,
+            'mnu': 0.06,
+            'nnu': 3.,
+            'MB': -19.2435}
 
-
+use_fiducial = True
 info = read(sys.argv[1])
 
 #MM: we should find a better and more general way to fill the likelihood
@@ -47,8 +56,13 @@ info['force'] = True
 if info['sampler'] == 'MH':
     print('Running with Metropolis-Hastings')
     from cobaya.run import run
-    info['sampler'] = {'mcmc': {'max_tries':100000}}
+    if use_fiducial:
+        info['sampler'] = {'evaluate': {'override': {k:v for k,v in fiducial.items() if type(info['params'][k]) == dict}}}
+    else:
+        info['sampler'] = {'evaluate': None}
     updated_info,sampler = run(info)
+    info['sampler'] = {'mcmc': {'max_tries':100000}}
+    
 
 #Nautilus to be added
 elif info['sampler'] == 'Nautilus':

@@ -1,0 +1,70 @@
+#Choose root of output files
+output: chains/ET_LCDM
+
+#Choose which data to use (path+root)
+#if empty, data are not used
+BAO_data:
+SN_data:
+GW_data: mock_data/GW_mock_data
+debug: False
+#Available options: MH
+#samplers options hard-coded in runner.py
+sampler: MH
+
+params: 
+  omegam:
+    latex: '\Omega_\mathrm{m}'
+    prior:
+      min: 0.001
+      max: 0.99
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.3
+      scale: 0.01
+
+  ombh2:
+    latex: '\Omega_\mathrm{b} h^2'
+    prior:
+      dist: norm
+      loc: 0.02218
+      scale: 0.00055 
+    proposal: 0.0001
+    ref:
+      dist: norm
+      loc: 0.0222
+      scale: 0.0001
+
+
+  H0:
+    latex: 'H_0'
+    prior: 
+      max: 100.0
+      min: 20.0
+    proposal: 0.5
+    ref:
+      dist: norm
+      loc: 67.0
+      scale: 0.5
+  epsilon0_EM: 0.
+  epsilon0_GW: 
+    latex: '\epsilon_0^\mathrm{GW}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: -0.1
+      scale: 0.01
+  MB: -19.2435
+  omk: 0.
+  w: -1.
+  wa: 0.
+  mnu: 0.06
+  nnu: 3
+  
+  rdrag:
+    latex: 'r_\mathrm{d}'
+    derived: True
+

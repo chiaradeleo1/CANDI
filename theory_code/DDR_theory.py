@@ -17,7 +17,9 @@ class DDRCalcs:
 
         if model == 'constant':
             self.eta_EM = self.get_eta(params['epsilon0_EM'])
+            
             self.eta_GW = self.get_eta(params['epsilon0_GW'])
+            
         else:
             sys.exit('Unknown DDR breaking model: {}'.format(model))
 
