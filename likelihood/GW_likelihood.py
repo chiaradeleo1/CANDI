@@ -13,13 +13,13 @@ class GWLike(Likelihood):
 
     def get_requirements(self):
         # Requirements are the output of the theory code that you are using
-        requirements = {'h_GW': None}
+        requirements = {'DL_GW': None}
 
         return requirements
     
     def logp(self, **params_values): 
         
-        diffvec_GW = (self.provider.get_result('h_GW')(self.dataset_GW['z']))-(self.dataset_GW['h_GW'])
+        diffvec_GW = (self.provider.get_result('DL_GW')(self.dataset_GW['z']))-(self.dataset_GW['dL_GW'])
         
 
         loglike = -0.5*np.dot((diffvec_GW),np.dot(np.linalg.inv(((self.dataset_GW['covmat']))),(diffvec_GW)))

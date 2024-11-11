@@ -10,22 +10,14 @@ from theory_code.DDR_theory import DDRCalcs
 class TheoryCalcs:
 
     def __init__(self,settings,params):
-        ###########CONSTANT
-        self.G = 6.67430e-11  
-        solar_mass = 1.9885e30  
-        self.c = 2.99 * 1e8
-        self.Mpc_to_m = 3.086 *1e22
+        
         ###################
         self.zmin      = settings['zmin']
         self.zmax      = settings['zmax']
         self.Nz        = settings['Nz']
         self.zdrag     = settings['zdrag']
         self.DDR_model = settings['DDR_model']
-        self.m1        = settings['m1'] * solar_mass
-        self.m2        = settings['m2'] * solar_mass
-        
 
-        self.Mchirp = self.get_Mchirp()
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
@@ -50,13 +42,8 @@ class TheoryCalcs:
         self.omegaL = camb_results['omegaL']
         self.Hz = camb_results['Hz']
         self.dA = camb_results['dA']
-        self.h_GW = self.get_h_GW(self.DL_GW)
 
-    def get_Mchirp(self):
-        
-        Mchirp = (self.m1 * self.m2)**(3/5) / (self.m1 + self.m2)**(1/5)
 
-        return Mchirp
     
     def call_camb(self,params):
 
@@ -100,8 +87,4 @@ class TheoryCalcs:
 
         return mB
     
-    def get_h_GW(self,dL):
-        
-        h_GW = interp1d(self.zcalc,4*(self.G*self.get_Mchirp())**(5/3)/(self.c**4*dL(self.zcalc)*self.Mpc_to_m),kind='linear')
-        
-        return h_GW
+    
