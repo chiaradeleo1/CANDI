@@ -80,6 +80,7 @@ params:
   w: -1.
   wa: 0.
   mnu: 0.06
+  nnu: 3
   
   rdrag:
     latex: 'r_\mathrm{d}'
