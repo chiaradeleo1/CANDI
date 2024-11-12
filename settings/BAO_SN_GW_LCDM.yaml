@@ -3,8 +3,8 @@ output: chains/DESI_Pantheon_ET_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: data/DESI
-SN_data: data/Pantheon
+BAO_data: mock_data/BAO_mock_data
+SN_data: mock_data/SN_mock_data
 GW_data: mock_data/GW_mock_data
 
 

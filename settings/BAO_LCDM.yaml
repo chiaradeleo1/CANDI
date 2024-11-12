@@ -3,9 +3,11 @@ output: chains/DESI_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: data/DESI
+BAO_data: mock_data/BAO_mock_data
 SN_data:
+GW_data: 
 
+stop_at_error: True
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: MH
@@ -60,7 +62,8 @@ params:
   w: -1.
   wa: 0.
   mnu: 0.06
-  
+  nnu: 3
+
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True
