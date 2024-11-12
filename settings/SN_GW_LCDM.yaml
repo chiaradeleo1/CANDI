@@ -4,7 +4,7 @@ output: chains/Pantheon_ET_LCDM
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
-SN_data: data/Pantheon
+SN_data: mock_data/SN_mock_data
 GW_data: mock_data/GW_mock_data
 
 #Available options: MH
