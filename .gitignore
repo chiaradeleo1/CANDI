@@ -11,3 +11,4 @@ chains/
 data/*
 mock_data/*
 data_reading.ipynb
+test_chi2.ipynb
