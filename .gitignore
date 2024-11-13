@@ -10,3 +10,4 @@ chains/
 *.log
 data/*
 mock_data/*
+data_reading.ipynb
