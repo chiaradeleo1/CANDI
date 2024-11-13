@@ -19,7 +19,7 @@ class GWLike(Likelihood):
     
     def logp(self, **params_values): 
         
-        diffvec_GW = (self.provider.get_result('DL_GW')(self.dataset_GW['z']))-(self.dataset_GW['dL_GW'])
+        diffvec_GW = (self.provider.get_result('DL_GW')(self.dataset_GW['z']))-(self.dataset_GW['dL'])
         
 
         loglike = -0.5*np.dot((diffvec_GW),np.dot(np.linalg.inv(((self.dataset_GW['covmat']))),(diffvec_GW)))
