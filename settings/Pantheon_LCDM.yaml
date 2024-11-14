@@ -1,12 +1,11 @@
 #Choose root of output files
-output: chains/DESI_Pantheon_ET_LCDM
+output: chains/Pantheon_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: mock_data/BAO_mock_data
-SN_data: mock_data/SN_mock_data
-GW_data: mock_data/GW_mock_data
-
+BAO_data:
+SN_data: data/Pantheon
+GW_data: 
 
 #Available options: MH
 #samplers options hard-coded in runner.py
@@ -56,16 +55,7 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 
-    latex: '\epsilon_0^\mathrm{GW}'
-    prior:
-      min: -0.5
-      max: 0.5
-    proposal: 0.05
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.01
+  epsilon0_GW: 0.
   MB: 
     latex: 'M_B'
     proposal: 0.01

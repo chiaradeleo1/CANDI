@@ -1,11 +1,11 @@
 #Choose root of output files
-output: chains/ET_LCDM
+output: chains/GW_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
 SN_data:
-GW_data: mock_data/GW_mock_data
+GW_data: mock_data/GWmock_nonoise
 debug: False
 #Available options: MH
 #samplers options hard-coded in runner.py
@@ -46,7 +46,16 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
-  epsilon0_EM: 0.
+  epsilon0_EM:
+    latex: '\epsilon_0^\mathrm{EM}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.01
   epsilon0_GW: 
     latex: '\epsilon_0^\mathrm{GW}'
     prior:
@@ -55,7 +64,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: -0.1
+      loc: 0.
       scale: 0.01
   MB: -19.2435
   omk: 0.

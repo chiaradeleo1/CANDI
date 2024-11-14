@@ -1,10 +1,10 @@
 #Choose root of output files
-output: chains/Pantheon_LCDM
+output: chains/SNmock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
-SN_data: mock_data/SN_mock_data
+SN_data: mock_data/SNmock_nonoise
 GW_data: 
 
 #Available options: MH
@@ -55,7 +55,16 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 0.
+  epsilon0_GW:
+    latex: '\epsilon_0^\mathrm{GW}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.01
   MB: 
     latex: 'M_B'
     proposal: 0.01

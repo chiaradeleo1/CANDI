@@ -25,13 +25,14 @@ class BAOLike(Likelihood):
     
     def logp(self, **params_values): 
 
-        diffvec_DH = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH']
-        diffvec_DM = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM']
-        diffvec_DV = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV']
-        diffvec_DHDM=np.concatenate((diffvec_DH, diffvec_DM),axis=0)
-        chi2=np.dot((diffvec_DHDM),np.dot(np.linalg.inv((self.dataset_DHDM['covmat'])),(diffvec_DHDM)))
-        chi2+=np.dot((diffvec_DV),np.dot(np.linalg.inv(((self.dataset_DV['covmat']))),(diffvec_DV)))
+        diffvec_DH   = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH']
+        diffvec_DM   = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM']
+        diffvec_DV   = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV']
+        diffvec_DHDM = np.concatenate((diffvec_DH, diffvec_DM),axis=0)
 
-        loglike=-0.5*chi2
+        chi2  = np.dot((diffvec_DHDM),np.dot(np.linalg.inv((self.dataset_DHDM['covmat'])),(diffvec_DHDM)))
+        chi2 += np.dot((diffvec_DV),np.dot(np.linalg.inv(((self.dataset_DV['covmat']))),(diffvec_DV)))
+
+        loglike = -0.5*chi2
 
         return loglike

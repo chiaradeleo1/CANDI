@@ -1,9 +1,9 @@
 #Choose root of output files
-output: chains/DESI_LCDM
+output: chains/BAOmock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: mock_data/BAO_mock_data
+BAO_data: mock_data/BAOmock_nonoise
 SN_data:
 GW_data: 
 
@@ -56,7 +56,16 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 0.
+  epsilon0_GW:
+    latex: '\epsilon_0^\mathrm{GW}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.01
   MB: -19.2435
   omk: 0.
   w: -1.
