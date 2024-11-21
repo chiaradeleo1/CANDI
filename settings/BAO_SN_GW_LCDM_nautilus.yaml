@@ -76,4 +76,7 @@ params:
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True
+  omegaL:
+    latex: '\Omega_\Lambda'
+    derived: True
 
