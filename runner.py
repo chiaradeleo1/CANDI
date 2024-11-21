@@ -52,7 +52,6 @@ if info['sampler'] == 'MH':
 
 #Nautilus to be added
 elif info['sampler'] == 'Nautilus':
-    sys.exit('NAUTILUS NOT IMPLEMENTED YET!!!')
     print('Running with Nautilus')
     from samplers.samplers_interface import nautilus_interface
     info['sampler'] = {'nautilus': {'num_threads': 1,
