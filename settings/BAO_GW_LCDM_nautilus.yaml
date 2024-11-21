@@ -1,15 +1,16 @@
 #Choose root of output files
-output: chains/GWmock_LCDM
+output: chains/BAO_GW_mock_LCDM_nautilus
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data:
+BAO_data: mock_data/BAOmock
 SN_data:
 GW_data: mock_data/GWmock
-debug: False
-#Available options: MH
+
+stop_at_error: True
+#Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
-sampler: MH
+sampler: Nautilus
 
 params: 
   omegam:
@@ -35,7 +36,6 @@ params:
       loc: 0.0222
       scale: 0.0001
 
-
   H0:
     latex: 'H_0'
     prior: 
@@ -56,7 +56,7 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 
+  epsilon0_GW:
     latex: '\epsilon_0^\mathrm{GW}'
     prior:
       min: -0.5
@@ -72,7 +72,7 @@ params:
   wa: 0.
   mnu: 0.06
   nnu: 3
-  
+
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

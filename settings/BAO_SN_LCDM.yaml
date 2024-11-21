@@ -3,8 +3,8 @@ output: chains/BAO_SN_mock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: mock_data/BAOmock_nonoise
-SN_data: mock_data/SNmock_nonoise
+BAO_data: mock_data/BAOmock
+SN_data: mock_data/SNmock
 GW_data: 
 
 stop_at_error: True

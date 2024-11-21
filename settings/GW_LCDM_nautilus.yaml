@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/GWmock_LCDM
+output: chains/GWmock_LCDM_nautilus
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -9,7 +9,7 @@ GW_data: mock_data/GWmock
 debug: False
 #Available options: MH
 #samplers options hard-coded in runner.py
-sampler: MH
+sampler: Nautilus
 
 params: 
   omegam:
