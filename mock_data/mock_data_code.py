@@ -121,6 +121,14 @@ class MockCalcs:
 
             mB_error = mB*self.settings_SN['error_type']
 
+        elif self.settings_SN['error_type'] == 'LSST-like':
+
+            sigma_flux = 0.01 
+            sigma_scat = 0.025
+            sigma_intr = 0.12
+
+            mB_error = np.array([np.sqrt((np.random.normal(loc=0.,scale=0.01)*z)**2+sigma_flux**2+sigma_scat**2.+sigma_intr**2.) for z in z_SN])
+
         else:
             sys.exit('Unknown SN error type: {}'.format(self.settings_SN['error_type']))
 
