@@ -1,10 +1,11 @@
 #Choose root of output files
-output: chains/Pantheon_noMB_LCDM
+output: chains/Pantheon_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
 SN_data: data/Pantheon
+GW_data: 
 
 #Available options: MH
 #samplers options hard-coded in runner.py
@@ -63,14 +64,19 @@ params:
       loc: -19.2435
       scale: 0.01
     prior:
-      min: -25.
-      max: -15.
+      dist: norm
+      loc: -19.2435
+      scale: 0.0373
   omk: 0.
   w: -1.
   wa: 0.
   mnu: 0.06
+  nnu: 3
   
   rdrag:
     latex: 'r_\mathrm{d}'
+    derived: True
+  omegaL:
+    latex: '\Omega_\Lambda'
     derived: True
 

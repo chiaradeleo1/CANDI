@@ -4,23 +4,24 @@ from scipy.integrate import quad
 from scipy.interpolate import interp1d
 from cobaya.likelihood import Likelihood
 
-class SNLike(Likelihood):
+class GWLike(Likelihood):
     
     def initialize(self):
 
-        self.dataset_SN = np.load(self.SN_data_path+'.npy',allow_pickle=True).item()
+        self.dataset_GW = np.load(self.GW_data_path+'.npy',allow_pickle=True).item()
 
 
     def get_requirements(self):
         # Requirements are the output of the theory code that you are using
-        requirements = {'mB': None}
+        requirements = {'DL_GW': None}
 
         return requirements
     
     def logp(self, **params_values): 
+        
+        diffvec_GW = (self.provider.get_result('DL_GW')(self.dataset_GW['z']))-(self.dataset_GW['dL'])
+        
 
-        diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z']))-(self.dataset_SN['mB'])
-
-        loglike = -0.5*np.dot((diffvec_SN),np.dot(np.linalg.inv(((self.dataset_SN['covmat']))),(diffvec_SN)))
+        loglike = -0.5*np.dot((diffvec_GW),np.dot(np.linalg.inv(((self.dataset_GW['covmat']))),(diffvec_GW)))
 
         return loglike

@@ -10,12 +10,14 @@ from theory_code.DDR_theory import DDRCalcs
 class TheoryCalcs:
 
     def __init__(self,settings,params):
-
+        
+        ###################
         self.zmin      = settings['zmin']
         self.zmax      = settings['zmax']
         self.Nz        = settings['Nz']
         self.zdrag     = settings['zdrag']
         self.DDR_model = settings['DDR_model']
+
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
@@ -38,8 +40,11 @@ class TheoryCalcs:
         self.mB = self.get_mB(self.DL_EM,params['MB'])
         self.rdrag = camb_results['rdrag']
         self.omegaL = camb_results['omegaL']
+        self.Hz = camb_results['Hz']
+        self.dA = camb_results['dA']
 
 
+    
     def call_camb(self,params):
 
         camb_params = deepcopy(params)
@@ -67,7 +72,7 @@ class TheoryCalcs:
                   'rdrag': rdrag,
                   'omegaL': results.get_Omega('de',z=0)}
 
-
+        theory['Hz'] = Hz
         return theory
 
     def get_dL(self,dA,eta):
@@ -81,3 +86,5 @@ class TheoryCalcs:
         mB = interp1d(self.zcalc,5*np.log10(dL(self.zcalc))+MB+25,kind='linear')
 
         return mB
+    
+    

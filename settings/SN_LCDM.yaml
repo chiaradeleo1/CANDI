@@ -1,10 +1,11 @@
 #Choose root of output files
-output: chains/Pantheon_LCDM
+output: chains/SNmock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
-SN_data: data/Pantheon
+SN_data: mock_data/SNmock
+GW_data: 
 
 #Available options: MH
 #samplers options hard-coded in runner.py
@@ -54,7 +55,16 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 0.
+  epsilon0_GW:
+    latex: '\epsilon_0^\mathrm{GW}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.01
   MB: 
     latex: 'M_B'
     proposal: 0.01
@@ -70,8 +80,12 @@ params:
   w: -1.
   wa: 0.
   mnu: 0.06
+  nnu: 3
   
   rdrag:
     latex: 'r_\mathrm{d}'
+    derived: True
+  omegaL:
+    latex: '\Omega_\Lambda'
     derived: True
 

@@ -34,7 +34,7 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV','DL_EM','DL_GW','mB']
+        return ['DM','DH','DV','DL_EM','DL_GW','mB', 'h_GW']
 
     def get_can_provide_params(self):
         return ['rdrag','omegaL']
@@ -50,5 +50,5 @@ class CalcDist(Theory):
         state['DL_EM']  = theory.DL_EM
         state['DL_GW']  = theory.DL_GW
         ###########################
-        state['mB'] = theory.mB
+        state['mB']   = theory.mB
         state['derived'] = {'rdrag': theory.rdrag, 'omegaL': theory.omegaL}

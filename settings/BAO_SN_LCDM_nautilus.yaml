@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/BAO_SN_mock_LCDM
+output: chains/BAO_SN_mock_LCDM_nautilus
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -10,7 +10,7 @@ GW_data:
 stop_at_error: True
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
-sampler: MH
+sampler: Nautilus
 
 params: 
   omegam:

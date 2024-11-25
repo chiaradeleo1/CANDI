@@ -1,11 +1,13 @@
 #Choose root of output files
-output: chains/DESI_LCDM
+output: chains/BAOmock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: data/DESI
+BAO_data: mock_data/BAOmock
 SN_data:
+GW_data: 
 
+stop_at_error: True
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: MH
@@ -54,14 +56,27 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 0.
+  epsilon0_GW:
+    latex: '\epsilon_0^\mathrm{GW}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.01
   MB: -19.2435
   omk: 0.
   w: -1.
   wa: 0.
   mnu: 0.06
-  
+  nnu: 3
+
   rdrag:
     latex: 'r_\mathrm{d}'
+    derived: True
+  omegaL:
+    latex: '\Omega_\Lambda'
     derived: True
 

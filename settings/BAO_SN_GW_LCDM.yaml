@@ -1,11 +1,11 @@
 #Choose root of output files
-output: chains/BAO_SN_mock_LCDM
+output: chains/BAO_SN_GW_mock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: mock_data/BAOmock
 SN_data: mock_data/SNmock
-GW_data: 
+GW_data: mock_data/GWmock
 
 stop_at_error: True
 #Available options: MH, Nautilus
