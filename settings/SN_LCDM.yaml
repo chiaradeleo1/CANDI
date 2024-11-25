@@ -7,6 +7,10 @@ BAO_data:
 SN_data: mock_data/SNmock
 GW_data: 
 
+#Available options for DDR_model: constant, padè
+settings:
+  DDR_model: constant
+
 #Available options: MH
 #samplers options hard-coded in runner.py
 sampler: MH
