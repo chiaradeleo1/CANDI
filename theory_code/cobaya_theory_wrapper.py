@@ -15,15 +15,15 @@ class CalcDist(Theory):
     def initialize(self):
         """called from __init__ to initialize"""
         
-        info     = read(sys.argv[1])
-        theory_settings = deepcopy(info['settings'])
+       # info     = read(sys.argv[1])
+       # theory_settings = deepcopy(info['settings'])
         #MM: eventually to be made options
         #They should be ok in most cases
         self.settings = {'zmin': 0.001,
                          'zmax': 5.,
                          'Nz': 1000,
                          'zdrag': 1060,
-                         'DDR_model': theory_settings['DDR_model'],}
+                         'DDR_model': 'padè',}
         ##################################
 
         self.zcalc = np.linspace(self.settings['zmin'],self.settings['zmax'],self.settings['Nz'])
