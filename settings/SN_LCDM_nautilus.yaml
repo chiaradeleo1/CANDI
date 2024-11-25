@@ -4,7 +4,7 @@ output: chains/SNmock_LCDM_nautilus
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
-SN_data: mock_data/SNmock
+SN_data: mock_data/SNmock_padè
 GW_data: 
 
 #Available options for DDR_model: constant, padè

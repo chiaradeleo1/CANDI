@@ -1,6 +1,7 @@
 import sys
 import numpy  as np
 import pandas as pd
+from bios import read
 
 from copy import deepcopy
 from scipy.interpolate import interp1d
