@@ -1,9 +1,9 @@
 #Choose root of output files
-output: chains/BAOmock_LCDM
+output: chains/BAOmock_LCDM_nonoise
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: mock_data/BAOmock_standard
+BAO_data: mock_data/BAOmock_standard_nonoise
 SN_data:
 GW_data: 
 
