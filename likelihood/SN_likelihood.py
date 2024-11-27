@@ -9,7 +9,7 @@ class SNLike(Likelihood):
     def initialize(self):
 
         self.dataset_SN = np.load(self.SN_data_path+'.npy',allow_pickle=True).item()
-        self.invcov = np.linalg.inv(((self.dataset_SN['covmat'])))
+        self.invcovmat  = np.linalg.inv(((self.dataset_SN['covmat'])))
 
 
     def get_requirements(self):
@@ -22,6 +22,6 @@ class SNLike(Likelihood):
 
         diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z']))-(self.dataset_SN['mB'])
 
-        loglike = -0.5*np.dot((diffvec_SN),np.dot(self.invcov,(diffvec_SN)))
+        loglike = -0.5*np.dot((diffvec_SN),np.dot(self.invcovmat,(diffvec_SN)))
 
         return loglike
