@@ -13,6 +13,8 @@ class MockCalcs:
         self.params = params
         self.theory = theory
 
+        print('CREATING MOCKS FOR {}'.format(list(obs_settings.keys())))
+
         if 'BAO' in obs_settings:
             self.settings_BAO = obs_settings['BAO']
             self.data_BAO = self.get_BAO_mock()
@@ -59,10 +61,6 @@ class MockCalcs:
             DV_noisy = DV
             DM_noisy = DM
 
-        #DH_error = 0.05 * DH_noisy
-        #DV_error = 0.05 * DV_noisy
-        #DM_error = 0.05 * DM_noisy
-
         data_BAO_DHDM = {'z' : z_BAO,
                          'DH': DH_noisy,
                          'err_DH': DH_error,
@@ -78,9 +76,13 @@ class MockCalcs:
         else:
             sys.exit('Correlation in BAO measurements not implemented yet')
 
-        data_BAO_DHDM['covmat'] = covmat_DHDM
+        #Creating dataframe to save to file
+        data_df   = pd.DataFrame.from_dict(data_BAO_DHDM)
+        covmat_df = pd.DataFrame(covmat_DHDM,columns=['DH_{}'.format(i) for i in data_df.index]+['DM_{}'.format(i) for i in data_df.index])
+        covmat_df.index = covmat_df.columns
 
-        np.save(self.settings_BAO['BAO_file_path']+'_DHDM.npy', data_BAO_DHDM)
+        data_df.to_csv(self.settings_BAO['BAO_file_path']+'_data_DHDM.txt',header=True,index=False,sep='\t')
+        covmat_df.to_csv(self.settings_BAO['BAO_file_path']+'_covmat_DHDM.txt',header=True,index=False,sep='\t')
 
         data_BAO_DV  = {'z' : z_BAO,
                         'DV': DV_noisy,
@@ -88,9 +90,14 @@ class MockCalcs:
         
         covmat_DV = np.zeros((len(DV_error), len(DV_error)))
         np.fill_diagonal(covmat_DV, DV_error ** 2)
-        data_BAO_DV['covmat'] = covmat_DV
 
-        np.save(self.settings_BAO['BAO_file_path']+'_DV.npy', data_BAO_DV)
+        #Creating dataframe to save to file
+        data_df   = pd.DataFrame.from_dict(data_BAO_DV)
+        covmat_df = pd.DataFrame(covmat_DV,columns=['z{}'.format(i) for i in data_df.index])
+        covmat_df.index = covmat_df.columns
+
+        data_df.to_csv(self.settings_BAO['BAO_file_path']+'_data_DV.txt',header=True,index=False,sep='\t')
+        covmat_df.to_csv(self.settings_BAO['BAO_file_path']+'_covmat_DV.txt',header=True,index=False,sep='\t')
 
         data_BAO = {'z': z_BAO,
                     'DH': DH_noisy,
@@ -99,6 +106,8 @@ class MockCalcs:
                     'err_DM': DM_error,
                     'DV': DV_noisy,
                     'err_DV': DV_error}
+
+        print('CREATED BAO DATASET')
         
         return data_BAO
 
@@ -150,9 +159,15 @@ class MockCalcs:
         else:
             sys.exit('Correlation in SN measurements not implemented yet')
 
-        data_SN['covmat'] = covmat_SN
+        #Creating dataframe to save to file
+        data_df   = pd.DataFrame.from_dict(data_SN)
+        covmat_df = pd.DataFrame(covmat_SN,columns=['z{}'.format(i) for i in data_df.index])
+        covmat_df.index = covmat_df.columns
 
-        np.save(self.settings_SN['SN_file_path']+'.npy', data_SN)
+        data_df.to_csv(self.settings_SN['SN_file_path']+'_data.txt',header=True,index=False,sep='\t')
+        covmat_df.to_csv(self.settings_SN['SN_file_path']+'_covmat.txt',header=True,index=False,sep='\t')
+
+        print('CREATED SN DATASET')
 
         return data_SN
     
@@ -207,9 +222,15 @@ class MockCalcs:
         else:
             sys.exit('Correlation in GW measurements not implemented yet')
 
-        data_GW['covmat'] = covmat_GW
+        #Creating dataframe to save to file
+        data_df   = pd.DataFrame.from_dict(data_GW)
+        covmat_df = pd.DataFrame(covmat_GW,columns=['z{}'.format(i) for i in data_df.index])
+        covmat_df.index = covmat_df.columns
 
-        np.save(self.settings_GW['GW_file_path']+'.npy', data_GW)
+        data_df.to_csv(self.settings_GW['GW_file_path']+'_data.txt',header=True,index=False,sep='\t')
+        covmat_df.to_csv(self.settings_GW['GW_file_path']+'_covmat.txt',header=True,index=False,sep='\t')
+
+        print('CREATED GW DATASET')
 
         return data_GW
 
