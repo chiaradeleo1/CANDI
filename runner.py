@@ -23,17 +23,17 @@ info = read(sys.argv[1])
 info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
-                                     'BAO_data_path': info['BAO_data']['path']
+                                     'BAO_data_path': info['BAO_data']['path'],
                                      'use_noisy_data': info['BAO_data']['noisy']}
 
 if info['SN_data'] != None:
     info['likelihood']['SNLike'] =  {'external': SNLike,
-                                     'SN_data_path': info['SN_data']['path']
+                                     'SN_data_path': info['SN_data']['path'],
                                      'use_noisy_data': info['SN_data']['noisy']}
 
 if info['GW_data'] != None:
     info['likelihood']['GWLike'] =  {'external': GWLike,
-                                     'GW_data_path': info['GW_data']['path']
+                                     'GW_data_path': info['GW_data']['path'],
                                      'use_noisy_data': info['GW_data']['noisy']}
 
 if len(list(info['likelihood'].keys())) == 0:
