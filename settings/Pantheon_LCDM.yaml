@@ -4,7 +4,9 @@ output: chains/Pantheon_LCDM
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
-SN_data: data/Pantheon
+SN_data: 
+  path: data/Pantheon
+  noisy: False #This option must be false when using real data
 GW_data: 
 
 #Available options: MH
