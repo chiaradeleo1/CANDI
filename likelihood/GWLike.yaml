@@ -2,3 +2,4 @@ aliases: [GWLike]
 speed: 500
 params:
 GW_data_path: 
+use_noisy_data:
