@@ -209,7 +209,7 @@ class MockCalcs:
 
         data_GW = {'z' : z_GW,
                    'dL_noisy': dL_GW_noisy,
-                   'dL': dL,
+                   'dL': dL_GW,
                    'err_dL': dL_GW_error}
                 
         if self.settings_GW['correlation'] == False:
