@@ -52,19 +52,16 @@ class MockCalcs:
         else:
             sys.exit('Unknown BAO error type: {}'.format(self.settings_BAO['error_type']))
 
-        if self.settings_BAO['spread_data']:
-            DH_noisy = np.random.normal(DH, DH_error)
-            DV_noisy = np.random.normal(DV, DV_error)
-            DM_noisy = np.random.normal(DM, DM_error)
-        else:
-            DH_noisy = DH
-            DV_noisy = DV
-            DM_noisy = DM
+        DH_noisy = np.random.normal(DH, DH_error)
+        DV_noisy = np.random.normal(DV, DV_error)
+        DM_noisy = np.random.normal(DM, DM_error)
 
         data_BAO_DHDM = {'z' : z_BAO,
-                         'DH': DH_noisy,
+                         'DH_noisy': DH_noisy,
+                         'DH': DH,
                          'err_DH': DH_error,
-                         'DM': DM_noisy,
+                         'DM_noisy': DM_noisy,
+                         'DM': DM,
                          'err_DM': DM_error}
                 
         if self.settings_BAO['correlation'] == False:
@@ -85,7 +82,8 @@ class MockCalcs:
         covmat_df.to_csv(self.settings_BAO['BAO_file_path']+'_covmat_DHDM.txt',header=True,index=False,sep='\t')
 
         data_BAO_DV  = {'z' : z_BAO,
-                        'DV': DV_noisy,
+                        'DV_noisy': DV_noisy,
+                        'DV': DV,
                         'err_DV': DV_error,}
         
         covmat_DV = np.zeros((len(DV_error), len(DV_error)))
@@ -100,11 +98,14 @@ class MockCalcs:
         covmat_df.to_csv(self.settings_BAO['BAO_file_path']+'_covmat_DV.txt',header=True,index=False,sep='\t')
 
         data_BAO = {'z': z_BAO,
-                    'DH': DH_noisy,
+                    'DH_noisy': DH_noisy,
+                    'DH': DH,
                     'err_DH': DH_error,
-                    'DM': DM_noisy,
+                    'DM_noisy': DM_noisy,
+                    'DM': DM,
                     'err_DM': DM_error,
-                    'DV': DV_noisy,
+                    'DV_noisy': DV_noisy,
+                    'DV': DV,
                     'err_DV': DV_error}
 
         print('CREATED BAO DATASET')
@@ -141,15 +142,13 @@ class MockCalcs:
         else:
             sys.exit('Unknown SN error type: {}'.format(self.settings_SN['error_type']))
 
-        if self.settings_SN['spread_data']:
-            mB_noisy = np.random.normal(mB, mB_error)
-        else: 
-            mB_noisy = mB
+        mB_noisy = np.random.normal(mB, mB_error)
 
         #mB_error = 0.05 * mB_noisy
 
         data_SN = {'z' : z_SN,
-                   'mB': mB_noisy,
+                   'mB_noisy': mB_noisy,
+                   'mB': mB,
                    'err_mB': mB_error}
                 
         if self.settings_SN['correlation'] == False:
@@ -205,14 +204,12 @@ class MockCalcs:
             sigma_i = 2 * dL_GW / snr                    
             dL_GW_error = np.sqrt(sigma_L**2 + sigma_i**2) 
 
-        if self.settings_GW['spread_data']:
-            dL_GW_noisy = np.random.normal(dL_GW,dL_GW_error)
-        else:
-            dL_GW_noisy = dL_GW
+        dL_GW_noisy = np.random.normal(dL_GW,dL_GW_error)
         
 
         data_GW = {'z' : z_GW,
-                   'dL': dL_GW_noisy,
+                   'dL_noisy': dL_GW_noisy,
+                   'dL': dL,
                    'err_dL': dL_GW_error}
                 
         if self.settings_GW['correlation'] == False:
