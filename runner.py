@@ -15,20 +15,6 @@ from theory_code.cobaya_theory_wrapper import CalcDist
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
-from argparse import ArgumentParser
-
-parser = ArgumentParser(description='Possible functions for running script')
-parser.add_argument('settings',
-                    help='path to settings file.')
-parser.add_argument("-p", "--profiling",
-                    action='store_true',dest="profiling", default=False,
-                    help="if True runs only one iteration of the code on the reference values of the parameters")
-parser.add_argument("-v", "--verbose",
-                    action="store_true", dest="verbose", default=False,
-                    help="if True makes the code more chatty (default=False)")
-
-args = parser.parse_args(sys.argv[1:])
-
 
 info = read(sys.argv[1])
 
@@ -37,15 +23,18 @@ info = read(sys.argv[1])
 info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
-                                     'BAO_data_path': info['BAO_data']}
+                                     'BAO_data_path': info['BAO_data']['path']
+                                     'use_noisy_data': info['BAO_data']['noisy']}
 
 if info['SN_data'] != None:
     info['likelihood']['SNLike'] =  {'external': SNLike,
-                                     'SN_data_path': info['SN_data']}
+                                     'SN_data_path': info['SN_data']['path']
+                                     'use_noisy_data': info['SN_data']['noisy']}
 
 if info['GW_data'] != None:
     info['likelihood']['GWLike'] =  {'external': GWLike,
-                                     'GW_data_path': info['GW_data']}
+                                     'GW_data_path': info['GW_data']['path']
+                                     'use_noisy_data': info['GW_data']['noisy']}
 
 if len(list(info['likelihood'].keys())) == 0:
     sys.exit('NO LIKELIHOOD LOADED!!!')
@@ -58,7 +47,7 @@ info['theory'] = {'CalcDist': {'external': CalcDist}}
 
 info['force'] = True
 
-if args.profiling:
+if info['sampler'] == 'profiling':
     print('Profiling started')
     info['sampler'] = {'evaluate': {'override': {par: par_dict['ref']['loc'] for par,par_dict in info['params'].items()
                                                  if type(par_dict) == dict and 'ref' in par_dict}}}
