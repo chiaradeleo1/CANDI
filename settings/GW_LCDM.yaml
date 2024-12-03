@@ -5,12 +5,12 @@ output: chains/GWmock_LCDM
 #if empty, data are not used
 BAO_data:
 SN_data:
-GW_data: mock_data/GWmock_pade
+GW_data: mock_data/GW_mock_data
 debug: False
 
 #Available options for DDR_model: constant, padè
 settings:
-  DDR_model: padè
+  DDR_model: constant
   
 #Available options: MH
 #samplers options hard-coded in runner.py

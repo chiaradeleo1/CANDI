@@ -3,14 +3,14 @@ output: chains/BAOmock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: mock_data/BAOmock_pade
+BAO_data: mock_data/BAO_mock_data
 SN_data:
 GW_data: 
 
 stop_at_error: True
 #Available options for DDR_model: constant, padè
 settings:
-  DDR_model: padè
+  DDR_model: constant
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: MH
