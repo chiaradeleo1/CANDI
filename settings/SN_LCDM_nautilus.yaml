@@ -4,12 +4,11 @@ output: chains/SNmock_LCDM
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
-SN_data: mock_data/SNmock_padè
+SN_data: mock_data/SN_mock_data
 GW_data: 
 
 #Available options for DDR_model: constant, padè
-settings:
-  DDR_model: constant
+DDR_model: constant
 
 #Available options: MH
 #samplers options hard-coded in runner.py

@@ -1,7 +1,6 @@
 import sys
 import numpy  as np
 import pandas as pd
-from bios import read
 
 from copy import deepcopy
 from scipy.interpolate import interp1d
@@ -12,18 +11,20 @@ from cobaya.theory import Theory
 
 class CalcDist(Theory):
 
+    
     def initialize(self):
         """called from __init__ to initialize"""
         
-        info     = read(sys.argv[1])
-        theory_settings = deepcopy(info['settings'])
+
         #MM: eventually to be made options
         #They should be ok in most cases
+        
         self.settings = {'zmin': 0.001,
                          'zmax': 5.,
                          'Nz': 1000,
                          'zdrag': 1060,
-                         'DDR_model': theory_settings['DDR_model'],}
+                         'DDR_model': self.DDR_model}
+        print(self.DDR_model)
         ##################################
 
         self.zcalc = np.linspace(self.settings['zmin'],self.settings['zmax'],self.settings['Nz'])
@@ -43,7 +44,7 @@ class CalcDist(Theory):
         return ['rdrag','omegaL']
 
     def calculate(self, state, want_derived=True, **params_values_dict):
-
+        
         theory = TheoryCalcs(self.settings,params_values_dict)
 
         state['DM'] = theory.DM 

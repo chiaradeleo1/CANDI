@@ -15,3 +15,4 @@ params:
   rdrag:
     derived: True
 camb_path:
+DDR_model: 

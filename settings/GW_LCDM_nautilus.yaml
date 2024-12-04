@@ -5,12 +5,11 @@ output: chains/GWmock_LCDM
 #if empty, data are not used
 BAO_data:
 SN_data:
-GW_data: mock_data/GWmock
+GW_data: mock_data/GW_mock_data
 debug: False
 
 #Available options for DDR_model: constant, padè
-settings:
-  DDR_model: constant
+DDR_model: constant
 #Available options: MH
 #samplers options hard-coded in runner.py
 sampler: Nautilus

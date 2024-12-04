@@ -34,6 +34,7 @@ info = read(sys.argv[1])
 
 
 #MM: we should find a better and more general way to fill the likelihood
+
 info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
@@ -53,8 +54,8 @@ else:
     print('Likelihoods loaded: ',list(info['likelihood'].keys()))
 
 #MMnote: pass theory options
-info['theory'] = {'CalcDist': {'external': CalcDist}}
-#                               'extra_args': {'camb_path': info['camb_path']}}}
+info['theory'] = {'CalcDist': {'external': CalcDist,
+                               'DDR_model': info['DDR_model']}}
 
 info['force'] = True
 
