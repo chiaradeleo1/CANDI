@@ -9,6 +9,9 @@ GW_data:
   path: mock_data/GWmock_standard
   noisy: False
 
+#Available options for DDR_model: constant, padè
+DDR_model: constant
+  
 #Available options: MH
 #samplers options hard-coded in runner.py
 sampler: MH
