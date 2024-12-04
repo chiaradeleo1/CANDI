@@ -16,15 +16,26 @@ class DDRCalcs:
         self.zcalc = zcalc
 
         if model == 'constant':
-            self.eta_EM = self.get_eta(params['epsilon0_EM'])
+            self.eta_EM = self.get_eta_constant(params['epsilon0_EM'])
             
-            self.eta_GW = self.get_eta(params['epsilon0_GW'])
+            self.eta_GW = self.get_eta_constant(params['epsilon0_GW'])
+        
+        elif model == 'padè':
+            self.eta_EM = self.get_eta_pade_approximant(params['epsilon0_EM'])
+            
+            self.eta_GW = self.get_eta_pade_approximant(params['epsilon0_GW'])
             
         else:
             sys.exit('Unknown DDR breaking model: {}'.format(model))
 
-    def get_eta(self,epsilon):
+    def get_eta_constant(self,epsilon):
 
         eta = interp1d(self.zcalc,(1+self.zcalc)**epsilon)
 
+        return eta
+    
+    def get_eta_pade_approximant(self, epsilon):
+
+        eta = interp1d(self.zcalc, 1 + (epsilon*np.log(1+self.zcalc))/(1-(epsilon*0.5*np.log(1+self.zcalc))+ (epsilon/12 * (np.log(1+self.zcalc))**2) ))
+        
         return eta

@@ -3,11 +3,13 @@ output: chains/BAO_SN_GW_mock_LCDM_nautilus
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: mock_data/BAOmock
-SN_data: mock_data/SNmock
-GW_data: mock_data/GWmock
+BAO_data: mock_data/BAO_mock_data
+SN_data: mock_data/SN_mock_data
+GW_data: mock_data/GW_mock_data
 
 stop_at_error: True
+#Available options for DDR_model: constant, padè
+DDR_model: constant
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: Nautilus
