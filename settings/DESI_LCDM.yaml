@@ -3,7 +3,9 @@ output: chains/DESI_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: data/DESI
+BAO_data: 
+  path: data/DESI
+  noisy: False
 SN_data:
 GW_data: 
 

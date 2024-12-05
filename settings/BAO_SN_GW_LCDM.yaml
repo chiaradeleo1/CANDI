@@ -3,9 +3,15 @@ output: chains/BAO_SN_GW_mock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: mock_data/BAO_mock_data
-SN_data: mock_data/SN_mock_data
-GW_data: mock_data/GW_mock_data
+BAO_data: 
+  path: mock_data/BAOmock_standard
+  noisy: False
+SN_data:
+  path: mock_data/SNmock_standard
+  noisy: False
+GW_data:
+  path: mock_data/GWmock_standard
+  noisy: False 
 
 stop_at_error: True
 #Available options for DDR_model: constant, padè

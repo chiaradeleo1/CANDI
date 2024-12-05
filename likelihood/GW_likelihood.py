@@ -8,8 +8,14 @@ class GWLike(Likelihood):
     
     def initialize(self):
 
-        self.dataset_GW = np.load(self.GW_data_path+'.npy',allow_pickle=True).item()
-        self.invcovmat  = np.linalg.inv(((self.dataset_GW['covmat'])))
+        self.dataset_GW = pd.read_csv(self.GW_data_path+'_data.txt',sep='\s+',header=0)
+        covmat          = pd.read_csv(self.GW_data_path+'_covmat.txt',sep='\s+',header=0)
+        self.invcovmat  = np.linalg.inv(covmat)
+
+        if self.use_noisy_data:
+            self.suffix = '_noisy'
+        else:
+            self.suffix = ''
 
 
     def get_requirements(self):
@@ -20,7 +26,7 @@ class GWLike(Likelihood):
     
     def logp(self, **params_values): 
         
-        diffvec_GW = (self.provider.get_result('DL_GW')(self.dataset_GW['z']))-(self.dataset_GW['dL'])
+        diffvec_GW = (self.provider.get_result('DL_GW')(self.dataset_GW['z'].values))-(self.dataset_GW['dL'+self.suffix].values)
         
 
         loglike = -0.5*np.dot((diffvec_GW),np.dot(self.invcovmat,(diffvec_GW)))

@@ -1,10 +1,12 @@
 #Choose root of output files
-output: chains/SNmock_LCDM
+output: chains/SN_mock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
-SN_data: mock_data/SN_mock_data
+SN_data: 
+  path: mock_data/SNmock_standard
+  noisy: False
 GW_data: 
 
 #Available options for DDR_model: constant, padè

@@ -8,8 +8,14 @@ class SNLike(Likelihood):
     
     def initialize(self):
 
-        self.dataset_SN = np.load(self.SN_data_path+'.npy',allow_pickle=True).item()
-        self.invcovmat  = np.linalg.inv(((self.dataset_SN['covmat'])))
+        self.dataset_SN = pd.read_csv(self.SN_data_path+'_data.txt',sep='\s+',header=0)
+        covmat          = pd.read_csv(self.SN_data_path+'_covmat.txt',sep='\s+',header=0)
+        self.invcovmat  = np.linalg.inv(covmat)
+
+        if self.use_noisy_data:
+            self.suffix = '_noisy'
+        else:
+            self.suffix = ''
 
 
     def get_requirements(self):
@@ -20,7 +26,7 @@ class SNLike(Likelihood):
     
     def logp(self, **params_values): 
 
-        diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z']))-(self.dataset_SN['mB'])
+        diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'+self.suffix].values)
 
         loglike = -0.5*np.dot((diffvec_SN),np.dot(self.invcovmat,(diffvec_SN)))
 

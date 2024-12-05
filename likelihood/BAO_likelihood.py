@@ -8,10 +8,18 @@ class BAOLike(Likelihood):
     
     def initialize(self):
         
-        self.dataset_DHDM = np.load(self.BAO_data_path+'_DHDM.npy',allow_pickle=True).item()
-        self.dataset_DV   = np.load(self.BAO_data_path+'_DV.npy',allow_pickle=True).item()
-        self.invcov_DHDM  = np.linalg.inv((self.dataset_DHDM['covmat']))
-        self.invcov_DV    = np.linalg.inv(((self.dataset_DV['covmat'])))
+        self.dataset_DHDM = pd.read_csv(self.BAO_data_path+'_data_DHDM.txt',sep='\s+',header=0)
+        covmat_DHDM       = pd.read_csv(self.BAO_data_path+'_covmat_DHDM.txt',sep='\s+',header=0)
+        self.invcov_DHDM  = np.linalg.inv(covmat_DHDM)
+
+        self.dataset_DV = pd.read_csv(self.BAO_data_path+'_data_DV.txt',sep='\s+',header=0)
+        covmat_DV       = pd.read_csv(self.BAO_data_path+'_covmat_DV.txt',sep='\s+',header=0)
+        self.invcov_DV  = np.linalg.inv(covmat_DV)
+
+        if self.use_noisy_data:
+            self.suffix = '_noisy'
+        else:
+            self.suffix = ''
 
 
         zmax = 4.
@@ -28,9 +36,9 @@ class BAOLike(Likelihood):
     
     def logp(self, **params_values): 
 
-        diffvec_DH   = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH']
-        diffvec_DM   = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM']
-        diffvec_DV   = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV']
+        diffvec_DH   = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH'+self.suffix]
+        diffvec_DM   = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM'+self.suffix]
+        diffvec_DV   = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV'+self.suffix]
         diffvec_DHDM = np.concatenate((diffvec_DH, diffvec_DM),axis=0)
 
         chi2  = np.dot((diffvec_DHDM),np.dot(self.invcov_DHDM,(diffvec_DHDM)))
