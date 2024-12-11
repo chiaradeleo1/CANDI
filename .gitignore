@@ -4,6 +4,7 @@
 *.d
 *.mod
 chains/
+chains_Hstar/
 *.ipynb_checkpoints*
 *.txt
 *.dat
