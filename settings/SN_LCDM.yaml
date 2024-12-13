@@ -5,7 +5,7 @@ output: chains/SN_mock_LCDM
 #if empty, data are not used
 BAO_data:
 SN_data: 
-  path: mock_data/SNmock_standard
+  path: mock_data/SNmock_epsilon_constant
   noisy: False
 GW_data: 
 

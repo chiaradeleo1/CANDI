@@ -1,10 +1,10 @@
 #Choose root of output files
-output: chains/BAO_mock_LCDM
+output: chains/BAO_mock_LCDM_noBBN
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: mock_data/BAOmock_standard
+  path: mock_data/BAOmock_epsilon_constant
   noisy: False
 SN_data:
 GW_data: 
@@ -36,9 +36,8 @@ params:
   ombh2:
     latex: '\Omega_\mathrm{b} h^2'
     prior:
-      dist: norm
-      loc: 0.02218
-      scale: 0.00055 
+      min: 0.005
+      max: 0.1
     proposal: 0.0001
     ref:
       dist: norm

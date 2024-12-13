@@ -4,7 +4,7 @@ output: chains/BAO_mock_LCDM
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: mock_data/BAOmock_standard
+  path: mock_data/BAOmock_epsilon_constant
   noisy: False
 SN_data:
 GW_data: 

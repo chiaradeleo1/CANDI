@@ -1,11 +1,11 @@
 #Choose root of output files
-output: chains/SN_mock_LCDM
+output: chains/SN_mock_LCDM_noMB
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data:
 SN_data: 
-  path: mock_data/SNmock_standard
+  path: mock_data/SNmock_epsilon_constant
   noisy: False
 GW_data: 
 
@@ -81,9 +81,8 @@ params:
       loc: -19.2435
       scale: 0.01
     prior:
-      dist: norm
-      loc: -19.2435
-      scale: 0.0373
+      min: -25.
+      max: -15.
   omk: 0.
   w: -1.
   wa: 0.

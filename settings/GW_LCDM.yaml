@@ -6,7 +6,7 @@ output: chains/GW_mock_LCDM
 BAO_data:
 SN_data:
 GW_data: 
-  path: mock_data/GWmock_standard
+  path: mock_data/GWmock_epsilon_constant
   noisy: False
 
 #DDR model settings

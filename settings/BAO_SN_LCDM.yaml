@@ -77,7 +77,17 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  MB: -19.2435
+  MB: 
+    latex: 'M_B'
+    proposal: 0.01
+    ref: 
+      dist: norm
+      loc: -19.2435
+      scale: 0.01
+    prior:
+      dist: norm
+      loc: -19.2435
+      scale: 0.0373
   omk: 0.
   w: -1.
   wa: 0.
