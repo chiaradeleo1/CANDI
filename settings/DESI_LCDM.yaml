@@ -10,8 +10,13 @@ SN_data:
 GW_data: 
 
 stop_at_error: True
-#Available options for DDR_model: constant, padè
-DDR_model: constant
+
+#DDR model settings
+DDR_model:
+  epsilon_model: constant #Available options: constant (others to be added)
+  pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
+
+
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: MH
