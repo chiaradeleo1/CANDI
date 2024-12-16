@@ -77,7 +77,12 @@ class TheoryCalcs:
 
     def get_dL(self,dA,eta):
 
-        dL = interp1d(self.zcalc,eta(self.zcalc)*(1+self.zcalc)**2*dA(self.zcalc))
+        if self.DDR_model['eta_constant'] == True:
+
+            dL = interp1d(self.zcalc,eta*dA(self.zcalc))
+        else:
+            
+            dL = interp1d(self.zcalc,eta(self.zcalc)*(1+self.zcalc)**2*dA(self.zcalc))
 
         return dL
 

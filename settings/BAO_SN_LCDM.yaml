@@ -15,9 +15,9 @@ stop_at_error: True
 
 #DDR model settings
 DDR_model:
+  eta_constant: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is constant. Note that is it is True epsilon0_EM and epsilon0_GW are not used
   epsilon_model: constant #Available options: constant (others to be added)
   pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
-
 
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py

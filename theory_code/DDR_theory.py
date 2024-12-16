@@ -15,11 +15,21 @@ class DDRCalcs:
 
         self.zcalc = zcalc
         self.settings = settings
-        if settings['epsilon_model'] == 'constant':
-            self.eta_EM = self.get_eta(params['epsilon0_EM'])
-            self.eta_GW = self.get_eta(params['epsilon0_GW'])
+
+        if settings['eta_constant'] == True:
+            self.eta_EM = 1.0
+            self.eta_GW = 1.0
+
         else:
-            sys.exit('Unknown DDR breaking model: {}'.format(model))
+
+            if settings['epsilon_model'] == 'constant':
+                self.eta_EM = self.get_eta(params['epsilon0_EM'])
+                self.eta_GW = self.get_eta(params['epsilon0_GW'])       
+
+
+                
+            else:
+                sys.exit('Unknown DDR breaking model: {}'.format(settings['epsilon_model']))
 
     def get_eta(self,epsilon):
         
