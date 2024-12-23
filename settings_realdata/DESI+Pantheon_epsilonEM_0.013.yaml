@@ -1,12 +1,14 @@
 #Choose root of output files
-output: chains/BAO_mock_LCDM
+output: chains/DESI_Pantheon_epsilonEM_0.013
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: mock_data/data/BAOmock
+  path: data/DESI
   noisy: False
 SN_data:
+  path: data/Pantheon
+  noisy: False
 GW_data: 
 
 stop_at_error: True
@@ -17,6 +19,7 @@ DDR_model:
                             #is the polynomial order
   pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
              #only available for n=1 
+
 
 
 #Available options: MH, Nautilus
@@ -56,6 +59,7 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
+
   epsilon0_EM:
     latex: '\epsilon_0^\mathrm{EM}'
     prior:
@@ -64,8 +68,9 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.
+      loc: 0.013
       scale: 0.01
+
   epsilon0_GW:
     latex: '\epsilon_0^\mathrm{GW}'
     prior:
@@ -74,13 +79,23 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.
+      loc: 0.0
       scale: 0.01
+
+  MB: 
+    latex: 'M_B'
+    proposal: 0.01
+    ref: 
+      dist: norm
+      loc: -19.2435
+      scale: 0.01
+    prior:
+      min: -25.
+      max: -15.
   a_EM: 1.0
   n_EM: 1.0
   a_GW: 1.0
   n_GW: 1.0
-  MB: -19.2435
   omk: 0.
   w: -1.
   wa: 0.

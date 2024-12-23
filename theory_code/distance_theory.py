@@ -54,6 +54,10 @@ class TheoryCalcs:
         del camb_params['MB']
         del camb_params['epsilon0_EM']
         del camb_params['epsilon0_GW']
+        del camb_params['a_EM']
+        del camb_params['a_GW']
+        del camb_params['n_EM']
+        del camb_params['n_GW']
 
 
         #MM: path to camb to be made customizable
@@ -77,12 +81,7 @@ class TheoryCalcs:
 
     def get_dL(self,dA,eta):
 
-        if self.DDR_model['eta_constant'] == True:
-
-            dL = interp1d(self.zcalc,eta*dA(self.zcalc))
-        else:
-            
-            dL = interp1d(self.zcalc,eta(self.zcalc)*(1+self.zcalc)**2*dA(self.zcalc))
+        dL = interp1d(self.zcalc,eta(self.zcalc)*(1+self.zcalc)**2*dA(self.zcalc))
 
         return dL
 

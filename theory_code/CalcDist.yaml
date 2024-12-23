@@ -6,6 +6,10 @@ params:
   MB:
   epsilon0_EM:
   epsilon0_GW: 
+  a_EM: 
+  n_EM: 
+  a_GW: 
+  n_GW:
   w: -1.
   wa: 0.
   mnu: 0.06

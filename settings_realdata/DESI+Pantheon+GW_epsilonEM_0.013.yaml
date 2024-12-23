@@ -1,23 +1,25 @@
 #Choose root of output files
-output: chains/BAO_SN_mock_LCDM
+output: chains/DESI_Pantheon_GW_mock_epsilonEM_0.013
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: mock_data/BAOmock_standard
+  path: data/DESI
   noisy: False
 SN_data:
-  path: mock_data/SNmock_standard
+  path: data/Pantheon
   noisy: False
 GW_data: 
+  path: mock_data/data/GWmock_epsilon=0.0_n=1.0
+  noisy: False
 
 stop_at_error: True
 
 #DDR model settings
 DDR_model:
-  eta_constant: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is constant. Note that is it is True epsilon0_EM and epsilon0_GW are not used
   epsilon_model: constant #Available options: constant (others to be added)
   pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
+
 
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
@@ -38,9 +40,8 @@ params:
   ombh2:
     latex: '\Omega_\mathrm{b} h^2'
     prior:
-      dist: norm
-      loc: 0.02218
-      scale: 0.00055 
+      min: 0.005
+      max: 0.1
     proposal: 0.0001
     ref:
       dist: norm
@@ -57,6 +58,7 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
+
   epsilon0_EM:
     latex: '\epsilon_0^\mathrm{EM}'
     prior:
@@ -65,8 +67,9 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.
+      loc: 0.013
       scale: 0.01
+
   epsilon0_GW:
     latex: '\epsilon_0^\mathrm{GW}'
     prior:
@@ -75,8 +78,9 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.
+      loc: 0.0
       scale: 0.01
+
   MB: 
     latex: 'M_B'
     proposal: 0.01
@@ -85,9 +89,12 @@ params:
       loc: -19.2435
       scale: 0.01
     prior:
-      dist: norm
-      loc: -19.2435
-      scale: 0.0373
+      min: -25.
+      max: -15.
+  a_EM: 1.0
+  n_EM: 1.0
+  a_GW: 1.0
+  n_GW: 1.0
   omk: 0.
   w: -1.
   wa: 0.

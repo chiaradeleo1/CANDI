@@ -6,16 +6,14 @@ output: chains/Pantheon_LCDM
 BAO_data:
 SN_data: 
   path: data/Pantheon
-  noisy: False #This option must be false when using real data
+  noisy: False
 GW_data: 
 
 
 #DDR model settings
 DDR_model:
-  eta_constant: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is constant. Note that is it is True epsilon0_EM and epsilon0_GW are not used
   epsilon_model: constant #Available options: constant (others to be added)
   pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
-
 
 #Available options: MH
 #samplers options hard-coded in runner.py
@@ -65,7 +63,16 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 0.
+  epsilon0_GW:
+    latex: '\epsilon_0^\mathrm{GW}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.01
   MB: 
     latex: 'M_B'
     proposal: 0.01
@@ -74,9 +81,13 @@ params:
       loc: -19.2435
       scale: 0.01
     prior:
-      dist: norm
-      loc: -19.2435
-      scale: 0.0373
+      min: -25.
+      max: -15.
+  
+  a_EM: 1.0
+  n_EM: 1.0
+  a_GW: 1.0
+  n_GW: 1.0
   omk: 0.
   w: -1.
   wa: 0.

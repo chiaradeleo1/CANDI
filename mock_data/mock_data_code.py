@@ -5,6 +5,9 @@ import pandas as pd
 from copy import deepcopy
 from scipy.interpolate import interp1d
 
+sys.path.insert(0, '/Users/chiaradeleo/Desktop/darksirens_reboot')
+from main import GWcalculator
+
 
 class MockCalcs:
     def __init__(self,settings, obs_settings,params, theory):
@@ -173,59 +176,53 @@ class MockCalcs:
 
     def get_GW_mock(self):
 
-        N_gw = self.settings_GW['N_gw']
-        z_calc = np.linspace(self.settings_GW['zmin'], self.settings_GW['zmax'], N_gw*2)
+        loc_sets = deepcopy(self.settings_GW)
 
-        if self.settings_GW['distribution'] == 'BNS':
+        loc_results = []
+        for spec in self.settings_GW['Simulation']['Progenitor']:
+            loc_sets['Simulation']['Progenitor'] = [spec]
+            main = GWcalculator(loc_sets,feedback=True,skip_errors=False,spread_data=True)
 
-            merger_rate = np.array([self.BNS_merger_rate(z) for z in z_calc])
 
-            r_values = np.array([2.99*1e5/self.theory.Hz(z) for z in z_calc])
-            p_z      = 4 * np.pi * r_values**2 * merger_rate / (self.theory.Hz(z_calc) * (1 + z_calc))
-            p_z     /= np.sum(p_z) 
-            z_GW     = np.sort(np.random.choice(z_calc, size = N_gw, p = p_z, replace = False))
+            loc_results.append(main.observables)
+
+
+        results = pd.concat(loc_results, ignore_index=True).drop(columns=['samples'])
+    
+        sorted_results = results.sort_values('z', ascending=True) 
+        sorted_results = sorted_results[['z', 'luminosity_distance', 'err_luminosity_distance']].sort_values('z', ascending=True)
+
         
-        else:
-            sys.exit('Unknown GW distribution: {}'.format(self.settings_GW['distribution']))
-
-        dL_GW = self.theory.DL_GW(z_GW)
-
-        if type(self.settings_GW['error_type']) == float:
-
-            dL_GW_error = dL_GW*self.settings_GW['error_type']
-
-        elif self.settings_GW['error_type'] == 'observational_error':
-
-            sys.exit('Observational error not available yet')
-
-            #SNR cannot be computed with uniform distribution. It correlates with dL!
-            snr = np.random.uniform(10, 100, size=N_gw)  
-            sigma_L = 0.05 * z_GW * dL_GW               
-            sigma_i = 2 * dL_GW / snr                    
-            dL_GW_error = np.sqrt(sigma_L**2 + sigma_i**2) 
-
-        dL_GW_noisy = np.random.normal(dL_GW,dL_GW_error)
+        for i in range(len(sorted_results['luminosity_distance'])):
+            if sorted_results['err_luminosity_distance'][i] < sorted_results['luminosity_distance'][i]:
+                z_GW = sorted_results['z']
+                dL_GW = sorted_results['luminosity_distance']
+                dL_GW_error = sorted_results['err_luminosity_distance']
         
+        dL_GW_noisy = np.random.normal(dL_GW, dL_GW_error)
 
-        data_GW = {'z' : z_GW,
-                   'dL_noisy': dL_GW_noisy,
-                   'dL': dL_GW,
-                   'err_dL': dL_GW_error}
-                
+        data_GW = {'z': z_GW,
+                    'dL_noisy': dL_GW_noisy,
+                    'dL': dL_GW,
+                    'err_dL': dL_GW_error,
+                    'Ngw_detected': len(z_GW)}
+        
+        print('Number of simulated GW events: {}'.format(self.settings_GW['Simulation']['Ngw']))
+        print('Number of detected GW events: {}'.format(len(z_GW)))
+        
         if self.settings_GW['correlation'] == False:
             covmat_GW = np.zeros((len(dL_GW_error), len(dL_GW_error)))
-
             np.fill_diagonal(covmat_GW, dL_GW_error ** 2)
         else:
             sys.exit('Correlation in GW measurements not implemented yet')
 
-        #Creating dataframe to save to file
-        data_df   = pd.DataFrame.from_dict(data_GW)
-        covmat_df = pd.DataFrame(covmat_GW,columns=['z{}'.format(i) for i in data_df.index])
+        # Creating dataframe to save to file
+        data_df = pd.DataFrame.from_dict(data_GW)
+        covmat_df = pd.DataFrame(covmat_GW, columns=['z{}'.format(i) for i in data_df.index])
         covmat_df.index = covmat_df.columns
 
-        data_df.to_csv(self.settings_GW['GW_file_path']+'_data.txt',header=True,index=False,sep='\t')
-        covmat_df.to_csv(self.settings_GW['GW_file_path']+'_covmat.txt',header=True,index=False,sep='\t')
+        data_df.to_csv(self.settings_GW['GW_file_path'] + '_data.txt', header=True, index=False, sep='\t')
+        covmat_df.to_csv(self.settings_GW['GW_file_path'] + '_covmat.txt', header=True, index=False, sep='\t')
 
         print('CREATED GW DATASET')
 
