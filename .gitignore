@@ -15,3 +15,4 @@ data_reading.ipynb
 test_chi2.ipynb
 plot/*
 .DS_Store
+*.sh

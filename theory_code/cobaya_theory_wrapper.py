@@ -24,7 +24,7 @@ class CalcDist(Theory):
                          'Nz': 1000,
                          'zdrag': 1060,
                          'DDR_model': self.DDR_model}
-        print(self.DDR_model)
+
         ##################################
 
         self.zcalc = np.linspace(self.settings['zmin'],self.settings['zmax'],self.settings['Nz'])

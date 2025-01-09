@@ -16,10 +16,11 @@ GW_data:
 stop_at_error: True
 
 #DDR model settings
-DDR_model:
-  epsilon_model: constant #Available options: constant (others to be added)
+DDR_model: 
+  epsilon_model: polynomial #Available options: polynomial (others to be added), eta(z)=(1+a*z^n)^epsilon where n
+                            #is the polynomial order
   pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
-
+             #only available for n=1 
 
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
