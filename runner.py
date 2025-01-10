@@ -46,6 +46,11 @@ else:
 info['theory'] = {'CalcDist': {'external': CalcDist,
                                'DDR_model': info['DDR_model']}}
 
+if 'BBN' in info:
+    info['theory']['CalcDist']['BBN'] = info['BBN']
+else:
+    info['theory']['CalcDist']['BBN'] = None
+
 info['force'] = True
 
 if info['sampler'] == 'profiling':

@@ -18,5 +18,7 @@ params:
     derived: True
   rdrag:
     derived: True
+  rd:
 camb_path:
 DDR_model: 
+BBN:

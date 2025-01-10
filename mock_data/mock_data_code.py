@@ -216,9 +216,10 @@ class MockCalcs:
         else:
             sys.exit('Correlation in GW measurements not implemented yet')
 
-        # Creating dataframe to save to file
+        
         data_df = pd.DataFrame.from_dict(data_GW)
-        covmat_df = pd.DataFrame(covmat_GW, columns=['z{}'.format(i) for i in data_df.index])
+        covmat_df = pd.DataFrame(covmat_GW, columns=['z{}'.format(i) for i in range(1,len(data_df)+1)])
+        
         covmat_df.index = covmat_df.columns
 
         data_df.to_csv(self.settings_GW['GW_file_path'] + '_data.txt', header=True, index=False, sep='\t')
