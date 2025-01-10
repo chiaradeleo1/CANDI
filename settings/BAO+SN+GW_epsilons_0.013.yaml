@@ -101,7 +101,7 @@ params:
   wa: 0.
   mnu: 0.06
   nnu: 3
-
+  rd: 147.0
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

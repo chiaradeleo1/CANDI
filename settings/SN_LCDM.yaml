@@ -19,7 +19,7 @@ DDR_model:
              
 #Available options: MH
 #samplers options hard-coded in runner.py
-sampler: MH
+sampler: profiling
 
 params: 
   omegam:
@@ -95,7 +95,7 @@ params:
   wa: 0.
   mnu: 0.06
   nnu: 3
-  
+  rd: 147
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

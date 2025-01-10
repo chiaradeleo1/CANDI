@@ -1,6 +1,6 @@
 #Choose root of output files
-output: chains/test #BAO_mock_LCDM
-BBN: False
+output: chains/BAO_SN_GW_mock_LCDM
+
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
@@ -101,16 +101,7 @@ params:
   wa: 0.
   mnu: 0.06
   nnu: 3
-  rd: 
-    prior:
-      min: 100
-      max: 200
-    ref:
-      dist: norm
-      loc: 147
-      scale: 0.5
-    proposal: 0.1
-    latex: 'r_\mathrm{d}'
+  rd: 147.0
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True
