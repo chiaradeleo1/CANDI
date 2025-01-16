@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/BAO_SN_GW_mock_LCDM
+output: chains/BAO_BBN_SN_SH0ES_GW_mock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -22,6 +22,8 @@ DDR_model:
   pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
              #only available for n=1 
 
+
+
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: MH
@@ -41,8 +43,9 @@ params:
   ombh2:
     latex: '\Omega_\mathrm{b} h^2'
     prior:
-      min: 0.005
-      max: 0.1
+      dist: norm
+      loc: 0.02218
+      scale: 0.00055 
     proposal: 0.0001
     ref:
       dist: norm
@@ -90,8 +93,10 @@ params:
       loc: -19.2435
       scale: 0.01
     prior:
-      min: -25.
-      max: -15.
+      dist: norm
+      loc: -19.2435
+      scale: 0.0373
+      
   a_EM: 1.0
   n_EM: 1.0
   a_GW: 1.0

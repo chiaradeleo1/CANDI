@@ -69,6 +69,7 @@ class TheoryCalcs:
 
         Hz    = results.h_of_z
         comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
+        
         if self.BBN == True:
             rdrag = results.sound_horizon(self.zdrag)
         else:

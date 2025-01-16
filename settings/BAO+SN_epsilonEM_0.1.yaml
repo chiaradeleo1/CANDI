@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/BAO_SN_GW_mock_epsilonEM_0.013
+output: chains/BAO_BBN_SN_SH0ES_mock_epsilonEM_0.1
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -7,11 +7,9 @@ BAO_data:
   path: mock_data/data/BAOmock
   noisy: False
 SN_data:
-  path: mock_data/data/SNmock_epsilon=0.013_n=1.0
+  path: mock_data/data/SNmock_epsilon=0.1_n=1.0
   noisy: False
 GW_data: 
-  path: mock_data/data/GWmock_epsilon=0.0_n=1.0
-  noisy: False
 
 stop_at_error: True
 
@@ -21,7 +19,9 @@ DDR_model:
                             #is the polynomial order
   pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
              #only available for n=1 
-             
+
+
+
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: MH
@@ -41,8 +41,9 @@ params:
   ombh2:
     latex: '\Omega_\mathrm{b} h^2'
     prior:
-      min: 0.005
-      max: 0.1
+      dist: norm
+      loc: 0.02218
+      scale: 0.00055 
     proposal: 0.0001
     ref:
       dist: norm
@@ -68,7 +69,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.013
+      loc: 0.1
       scale: 0.01
 
   epsilon0_GW:
@@ -79,7 +80,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.0
+      loc: 0.
       scale: 0.01
 
   MB: 
@@ -90,8 +91,10 @@ params:
       loc: -19.2435
       scale: 0.01
     prior:
-      min: -25.
-      max: -15.
+      dist: norm
+      loc: -19.2435
+      scale: 0.0373
+      
   a_EM: 1.0
   n_EM: 1.0
   a_GW: 1.0

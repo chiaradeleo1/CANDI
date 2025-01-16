@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/BAO_SN_mock_epsilonEM_0.013
+output: chains/BAO_SN_GW_mock_epsilonEM_0.1
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -7,9 +7,11 @@ BAO_data:
   path: mock_data/data/BAOmock
   noisy: False
 SN_data:
-  path: mock_data/data/SNmock_epsilon=0.013_n=1.0
+  path: mock_data/data/SNmock_epsilon=0.1_n=1.0
   noisy: False
 GW_data: 
+  path: mock_data/data/GWmock_epsilon=0.0_n=1.0
+  noisy: False
 
 stop_at_error: True
 
@@ -38,16 +40,7 @@ params:
       loc: 0.3
       scale: 0.01
 
-  ombh2:
-    latex: '\Omega_\mathrm{b} h^2'
-    prior:
-      min: 0.005
-      max: 0.1
-    proposal: 0.0001
-    ref:
-      dist: norm
-      loc: 0.0222
-      scale: 0.0001
+  ombh2: 0.0222
 
   H0:
     latex: 'H_0'
@@ -68,7 +61,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.013
+      loc: 0.1
       scale: 0.01
 
   epsilon0_GW:
@@ -79,7 +72,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.0
+      loc: 0.
       scale: 0.01
 
   MB: 
@@ -92,6 +85,7 @@ params:
     prior:
       min: -25.
       max: -15.
+      
   a_EM: 1.0
   n_EM: 1.0
   a_GW: 1.0
@@ -101,7 +95,16 @@ params:
   wa: 0.
   mnu: 0.06
   nnu: 3
-  rd: 147.0
+  rd: 
+    prior:
+      min: 100
+      max: 200
+    ref:
+      dist: norm
+      loc: 147
+      scale: 0.5
+    proposal: 0.1
+    latex: r_d
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

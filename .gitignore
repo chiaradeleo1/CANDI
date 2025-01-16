@@ -18,3 +18,4 @@ plot/*
 .DS_Store
 *.sh
 done/
+*.png

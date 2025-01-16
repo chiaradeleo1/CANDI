@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/BAO_BBN_SN_SH0ES_mock_LCDM
+output: chains/BAO_SN_GW_mock_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -10,6 +10,8 @@ SN_data:
   path: mock_data/data/SNmock_epsilon=0.0_n=1.0
   noisy: False
 GW_data: 
+  path: mock_data/data/GWmock_epsilon=0.0_n=1.0
+  noisy: False
 
 stop_at_error: True
 
@@ -38,17 +40,7 @@ params:
       loc: 0.3
       scale: 0.01
 
-  ombh2:
-    latex: '\Omega_\mathrm{b} h^2'
-    prior:
-      dist: norm
-      loc: 0.02218
-      scale: 0.00055 
-    proposal: 0.0001
-    ref:
-      dist: norm
-      loc: 0.0222
-      scale: 0.0001
+  ombh2: 0.0222
 
   H0:
     latex: 'H_0'
@@ -91,9 +83,8 @@ params:
       loc: -19.2435
       scale: 0.01
     prior:
-      dist: norm
-      loc: -19.2435
-      scale: 0.0373
+      min: -25.
+      max: -15.
       
   a_EM: 1.0
   n_EM: 1.0
@@ -104,7 +95,16 @@ params:
   wa: 0.
   mnu: 0.06
   nnu: 3
-  rd: 147.0
+  rd: 
+    prior:
+      min: 100
+      max: 200
+    ref:
+      dist: norm
+      loc: 147
+      scale: 0.5
+    proposal: 0.1
+    latex: r_d
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True
