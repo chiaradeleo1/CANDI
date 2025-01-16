@@ -58,7 +58,8 @@ if 'BBN' in info:
 else:
     info['theory']['CalcDist']['BBN'] = False
 
-info['force'] = True
+if 'resume' not in info:    
+    info['force'] = True
 
 if info['sampler'] == 'profiling':
     print('Profiling started')
