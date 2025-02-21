@@ -29,6 +29,8 @@ class TheoryCalcs:
             sys.exit('SOMETHING HORRIBLE HAPPENED!!\n {}'.format(e))
 
 
+        self.comoving = camb_results['comoving']
+
         self.DM = camb_results['DM/rd']
         self.DH = camb_results['DH/rd']
         self.DV = camb_results['DV/rd']
@@ -80,6 +82,7 @@ class TheoryCalcs:
                   'DH/rd': interp1d(self.zcalc,1/(Hz(self.zcalc)*rdrag)),
                   'DV/rd': interp1d(self.zcalc, (self.zcalc*comov**2/Hz(self.zcalc))**(1/3)/rdrag),
                   'dA': results.angular_diameter_distance,
+                  'comoving': results.comoving_radial_distance,
                   'rdrag': rdrag,
                   'omegaL': results.get_Omega('de',z=0)}
 
