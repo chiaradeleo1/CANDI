@@ -1,20 +1,27 @@
 #Choose root of output files
-output: chains/DESI_LCDM
+output: chains/SNnoprior_LCDM
 
 #Choose which data to use (path+root)
 #if empty, data are not used
-BAO_data: 
-  path: data/DESI
-  noisy: False
+BAO_data:
 SN_data:
+  path: mock_data/data/SNmock_epsilon=0.0_n=1.0
+  noisy: False
 GW_data: 
 
-stop_at_error: True
-#Available options for DDR_model: constant, padè
-DDR_model: constant
-#Available options: MH, Nautilus
+SH0ES_prior: False
+
+#DDR model settings
+DDR_model: 
+  epsilon_model: polynomial #Available options: polynomial (others to be added), eta(z)=(1+a*z^n)^epsilon where n
+                            #is the polynomial order
+  pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
+             #only available for n=1 
+             
+#Available options: MH
 #samplers options hard-coded in runner.py
 sampler: MH
+
 
 params: 
   omegam:
@@ -28,28 +35,10 @@ params:
       loc: 0.3
       scale: 0.01
 
-  ombh2:
-    latex: '\Omega_\mathrm{b} h^2'
-    prior:
-      dist: norm
-      loc: 0.02218
-      scale: 0.00055 
-    proposal: 0.0001
-    ref:
-      dist: norm
-      loc: 0.0222
-      scale: 0.0001
+  ombh2: 0.0222
 
-  H0:
-    latex: 'H_0'
-    prior: 
-      max: 100.0
-      min: 20.0
-    proposal: 0.5
-    ref:
-      dist: norm
-      loc: 67.0
-      scale: 0.5
+  H0: 70.0
+
   epsilon0_EM:
     latex: '\epsilon_0^\mathrm{EM}'
     prior:
@@ -60,14 +49,23 @@ params:
       dist: norm
       loc: 0.
       scale: 0.01
-  epsilon0_GW: 0.
+
+  epsilon0_GW:
+    derived: False
+    value : 0.0
+
   MB: -19.2435
+      
+  a_EM: 1.0
+  n_EM: 1.0
+  a_GW: 1.0
+  n_GW: 1.0
   omk: 0.
   w: -1.
   wa: 0.
   mnu: 0.06
   nnu: 3
-
+  rd: 147.0
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

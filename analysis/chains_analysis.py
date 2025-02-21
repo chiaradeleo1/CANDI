@@ -6,6 +6,7 @@ import pandas as pd
 from copy    import deepcopy
 from bios    import read
 from getdist import plots,loadMCSamples,MCSamples
+from scipy.signal import find_peaks
 
 import pprint
 #pp = pprint.PrettyPrinter(indent=4)
@@ -160,7 +161,7 @@ class Analyzer:
         covmat = pd.DataFrame(sample.getCovMat().matrix,columns=sample.getCovMat().paramNames,index=sample.getCovMat().paramNames)
 
         chain_report['covmat'] = covmat
-
+        
 
         return chain_report
 

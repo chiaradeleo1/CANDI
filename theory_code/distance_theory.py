@@ -17,8 +17,9 @@ class TheoryCalcs:
         self.Nz        = settings['Nz']
         self.zdrag     = settings['zdrag']
         self.DDR_model = settings['DDR_model']
+        self.BBN       = settings['BBN']
 
-
+        
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
         try:
@@ -27,6 +28,8 @@ class TheoryCalcs:
         except Exception as e:
             sys.exit('SOMETHING HORRIBLE HAPPENED!!\n {}'.format(e))
 
+
+        self.comoving = camb_results['comoving']
 
         self.DM = camb_results['DM/rd']
         self.DH = camb_results['DH/rd']
@@ -54,6 +57,11 @@ class TheoryCalcs:
         del camb_params['MB']
         del camb_params['epsilon0_EM']
         del camb_params['epsilon0_GW']
+        del camb_params['a_EM']
+        del camb_params['a_GW']
+        del camb_params['n_EM']
+        del camb_params['n_GW']
+        del camb_params['rd']
 
 
         #MM: path to camb to be made customizable
@@ -63,12 +71,18 @@ class TheoryCalcs:
 
         Hz    = results.h_of_z
         comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
-        rdrag = results.sound_horizon(self.zdrag)
+        
+        if self.BBN == True:
+            rdrag = results.sound_horizon(self.zdrag)
+        else:
+            rdrag = params['rd']
+        
 
         theory = {'DM/rd': interp1d(self.zcalc,comov/rdrag),
                   'DH/rd': interp1d(self.zcalc,1/(Hz(self.zcalc)*rdrag)),
                   'DV/rd': interp1d(self.zcalc, (self.zcalc*comov**2/Hz(self.zcalc))**(1/3)/rdrag),
                   'dA': results.angular_diameter_distance,
+                  'comoving': results.comoving_radial_distance,
                   'rdrag': rdrag,
                   'omegaL': results.get_Omega('de',z=0)}
 

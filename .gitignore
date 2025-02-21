@@ -4,6 +4,7 @@
 *.d
 *.mod
 chains/
+chains_old/
 chains_Hstar/
 *.ipynb_checkpoints*
 *.txt
@@ -15,3 +16,7 @@ data_reading.ipynb
 test_chi2.ipynb
 plot/*
 .DS_Store
+*.sh
+done/
+*.png
+*.out

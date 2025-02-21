@@ -1,24 +1,28 @@
 #Choose root of output files
-output: chains/BAO_SN_GW_mock_LCDM
+output: chains/test_GW
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: mock_data/BAOmock_standard
-  noisy: False
 SN_data:
-  path: mock_data/SNmock_standard
+GW_data: 
+  path: mock_data/data/GWmock_realistic_only_epsilon=0.0_n=1.0
   noisy: False
-GW_data:
-  path: mock_data/GWmock_standard
-  noisy: False 
+
 
 stop_at_error: True
-#Available options for DDR_model: constant, padè
-DDR_model: constant
+BBN: False
+#DDR model settings
+DDR_model: 
+  epsilon_model: polynomial #Available options: polynomial (others to be added), eta(z)=(1+a*z^n)^epsilon where n
+                            #is the polynomial order
+  pade: False #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
+             #only available for n=1 
+
+
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
-sampler: MH
+sampler: profiling
 
 params: 
   omegam:
@@ -32,18 +36,8 @@ params:
       loc: 0.3
       scale: 0.01
 
-  ombh2:
-    latex: '\Omega_\mathrm{b} h^2'
-    prior:
-      dist: norm
-      loc: 0.02218
-      scale: 0.00055 
-    proposal: 0.0001
-    ref:
-      dist: norm
-      loc: 0.0222
-      scale: 0.0001
-
+  ombh2: 0.0222
+     
   H0:
     latex: 'H_0'
     prior: 
@@ -52,18 +46,13 @@ params:
     proposal: 0.5
     ref:
       dist: norm
-      loc: 67.0
+      loc: 68.53
       scale: 0.5
+
   epsilon0_EM:
-    latex: '\epsilon_0^\mathrm{EM}'
-    prior:
-      min: -0.5
-      max: 0.5
-    proposal: 0.05
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.01
+    derived: False
+    value: 0.
+      
   epsilon0_GW:
     latex: '\epsilon_0^\mathrm{GW}'
     prior:
@@ -72,15 +61,19 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.
+      loc: 0.0
       scale: 0.01
+  a_EM: 1.0
+  n_EM: 1.0
+  a_GW: 1.0
+  n_GW: 1.0
   MB: -19.2435
   omk: 0.
   w: -1.
   wa: 0.
   mnu: 0.06
   nnu: 3
-
+  rd: 147.0
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

@@ -9,16 +9,18 @@ from copy import deepcopy
 
 from likelihood.BAO_likelihood         import BAOLike
 from likelihood.SN_likelihood          import SNLike
+from likelihood.SNnoprior_likelihood   import SNnopriorLike
 from likelihood.GW_likelihood          import GWLike
 from theory_code.cobaya_theory_wrapper import CalcDist
 
 import pprint
+import time
 pp = pprint.PrettyPrinter(indent=4)
 
 
 info = read(sys.argv[1])
 
-
+tini = time.time()
 #MM: we should find a better and more general way to fill the likelihood
 
 info['likelihood'] = {}
@@ -28,10 +30,15 @@ if info['BAO_data'] != None:
                                      'use_noisy_data': info['BAO_data']['noisy']}
 
 if info['SN_data'] != None:
-    info['likelihood']['SNLike'] =  {'external': SNLike,
-                                     'SN_data_path': info['SN_data']['path'],
-                                     'use_noisy_data': info['SN_data']['noisy']}
-
+    if info['SH0ES_prior']  == True:
+        info['likelihood']['SNLike'] =  {'external': SNLike,
+                                                'SN_data_path': info['SN_data']['path'],
+                                                'use_noisy_data': info['SN_data']['noisy']}
+    else:
+        info['likelihood']['SNnopriorLike'] =  {'external': SNnopriorLike,
+                                                'SN_data_path': info['SN_data']['path'],
+                                                'use_noisy_data': info['SN_data']['noisy']}
+    
 if info['GW_data'] != None:
     info['likelihood']['GWLike'] =  {'external': GWLike,
                                      'GW_data_path': info['GW_data']['path'],
@@ -46,7 +53,13 @@ else:
 info['theory'] = {'CalcDist': {'external': CalcDist,
                                'DDR_model': info['DDR_model']}}
 
-info['force'] = True
+if 'BBN' in info:
+    info['theory']['CalcDist']['BBN'] = info['BBN']
+else:
+    info['theory']['CalcDist']['BBN'] = False
+
+if 'resume' not in info:    
+    info['force'] = True
 
 if info['sampler'] == 'profiling':
     print('Profiling started')
@@ -55,6 +68,8 @@ if info['sampler'] == 'profiling':
     del info['output']
     updated_info,sampler = run(info)
     print('Profiling ended')
+    tend = time.time()
+    print('Time elapsed: ',tend-tini)
     sys.exit()
 
 if info['sampler'] == 'MH':
@@ -65,7 +80,7 @@ if info['sampler'] == 'MH':
     info['output']  = info['output']+'_MH'
 
     updated_info,sampler = run(info)
-
+    
 #Nautilus to be added
 elif info['sampler'] == 'Nautilus':
     print('Running with Nautilus')

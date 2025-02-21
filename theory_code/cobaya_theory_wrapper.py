@@ -23,8 +23,9 @@ class CalcDist(Theory):
                          'zmax': 5.,
                          'Nz': 1000,
                          'zdrag': 1060,
-                         'DDR_model': self.DDR_model}
-        print(self.DDR_model)
+                         'DDR_model': self.DDR_model,
+                         'BBN': self.BBN}
+       
         ##################################
 
         self.zcalc = np.linspace(self.settings['zmin'],self.settings['zmax'],self.settings['Nz'])
@@ -38,7 +39,7 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV','DL_EM','DL_GW','mB', 'h_GW']
+        return ['DM','DH','DV','DL_EM','DL_GW','mB']
 
     def get_can_provide_params(self):
         return ['rdrag','omegaL']

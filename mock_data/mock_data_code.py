@@ -4,10 +4,16 @@ import pandas as pd
 
 from copy import deepcopy
 from scipy.interpolate import interp1d
+from scipy.integrate   import trapezoid
+from scipy.stats       import rv_continuous,norm
 
+from GWFish.modules.detection    import Network,Detector
+from GWFish.modules.fishermatrix import compute_network_errors,compute_detector_fisher,compute_detector_fisher
+from GWFish.modules.waveforms    import IMRPhenomD, TaylorF2
 
 class MockCalcs:
     def __init__(self,settings, obs_settings,params, theory):
+
         
         ###################
         self.params = params
@@ -26,9 +32,7 @@ class MockCalcs:
         if 'GW' in obs_settings:
             self.settings_GW = obs_settings['GW']
             self.data_GW = self.get_GW_mock()
-        
-
-
+            
     def get_BAO_mock(self):
 
         if self.settings_BAO['distribution']=='binned':
@@ -170,20 +174,26 @@ class MockCalcs:
 
         return data_SN
     
-
     def get_GW_mock(self):
 
         N_gw = self.settings_GW['N_gw']
-        z_calc = np.linspace(self.settings_GW['zmin'], self.settings_GW['zmax'], N_gw*2)
+        z_calc = np.linspace(self.settings_GW['zmin'], self.settings_GW['zmax'], N_gw)#MM: there was *2) mltiplying Ngw here, why?
 
         if self.settings_GW['distribution'] == 'BNS':
 
-            merger_rate = np.array([self.BNS_merger_rate(z) for z in z_calc])
+            rate = np.array([self.BNS_merger_rate(z) for z in z_calc])
 
-            r_values = np.array([2.99*1e5/self.theory.Hz(z) for z in z_calc])
-            p_z      = 4 * np.pi * r_values**2 * merger_rate / (self.theory.Hz(z_calc) * (1 + z_calc))
-            p_z     /= np.sum(p_z) 
-            z_GW     = np.sort(np.random.choice(z_calc, size = N_gw, p = p_z, replace = False))
+            unnorm      = rate*((4*np.pi*(self.theory.comoving(z_calc))**2)/
+                                (self.theory.Hz(z_calc)*(1+z_calc)))
+            integral    = trapezoid(unnorm,x=z_calc)
+
+            norm      = 1/integral
+            norm_dist = norm*unnorm
+
+            prob_z = interp1d(z_calc,norm_dist,kind='linear',bounds_error=False,fill_value=0)
+
+            z_GW = self.get_events_redshifts(prob_z,self.settings_GW['zmin'],self.settings_GW['zmax'],N_gw)
+
         
         else:
             sys.exit('Unknown GW distribution: {}'.format(self.settings_GW['distribution']))
@@ -194,15 +204,15 @@ class MockCalcs:
 
             dL_GW_error = dL_GW*self.settings_GW['error_type']
 
-        elif self.settings_GW['error_type'] == 'observational_error':
+        elif self.settings_GW['error_type'] == 'GWfish':
 
-            sys.exit('Observational error not available yet')
+            observed    = self.get_realistic_error_GW(z_GW,dL_GW)
+            z_GW        = observed['z']
+            dL_GW       = observed['luminosity_distance']
+            dL_GW_error = observed['err_luminosity_distance']
 
-            #SNR cannot be computed with uniform distribution. It correlates with dL!
-            snr = np.random.uniform(10, 100, size=N_gw)  
-            sigma_L = 0.05 * z_GW * dL_GW               
-            sigma_i = 2 * dL_GW / snr                    
-            dL_GW_error = np.sqrt(sigma_L**2 + sigma_i**2) 
+        else:
+            sys.exit('Unknown GW error type: {}'.format(self.settings_GW['error_type']))
 
         dL_GW_noisy = np.random.normal(dL_GW,dL_GW_error)
         
@@ -211,7 +221,11 @@ class MockCalcs:
                    'dL_noisy': dL_GW_noisy,
                    'dL': dL_GW,
                    'err_dL': dL_GW_error}
-                
+        
+
+        
+        #data_GW['SNR'] = data_GW['dL']/data_GW['err_dL']
+
         if self.settings_GW['correlation'] == False:
             covmat_GW = np.zeros((len(dL_GW_error), len(dL_GW_error)))
 
@@ -230,7 +244,7 @@ class MockCalcs:
         print('CREATED GW DATASET')
 
         return data_GW
-
+    
 
     def BNS_merger_rate(self,z):
         if z <= 1:
@@ -239,3 +253,70 @@ class MockCalcs:
             return 3/4 * (5-z)
         else:
             return 0
+
+    def get_events_redshifts(self,pz,zmin,zmax,Nsamp):
+
+        class MyDist(rv_continuous):
+            def _pdf(self, x):
+                return pz(x)
+
+
+        mydist = MyDist(a=zmin,b=zmax)
+
+        zs = mydist.rvs(size=Nsamp)
+
+        return zs
+
+    def get_realistic_error_GW(self,z_GW,dL_GW):
+
+        Ngw = len(z_GW)
+
+        th_features = pd.DataFrame.from_dict({'z': z_GW,
+                                              'luminosity_distance': dL_GW})
+
+        #Generating random features
+        #Sky location
+        th_features['dec']  = np.arccos(np.random.uniform(low=-1, high=1,size=Ngw))
+        th_features['ra']   = np.random.uniform(low=0, high=2*np.pi,size=Ngw)
+
+        #Polarization
+        th_features['psi'] = np.random.uniform(low=0, high=2*np.pi,size=Ngw)
+
+        #Phase
+        th_features['phase'] = np.random.uniform(low=0,high=2.*np.pi,size=Ngw)
+
+        #System inclination
+        th_features['theta_jn'] = np.arccos(np.random.uniform(low=-1, high=1,size=Ngw))
+
+        #MM: check this!!!
+        th_features['geocent_time'] = np.random.uniform(1735257618, 1766793618,size=Ngw)
+
+        #MM: ASSUMING MONOCHROMATIC MASS
+
+        th_features['mass_1'] = 1.4
+        th_features['mass_2'] = 1.4
+        Mtot = (th_features['mass_1']+th_features['mass_2'])
+        eta  = th_features['mass_1']*th_features['mass_2']/(th_features['mass_1']+th_features['mass_2'])**2
+        th_features['chirp_mass'] = (1+th_features['z'])*Mtot*eta**(3/5)
+        th_features['mass_ratio'] = eta
+
+        #MM: hard coded?
+        freepars = ['theta_jn','luminosity_distance']
+        SNR_cut  = 8
+
+        detected, snr, errors, sky_localization = compute_network_errors(network = Network(detector_ids = self.settings_GW['survey'],
+                                                                                           detection_SNR = (0., 0)),
+                                                                                           parameter_values = th_features,
+                                                                                           fisher_parameters=freepars,
+                                                                                           waveform_model = 'IMRPhenomD',
+                                                                                           save_matrices=True)
+
+
+        for i,par in enumerate(freepars):
+            th_features['err_'+par] = errors[:,i]
+        
+        th_features['SNR'] = snr
+
+        observed = th_features[th_features['SNR']>=SNR_cut]
+
+        return observed
