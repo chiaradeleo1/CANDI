@@ -41,6 +41,9 @@ class MockCalcs:
             N_bin_BAO = self.settings_BAO['N_bin']
             bin_edges = np.linspace(zmin_BAO, zmax_BAO, N_bin_BAO)
             z_BAO   = (bin_edges[:-1] + bin_edges[1:]) / 2
+        elif self.settings_BAO['distribution']=='SKAO':
+            bin_edges = np.linspace(0.2,2.0,18)
+            z_BAO   = (bin_edges[:-1] + bin_edges[1:]) / 2
         else:
             sys.exit('Unknown BAO distribution: {}'.format(self.settings_BAO['distribution']))
 
@@ -53,11 +56,15 @@ class MockCalcs:
             DH_error = DH*self.settings_BAO['error_type']
             DV_error = DV*self.settings_BAO['error_type']
             DM_error = DM*self.settings_BAO['error_type']
+        elif self.settings_BAO['error_type'] == 'SKAO':
+            DH_error = DH*np.array([1.8,1.17,0.99,0.79,0.7,0.64,0.61,0.57,0.67,0.69,0.8,0.95,1.16,1.51,2.12,3,5.3])*1.e-2
+            DM_error = DM*np.array([1.1,0.76,0.59,0.5,0.44,0.42,0.4,0.38,0.42,0.45,0.54,0.63,0.83,1.12,1.55,2.20,3.95])*1.e-2
         else:
             sys.exit('Unknown BAO error type: {}'.format(self.settings_BAO['error_type']))
 
         DH_noisy = np.random.normal(DH, DH_error)
-        DV_noisy = np.random.normal(DV, DV_error)
+        if self.settings_BAO['distribution'] != 'SKAO':
+            DV_noisy = np.random.normal(DV, DV_error)
         DM_noisy = np.random.normal(DM, DM_error)
 
         data_BAO_DHDM = {'z' : z_BAO,
@@ -85,21 +92,22 @@ class MockCalcs:
         data_df.to_csv(self.settings_BAO['BAO_file_path']+'_data_DHDM.txt',header=True,index=False,sep='\t')
         covmat_df.to_csv(self.settings_BAO['BAO_file_path']+'_covmat_DHDM.txt',header=True,index=False,sep='\t')
 
-        data_BAO_DV  = {'z' : z_BAO,
-                        'DV_noisy': DV_noisy,
-                        'DV': DV,
-                        'err_DV': DV_error,}
+        if self.settings_BAO['distribution'] != 'SKAO':
+            data_BAO_DV  = {'z' : z_BAO,
+                            'DV_noisy': DV_noisy,
+                            'DV': DV,
+                            'err_DV': DV_error,}
         
-        covmat_DV = np.zeros((len(DV_error), len(DV_error)))
-        np.fill_diagonal(covmat_DV, DV_error ** 2)
+            covmat_DV = np.zeros((len(DV_error), len(DV_error)))
+            np.fill_diagonal(covmat_DV, DV_error ** 2)
 
-        #Creating dataframe to save to file
-        data_df   = pd.DataFrame.from_dict(data_BAO_DV)
-        covmat_df = pd.DataFrame(covmat_DV,columns=['z{}'.format(i) for i in data_df.index])
-        covmat_df.index = covmat_df.columns
-
-        data_df.to_csv(self.settings_BAO['BAO_file_path']+'_data_DV.txt',header=True,index=False,sep='\t')
-        covmat_df.to_csv(self.settings_BAO['BAO_file_path']+'_covmat_DV.txt',header=True,index=False,sep='\t')
+            #Creating dataframe to save to file
+            data_df   = pd.DataFrame.from_dict(data_BAO_DV)
+            covmat_df = pd.DataFrame(covmat_DV,columns=['z{}'.format(i) for i in data_df.index])
+            covmat_df.index = covmat_df.columns
+   
+            data_df.to_csv(self.settings_BAO['BAO_file_path']+'_data_DV.txt',header=True,index=False,sep='\t')
+            covmat_df.to_csv(self.settings_BAO['BAO_file_path']+'_covmat_DV.txt',header=True,index=False,sep='\t')
 
         data_BAO = {'z': z_BAO,
                     'DH_noisy': DH_noisy,
@@ -107,10 +115,11 @@ class MockCalcs:
                     'err_DH': DH_error,
                     'DM_noisy': DM_noisy,
                     'DM': DM,
-                    'err_DM': DM_error,
-                    'DV_noisy': DV_noisy,
-                    'DV': DV,
-                    'err_DV': DV_error}
+                    'err_DM': DM_error}
+        if self.settings_BAO['distribution'] != 'SKAO':
+            data_BAO['DV_noisy'] = DV_noisy
+            data_BAO['DV'] = DV
+            data_BAO['err_DV'] = DV_error
 
         print('CREATED BAO DATASET')
         
