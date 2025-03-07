@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define directories
-directories=("settings_LCDM" "settings_epsilon0_LCDM")
+directories=("settings_LCDM" "settings_epsilonEM" "settings_epsilon0_LCDM")
 
 # Log file for monitoring
 log_file="run_mpi_tasks.log"
