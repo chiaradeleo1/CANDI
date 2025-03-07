@@ -19,7 +19,7 @@ class DDRCalcs:
         if settings['epsilon_model'] == 'polynomial':
             self.eta_EM = self.get_eta(params['epsilon0_EM'],params['n_EM'], params['a_EM'])
             self.eta_GW = self.get_eta(params['epsilon0_GW'], params['n_GW'], params['a_GW'])    
-            print('epsilon_GW = ',params['epsilon0_GW'])   
+           
 
 
                 

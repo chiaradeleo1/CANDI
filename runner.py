@@ -15,6 +15,7 @@ from theory_code.cobaya_theory_wrapper import CalcDist
 
 import pprint
 import time
+import os
 pp = pprint.PrettyPrinter(indent=4)
 
 
@@ -60,6 +61,12 @@ else:
 
 if 'resume' not in info:    
     info['force'] = True
+
+output_folder = ['./chains_LCDM', './chains_epsilonEMGW', './chains_epsilonEM','./chains_epsilon0_LCDM', './chains_epsilon0' ]
+
+for folder in output_folder:    
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
 if info['sampler'] == 'profiling':
     print('Profiling started')

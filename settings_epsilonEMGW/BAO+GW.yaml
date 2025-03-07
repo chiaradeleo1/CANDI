@@ -1,0 +1,91 @@
+#Choose root of output files
+output: chains_epsilonEMGW/BAO+GW
+
+#Choose which data to use (path+root)
+#if empty, data are not used
+BAO_data: 
+  path: mock_data/data/SKAOmock
+  noisy: False
+SN_data:
+GW_data: 
+  path: mock_data/data/GWmock_breaking
+  noisy: False
+
+stop_at_error: True
+BBN: True
+#DDR model settings
+DDR_model: 
+  epsilon_model: polynomial #Available options: polynomial (others to be added), eta(z)=(1+a*z^n)^epsilon where n
+                            #is the polynomial order
+  pade: True #If False eta(z)=(1+z)^epsilon, if True eta(z) is calculated using the pade approximation
+             #only available for n=1 
+
+
+#Available options: MH, Nautilus
+#samplers options hard-coded in runner.py
+sampler: MH
+
+params: 
+  omegam:
+    latex: '\Omega_\mathrm{m}'
+    prior:
+      min: 0.001
+      max: 0.99
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.3
+      scale: 0.01
+
+  ombh2: 
+    latex: '\Omega_\mathrm{b}h^2'
+    prior:
+      min: 0.015
+      max: 0.030
+    proposal: 0.001
+    ref:
+      dist: norm
+      loc: 0.0222
+      scale: 0.001
+     
+  H0:
+    latex: 'H_0'
+    prior: 
+      max: 100.0
+      min: 20.0
+    proposal: 0.5
+    ref:
+      dist: norm
+      loc: 73.4
+      scale: 0.5
+
+  epsilon0_EM: 0.1
+      
+  epsilon0_GW:
+    latex: '\epsilon_0^\mathrm{GW}'
+    prior:
+      min: -0.5
+      max: 0.5
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.1
+      scale: 0.01
+  a_EM: 1.0
+  n_EM: 1.0
+  a_GW: 1.0
+  n_GW: 1.0
+  MB: -19.2435
+  omk: 0.
+  w: -1.
+  wa: 0.
+  mnu: 0.06
+  nnu: 3
+  rd: 147.0
+  rdrag:
+    latex: 'r_\mathrm{d}'
+    derived: True
+  omegaL:
+    latex: '\Omega_\Lambda'
+    derived: True
+

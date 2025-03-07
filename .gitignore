@@ -16,7 +16,8 @@ data_reading.ipynb
 test_chi2.ipynb
 plot/*
 .DS_Store
-*.sh
 done/
 *.png
 *.out
+GW_data*
+chains*
