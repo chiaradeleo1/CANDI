@@ -138,7 +138,7 @@ class MockCalcs:
         else:
             sys.exit('Unknown BAO distribution: {}'.format(self.settings_SN['distribution']))
         
-        mB = interp1d(z_SN, 5* np.log10(self.theory.DL_EM(z_SN))+ 25 + self.params['MB'])(z_SN)
+        mB = self.theory.mB(z_SN)
 
         if type(self.settings_SN['error_type']) == float:
 
