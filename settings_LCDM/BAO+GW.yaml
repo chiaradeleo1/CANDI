@@ -5,11 +5,11 @@ output: chains_LCDM/BAO+GW
 #if empty, data are not used
 BAO_data: 
   path: mock_data/data/SKAOmock
-  noisy: False
+  noisy: True
 SN_data:
 GW_data: 
   path: mock_data/data/GWmock_LCDM
-  noisy: False
+  noisy: True
 
 stop_at_error: True
 BBN: True
@@ -34,7 +34,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.3
+      loc: 0.306
       scale: 0.01
 
   ombh2: 

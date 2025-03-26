@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains_epsilonEM/BAO+SN+GW
+output: chains_epsilonEM/BAO+SN
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -10,8 +10,6 @@ SN_data:
   path: mock_data/data/SNmock_breaking
   noisy: True
 GW_data: 
-  path: mock_data/data/GWmock_LCDM
-  noisy: True
 
 stop_at_error: True
 
@@ -74,16 +72,7 @@ params:
       loc: 0.1
       scale: 0.01
 
-  epsilon0_GW:
-    latex: '\epsilon_0^\mathrm{GW}'
-    prior:
-      min: -0.5
-      max: 0.5
-    proposal: 0.05
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.01
+  epsilon0_GW: 0.0
 
   MB: 
     latex: 'M_B'

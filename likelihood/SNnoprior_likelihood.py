@@ -27,7 +27,7 @@ class SNnopriorLike(Likelihood):
     def logp(self, **params_values): 
 
         diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'+self.suffix].values)
-
+    
         unit = np.ones(len(diffvec_SN))
 
         a = np.dot(diffvec_SN,np.dot(self.invcovmat,diffvec_SN))
@@ -36,7 +36,7 @@ class SNnopriorLike(Likelihood):
 
         e = np.dot(unit,np.dot(self.invcovmat,unit)) 
 
-        chi2_marg = a- np.log(e/(2*np.pi)) + b**2/e
+        chi2_marg = a+ np.log(e/(2*np.pi)) - b**2/e
 
         loglike = -0.5 * chi2_marg
 

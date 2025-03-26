@@ -5,10 +5,10 @@ output: chains_epsilonEMGW/BAO+SN
 #if empty, data are not used
 BAO_data: 
   path: mock_data/data/SKAOmock
-  noisy: False
+  noisy: True
 SN_data:
   path: mock_data/data/SNmock_breaking
-  noisy: False
+  noisy: True
 GW_data: 
 
 stop_at_error: True
@@ -35,7 +35,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.3
+      loc: 0.306
       scale: 0.01
 
   ombh2: 0.0222

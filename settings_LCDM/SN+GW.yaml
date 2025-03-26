@@ -6,10 +6,10 @@ output: chains_LCDM/SN+GW
 BAO_data: 
 SN_data:
   path: mock_data/data/SNmock_LCDM
-  noisy: False
+  noisy: True
 GW_data: 
   path: mock_data/data/GWmock_LCDM
-  noisy: False
+  noisy: True
 
 stop_at_error: True
 SH0ES_prior: False

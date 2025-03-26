@@ -5,13 +5,13 @@ output: chains_LCDM/BAO+SN+GW
 #if empty, data are not used
 BAO_data: 
   path: mock_data/data/SKAOmock
-  noisy: False
+  noisy: True
 SN_data:
   path: mock_data/data/SNmock_LCDM
-  noisy: False
+  noisy: True
 GW_data: 
-  path: mock_data/data/GWmock_LCDM
-  noisy: False
+  path: GWmock_test_cut # mock_data/data/GWmock_LCDM
+  noisy: True
 
 stop_at_error: True
 
@@ -24,7 +24,7 @@ DDR_model:
 
 
 BBN : True
-SH0ES_prior: False
+SH0ES_prior: True 
 #Available options: MH, Nautilus
 #samplers options hard-coded in runner.py
 sampler: MH
@@ -38,7 +38,7 @@ params:
     proposal: 0.05
     ref:
       dist: norm
-      loc: 0.3
+      loc: 0.306
       scale: 0.01
 
   ombh2: 
@@ -49,7 +49,7 @@ params:
     proposal: 0.001
     ref:
       dist: norm
-      loc: 0.0222
+      loc: 0.02218
       scale: 0.001
 
   H0:
@@ -60,7 +60,7 @@ params:
     proposal: 0.5
     ref:
       dist: norm
-      loc: 67.0
+      loc: 73.4
       scale: 0.5
 
   epsilon0_EM:
@@ -105,7 +105,7 @@ params:
   wa: 0.
   mnu: 0.06
   nnu: 3
-  rd: 147.0
+  rd: 141.99
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True
