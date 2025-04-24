@@ -62,7 +62,7 @@ else:
 if 'resume' not in info:    
     info['force'] = True
 
-output_folder = ['./chains_LCDM', './chains_epsilonEMGW', './chains_epsilonEM','./chains_epsilon0_LCDM', './chains_epsilon0' ]
+output_folder = ['./chains_pade_wrong_epsilonEMGW', './chains_pade_wrong_epsilonEM', './chains_pade_wrong_epsilon0' ]
 
 for folder in output_folder:    
     if not os.path.exists(folder):

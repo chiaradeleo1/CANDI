@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define directories
-directories=( "settings_epsilonEM_pade" "settings_epsilonEMGW_pade" "settings_epsilon0_pade")
+directories=( "settings_epsilonEM_pade_wrong" "settings_epsilonEMGW_pade_wrong" "settings_epsilon0_pade_wrong")
 
 # Log file for monitoring
 log_file="run_mpi_tasks_pade.log"
