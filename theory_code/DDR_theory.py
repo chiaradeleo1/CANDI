@@ -15,6 +15,7 @@ class DDRCalcs:
 
         self.zcalc = zcalc
         self.settings = settings
+        self.z_LSS = 1100
 
         if settings['epsilon_model'] == 'polynomial':
             self.eta_EM = self.get_eta(params['epsilon0_EM'],params['n_EM'], params['a_EM'])
@@ -27,12 +28,12 @@ class DDRCalcs:
             sys.exit('Unknown DDR breaking model: {}'.format(settings['epsilon_model']))
 
     def get_eta(self,epsilon, n, a):
-        
-        if self.settings['pade'] == 'True':
+        if self.settings['pade'] == True:
             if n != 1:
                 sys.exit('Pade approximant implemented only for n=1')
             else:
-                eta = interp1d(self.zcalc, 1 + (epsilon*np.log(1+self.zcalc))/(1-(epsilon*0.5*np.log(1+self.zcalc))+ (epsilon/12 * (np.log(1+self.zcalc))**2) ))
+                eta_pade = 1+ (2*self.zcalc*(self.zcalc-self.z_LSS)*epsilon)/(2*(self.zcalc-self.z_LSS)-self.zcalc*self.z_LSS)
+                eta = interp1d(self.zcalc, eta_pade)
         else:
             eta = interp1d(self.zcalc,(1+(a*self.zcalc**n))**epsilon)
 
