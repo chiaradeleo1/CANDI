@@ -18,6 +18,7 @@ class MockCalcs:
         ###################
         self.params = params
         self.theory = theory
+        
 
         print('CREATING MOCKS FOR {}'.format(list(obs_settings.keys())))
 
@@ -219,6 +220,7 @@ class MockCalcs:
             z_GW        = observed['z']
             dL_GW       = observed['luminosity_distance']
             dL_GW_error = observed['err_luminosity_distance']
+            theta_jn    = observed['theta_jn']
 
         else:
             sys.exit('Unknown GW error type: {}'.format(self.settings_GW['error_type']))
@@ -229,7 +231,8 @@ class MockCalcs:
         data_GW = {'z' : z_GW,
                    'dL_noisy': dL_GW_noisy,
                    'dL': dL_GW,
-                   'err_dL': dL_GW_error}
+                   'err_dL': dL_GW_error,
+                   'theta_jn': theta_jn}
         
 
         
@@ -295,7 +298,7 @@ class MockCalcs:
         th_features['phase'] = np.random.uniform(low=0,high=2.*np.pi,size=Ngw)
 
         #System inclination
-        th_features['theta_jn'] = np.arccos(np.random.uniform(low=-1, high=1,size=Ngw))
+        th_features['theta_jn'] = np.arcsin(np.random.uniform(low=-1, high=1,size=Ngw))
 
         #MM: check this!!!
         th_features['geocent_time'] = np.random.uniform(1735257618, 1766793618,size=Ngw)

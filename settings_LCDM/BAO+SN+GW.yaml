@@ -10,7 +10,7 @@ SN_data:
   path: mock_data/data/SNmock_LCDM
   noisy: True
 GW_data: 
-  path: GWmock_test_cut # mock_data/data/GWmock_LCDM
+  path: mock_data/data/GWmock_LCDM
   noisy: True
 
 stop_at_error: True
