@@ -28,7 +28,8 @@ info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
                                      'BAO_data_path': info['BAO_data']['path'],
-                                     'use_noisy_data': info['BAO_data']['noisy']}
+                                     'DESI_table': info['BAO_data']['DESI_table'],
+                                     'observables': info['BAO_data']['observables']}
 
 if info['SN_data'] != None:
     if info['SH0ES_prior']  == True:
@@ -68,41 +69,21 @@ for folder in output_folder:
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-if info['sampler'] == 'profiling':
-    print('Profiling started')
-    info['sampler'] = {'evaluate': {'override': {par: par_dict['ref']['loc'] for par,par_dict in info['params'].items()
-                                                 if type(par_dict) == dict and 'ref' in par_dict}}}
-    del info['output']
-    updated_info,sampler = run(info)
-    print('Profiling ended')
-    tend = time.time()
-    print('Time elapsed: ',tend-tini)
-    sys.exit()
-
-if info['sampler'] == 'MH':
+if info['sampler']['name'] in ['mcmc','minimize','evaluate']:
     print('Running with Metropolis-Hastings')
     from cobaya.run import run
 
-    info['sampler'] = {'mcmc': {'max_tries':100000}} #MMnote: MCMC options to be read from input
-    info['output']  = info['output']+'_MH'
+    info['sampler'] = {info['sampler']['name']: info['sampler']['options']}
 
     updated_info,sampler = run(info)
-    
-#Nautilus to be added
-elif info['sampler'] == 'Nautilus':
+
+elif info['sampler']['name'] == 'nautilus':
     print('Running with Nautilus')
     from samplers.samplers_interface import nautilus_interface
 
-    info['sampler'] = {'nautilus': {'num_threads': 1,
-                                    'pool': 1,
-                                    'n_live': 4000,
-                                    'n_batch': 512,
-                                    'n_networks': 16}}
-    info['output']  = info['output']+'_nautilus'
+    info['sampler'] = {'nautilus': info['sampler']['options']}
 
     nautilus = nautilus_interface(info)
-elif args.sampler == 'Fisher':
-    sys.exit('Fisher to be adder yet :(')
 else:
     sys.exit('Unknown sampler: {}'.format(info['sampler']))
 
