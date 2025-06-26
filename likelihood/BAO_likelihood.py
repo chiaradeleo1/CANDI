@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import pandas as pd
 from scipy.integrate import quad
@@ -8,30 +9,19 @@ class BAOLike(Likelihood):
     
     def initialize(self):
 
-        self.data = []
-        try:
-            self.dataset_DHDM = pd.read_csv(self.BAO_data_path + '_data_DHDM.txt', sep='\s+', header=0)
-            covmat_DHDM = pd.read_csv(self.BAO_data_path + '_covmat_DHDM.txt', sep='\s+', header=0)
-            self.invcov_DHDM = np.linalg.inv(covmat_DHDM)
-            self.data.append('DHDM')
-        except FileNotFoundError as e:
-            print(f"Attention!! DH and DM files are missing.")
-
-    
-        try:
-            self.dataset_DV = pd.read_csv(self.BAO_data_path+'_data_DV.txt',sep='\s+',header=0)
-            covmat_DV       = pd.read_csv(self.BAO_data_path+'_covmat_DV.txt',sep='\s+',header=0)
-            self.invcov_DV  = np.linalg.inv(covmat_DV)
-            self.data.append('DV')
-        except FileNotFoundError as e:
-            print(f"Attention!! DV files are missing.")
-       
-        if self.use_noisy_data:
-            self.suffix = '_noisy'
+        if self.DESI_table:
+            self.data_table = pd.read_csv(self.BAO_data_path+'.txt',sep='\t',header=0)
+            if self.observables == 'distances':
+                covmat = pd.read_csv(self.BAO_data_path+'_distances_covmat.txt',sep='\t',header=0)
+                covmat.index = covmat.columns
+                self.inv_covmat = pd.DataFrame(np.linalg.inv(covmat.values),columns=covmat.columns,index=covmat.index)
+            elif self.observables == 'alphas':
+                covmat = pd.read_csv(self.BAO_data_path+'_alphas_covmat.txt',sep='\t',header=0)
+                covmat.index = covmat.columns
+                self.inv_covmat = pd.DataFrame(np.linalg.inv(covmat.values),columns=covmat.columns,index=covmat.index)
         else:
-            self.suffix = ''
-
-
+            sys.exit('UNKNOWN DATA FORMAT')
+       
         zmax = 4.
         self.z_camb = np.linspace(0.001, zmax, 10000)
 
@@ -40,23 +30,59 @@ class BAOLike(Likelihood):
         # Requirements are the output of the theory code that you are using
         requirements = {'DM': None,
                         'DH': None,
-                        'DV': None }
+                        'DV': None,
+                        'rdrag': None}
 
         return requirements
     
     def logp(self, **params_values): 
-        chi2 = 0
-        if 'DHDM' in self.data:
-            diffvec_DH   = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH'+self.suffix]
-            diffvec_DM   = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM'+self.suffix]
-            diffvec_DHDM = np.concatenate((diffvec_DH, diffvec_DM),axis=0)
-            chi2  = np.dot((diffvec_DHDM),np.dot(self.invcov_DHDM,(diffvec_DHDM)))
-        if 'DV' in self.data:
-            diffvec_DV   = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV'+self.suffix]
-            chi2 += np.dot((diffvec_DV),np.dot(self.invcov_DV,(diffvec_DV)))
 
-        
-        
+        #MM: add rdrag switch here
+        rdrag = params_values['rdrag']
+
+        if self.observables == 'distances':
+            DV_only     = self.data_table[self.data_table.isna().any(axis=1)]
+            chi2_single = (DV_only['DV/rd']-self.provider.get_result('DV')(DV_only['z'])/params_values['rdrag'])**2/DV_only['DV_err']**2
+
+            allobs = self.data_table[~self.data_table.isna().any(axis=1)]
+
+            split_cols = [col.split('_') for col in self.inv_covmat.columns]
+            datavec    = np.array([allobs.iloc[int(ind)-1][obs] for obs,ind in split_cols])
+            thvec = []
+            for obs,ind in split_cols:
+                if obs == 'DV/rd':
+                    thvec.append(self.provider.get_result('DV')(allobs.iloc[int(ind)-1]['z'])/rdrag)
+                elif obs == 'DM/DH':
+                    thvec.append(self.provider.get_result('DM')(allobs.iloc[int(ind)-1]['z'])/self.provider.get_result('DH')(allobs.iloc[int(ind)-1]['z']))
+
+            theoryvec = np.array(thvec)
+
+            chi2_all = np.dot(theoryvec-datavec,np.dot(self.inv_covmat,theoryvec-datavec))
+
+            chi2 = chi2_all+chi2_single
+
+        elif self.observables == 'alphas':
+            iso_only     = self.data_table[self.data_table.isna().any(axis=1)]
+            chi2_single = (iso_only['alpha_iso']-(self.provider.get_result('DV')(iso_only['z'])/params_values['rdrag'])/iso_only['DV/rd_fid'])**2/iso_only['iso_err']**2
+
+            allobs = self.data_table[~self.data_table.isna().any(axis=1)]
+
+            split_cols = [col.split('_') for col in self.inv_covmat.columns]
+            datavec    = np.array([allobs.iloc[int(ind)-1][obs1+'_'+obs2] for obs1,obs2,ind in split_cols])
+            thvec = []
+            for obs1,obs2,ind in split_cols:
+                if obs1+'_'+obs2 == 'alpha_iso':
+                    thvec.append((self.provider.get_result('DV')(allobs.iloc[int(ind)-1]['z'])/rdrag)/allobs.iloc[int(ind)-1]['DV/rd_fid'])
+                elif obs1+'_'+obs2 == 'alpha_AP':
+                    thvec.append((self.provider.get_result('DH')(allobs.iloc[int(ind)-1]['z'])/
+                                  self.provider.get_result('DM')(allobs.iloc[int(ind)-1]['z']))/allobs.iloc[int(ind)-1]['DM/DH_fid'])
+
+            theoryvec = np.array(thvec)
+
+            chi2_all = np.dot(theoryvec-datavec,np.dot(self.inv_covmat,theoryvec-datavec))
+
+            chi2 = chi2_all+chi2_single
+
 
         loglike = -0.5*chi2
 

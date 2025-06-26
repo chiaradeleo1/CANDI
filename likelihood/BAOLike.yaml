@@ -2,4 +2,6 @@ aliases: [BAOLike]
 speed: 500
 params:
 BAO_data_path: 
-use_noisy_data:
+DESI_table:
+#Observables can be "alphas" or "distances"
+observables: 
