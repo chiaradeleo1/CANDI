@@ -54,7 +54,6 @@ def nautilus_interface(info):
 
         derived_params = model.logposterior(param_dict).derived
 
-
         like_tuple    = [model.logposterior(param_dict).loglike]+[par for par in derived_params]
         full_tuple    = tuple(like_tuple)
 
@@ -73,15 +72,14 @@ def nautilus_interface(info):
     points, log_w, log_l, derived = sampler.posterior(equal_weight=True,return_blobs=True)
     derived_array = np.array([np.array(list(der)) for der in derived])
 
-    params_dict = {par: info['params'][par]['latex'] for par in info['params'] if type(info['params'][par]) == dict}
-    nautilus_dict = {'params': {par: info['params'][par] for par in info['params'] if type(info['params'][par]) == dict}} | {'theory': info['theory']}
+    nautilus_dict = {par: info['params'][par]['latex'] for par in prior.keys} | {par: info['params'][par]['latex'] for par in derived_pars}
 
-    if 'output' in info:
+    if info['output'] != '':
         with open(info['output']+'.params.yaml', 'w') as outfile:
             yaml.dump(nautilus_dict, outfile, default_flow_style=False)
 
-    results = pd.DataFrame(np.c_[points, derived_array, np.exp(log_w), -log_l],columns=list(params_dict.keys())+['weight','minuslogpost'])
-    results = results[['weight','minuslogpost']+list(params_dict.keys())]
+    results = pd.DataFrame(np.c_[points, derived_array, np.exp(log_w), -log_l],columns=list(nautilus_dict.keys())+['weight','minuslogpost'])
+    results = results[['weight','minuslogpost']+list(nautilus_dict.keys())]
 
     if 'output' in info:
         results.to_csv(info['output']+'_chain.txt',sep='\t',header=False,index=False)
