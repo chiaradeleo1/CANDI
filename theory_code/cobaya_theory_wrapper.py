@@ -23,7 +23,6 @@ class CalcDist(Theory):
                          'zmax': 5.,
                          'Nz': 1000,
                          'zdrag': 1060,
-                         'DDR_model': self.DDR_model,
                          'BBN': self.BBN}
 
         if self.fiducial == None:
@@ -54,14 +53,27 @@ class CalcDist(Theory):
         return ['rdrag','omegaL']
 
     def calculate(self, state, want_derived=True, **params_values_dict):
+
+        ##MM: to be improved!!!
+        cosmopars = ['H0','omch2','omk','ombh2','omnuh2','num_nu_massive','num_nu_massless']
+        DDRpars   = ['a_EM','n_EM','epsilon0_EM','a_GW','n_GW','epsilon0_GW']
         
         SNmodel   = {'model': 'constant', 'MB': params_values_dict.pop('MB')}
         cosmosets = {'cosmology': 'Standard',
-                     'parameters': {k:v for k,v in params_values_dict.items() if k in ['H0','omch2','omk','ombh2','omnuh2','num_nu_massive','num_nu_massless']}}
+                     'parameters': {k:v for k,v in params_values_dict.items() if k in cosmopars}}
 
         cosmosets['parameters']['num_nu_massive'] = int(cosmosets['parameters']['num_nu_massive'])
-        
-        theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial)
+       
+        #MM: DDR to be added here
+        try:
+            DDR = {'eta_model': 'polynomial',
+                   'use_pade': params_values_dict['use_pade'],
+                   'parameters': {k:v for k,v in params_values_dict.items() if k in DDRpars}}
+        except:
+            print('DDR not violated')
+            DDR = None
+
+        theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial,DDR=DDR)
 
         state['DM'] = theory.DM 
         state['DH'] = theory.DH

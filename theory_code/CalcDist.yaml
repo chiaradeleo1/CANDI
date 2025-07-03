@@ -21,7 +21,7 @@ params:
     derived: True
   rd: 200
 camb_path:
-DDR_model: 
+use_pade: 
 BBN:
 cosmology: Standard
 fiducial: null

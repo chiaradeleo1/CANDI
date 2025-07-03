@@ -28,23 +28,21 @@ info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
                                      'BAO_data_path': info['BAO_data']['path'],
-                                     'DESI_table': info['BAO_data']['DESI_table'],
-                                     'observables': info['BAO_data']['observables']}
+                                     'DESI_table': info['BAO_data']['DESI_table']}
+    if info['BAO_data']['DESI_table']:
+        info['likelihood']['BAOLike']['observables'] = info['BAO_data']['observables']
 
 if info['SN_data'] != None:
     if info['SH0ES_prior']  == True:
         info['likelihood']['SNLike'] =  {'external': SNLike,
-                                                'SN_data_path': info['SN_data']['path'],
-                                                'use_noisy_data': info['SN_data']['noisy']}
+                                         'SN_data_path': info['SN_data']['path']}
     else:
         info['likelihood']['SNnopriorLike'] =  {'external': SNnopriorLike,
-                                                'SN_data_path': info['SN_data']['path'],
-                                                'use_noisy_data': info['SN_data']['noisy']}
+                                                'SN_data_path': info['SN_data']['path']}
     
 if info['GW_data'] != None:
     info['likelihood']['GWLike'] =  {'external': GWLike,
-                                     'GW_data_path': info['GW_data']['path'],
-                                     'use_noisy_data': info['GW_data']['noisy']}
+                                     'GW_data_path': info['GW_data']['path']}
 
 if len(list(info['likelihood'].keys())) == 0:
     sys.exit('NO LIKELIHOOD LOADED!!!')
@@ -53,7 +51,6 @@ else:
 
 #MMnote: pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist,
-                               'DDR_model': info['DDR_model'],
                                'fiducial': info['fiducial_path']}}
 
 if 'BBN' in info:
