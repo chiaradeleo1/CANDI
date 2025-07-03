@@ -123,12 +123,12 @@ class BAOLike(Likelihood):
         else:
             chi2 = 0
             if 'DHDM' in self.data:
-                diffvec_DH   = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH'+self.suffix]
-                diffvec_DM   = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM'+self.suffix]
+                diffvec_DH   = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH']
+                diffvec_DM   = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM']
                 diffvec_DHDM = np.concatenate((diffvec_DH, diffvec_DM),axis=0)
                 chi2  = np.dot((diffvec_DHDM),np.dot(self.invcov_DHDM,(diffvec_DHDM)))
             if 'DV' in self.data:
-                diffvec_DV   = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV'+self.suffix]
+                diffvec_DV   = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV']
                 chi2 += np.dot((diffvec_DV),np.dot(self.invcov_DV,(diffvec_DV)))
 
 
