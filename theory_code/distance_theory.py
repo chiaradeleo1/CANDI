@@ -6,7 +6,7 @@ from copy import deepcopy
 from time import time
 
 from scipy.interpolate import interp1d
-from scipy.integrate   import trapezoid
+from scipy.integrate   import trapezoid,quad
 
 from theory_code.DDR_theory import DDRCalcs
 
@@ -151,8 +151,8 @@ class TheoryCalcs:
 
         comov_vec = []
         for z in self.zcalc:
-            zint = np.linspace(0.001,z,100)
-            comov_vec.append(trapezoid(zint,1/Hz(zint)))
+            zint = np.linspace(0.001,z,10)
+            comov_vec.append(trapezoid([1/Hz(zi) for zi in zint],x=zint))
         comov = np.array(comov_vec)
 
         rdrag = 1. #MM: to be updated
