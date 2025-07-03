@@ -15,7 +15,7 @@ clight = 299792.458
 
 class TheoryCalcs:
 
-    def __init__(self,settings,cosmosets,SNmodel,DDR=None,feedback=False):
+    def __init__(self,settings,cosmosets,SNmodel,fiducial,DDR=None,feedback=False):
         
         ##################
         #General settings#
@@ -59,6 +59,35 @@ class TheoryCalcs:
         #Changing theory dict elements into class attributes
         for k, v in cosmo_results.items():
             setattr(self,k,v)
+
+        #MM!!! Put here switch to use external rdrag
+        #self.rdrag = something
+
+        ################
+        #BAO quantities#
+        ################
+        if feedback:
+            print('')
+            print('Computing LCDM fiducial')
+
+        if type(fiducial) == str:
+            fidtable = pd.read_csv(fiducial,header=0,sep='\t')
+            fidcosmo = {'DV_rd': interp1d(fidtable['z'],fidtable['DV_rd']),
+                        'DH_DM': interp1d(fidtable['z'],fidtable['DH_DM'])}
+
+            self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/fidcosmo['DV_rd'](x)
+            self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/fidcosmo['DH_DM'](x)
+
+        elif type(fiducial) == dict:
+            fidcosmo = self.call_camb(fiducial)
+
+            self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/(fidcosmo['DV'](x)/fidcosmo['rdrag']) 
+            self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/(fidcosmo['DH'](x)/fidcosmo['DM'](x))
+
+        self.DV_rd     = lambda x: self.DV(x)/self.rdrag
+        self.DM_DH     = lambda x: self.DM(x)/self.DH(x)
+        self.DM_rd     = lambda x: self.DM(x)/self.rdrag
+        self.DH_rd     = lambda x: self.DH(x)/self.rdrag
 
         ###############
         #Computing DDR#
@@ -116,8 +145,9 @@ class TheoryCalcs:
 
     def call_custom(self,params):
 
-        hubble = params['H0']*np.sqrt(params['omegam']*(1+self.zcalc)**(3*params['Delta'])+(1-params['omegam']))
-        Hz = interp1d(self.zcalc,hubble/clight)
+        zfine  = np.linspace(min(self.zcalc),max(self.zcalc),len(self.zcalc)*10)
+        hubble = params['H0']*np.sqrt(params['omegam']*(1+zfine)**(3+params['Delta'])+(1-params['omegam']))
+        Hz = interp1d(zfine,hubble/clight)
 
         comov_vec = []
         for z in self.zcalc:
@@ -128,7 +158,7 @@ class TheoryCalcs:
         rdrag = 1. #MM: to be updated
 
         theory = {'H_Mpc': Hz,
-                  'H_kmsMpc': interp1d(self.zcalc,hubble),
+                  'H_kmsMpc': interp1d(zfine,hubble),
                   'DM': interp1d(self.zcalc,comov),
                   'DH': interp1d(self.zcalc,1/(Hz(self.zcalc))),
                   'DV': interp1d(self.zcalc, (self.zcalc*comov**2/Hz(self.zcalc))**(1/3)),

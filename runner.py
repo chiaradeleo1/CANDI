@@ -53,7 +53,8 @@ else:
 
 #MMnote: pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist,
-                               'DDR_model': info['DDR_model']}}
+                               'DDR_model': info['DDR_model'],
+                               'fiducial': info['fiducial_path']}}
 
 if 'BBN' in info:
     info['theory']['CalcDist']['BBN'] = info['BBN']

@@ -25,6 +25,14 @@ class CalcDist(Theory):
                          'zdrag': 1060,
                          'DDR_model': self.DDR_model,
                          'BBN': self.BBN}
+
+        if self.fiducial == None:
+            self.fiducial = {'H0': 67.36,
+                             'omch2': 0.1200,
+                             'ombh2': 0.02237,
+                             'omk': 0.,
+                             'mnu': 0.06,
+                             'nnu': 3.}
        
         ##################################
 
@@ -39,18 +47,29 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV','DL_EM','DL_GW','mB']
+        return ['DM','DH','DV','DL_EM','DL_GW','mB','DV_rd','DM_DH','alpha_iso','alpha_AP']
 
     def get_can_provide_params(self):
+
         return ['rdrag','omegaL']
 
     def calculate(self, state, want_derived=True, **params_values_dict):
         
-        theory = TheoryCalcs(self.settings,params_values_dict)
+        SNmodel   = {'model': 'constant', 'MB': params_values_dict.pop('MB')}
+        cosmosets = {'cosmology': 'Standard',
+                     'parameters': {k:v for k,v in params_values_dict.items() if k in ['H0','omch2','omk','ombh2','omnuh2','num_nu_massive','num_nu_massless']}}
+
+        cosmosets['parameters']['num_nu_massive'] = int(cosmosets['parameters']['num_nu_massive'])
+        
+        theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial)
 
         state['DM'] = theory.DM 
         state['DH'] = theory.DH
         state['DV'] = theory.DV
+        state['DV_rd'] = theory.DV_rd
+        state['DM_DH'] = theory.DM_DH
+        state['alpha_iso'] = theory.alpha_iso
+        state['alpha_AP'] = theory.alpha_AP
         #MM: this to be generalized
         state['DL_EM']  = theory.DL_EM
         state['DL_GW']  = theory.DL_GW
