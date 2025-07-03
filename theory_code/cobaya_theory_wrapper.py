@@ -67,10 +67,10 @@ class CalcDist(Theory):
         #MM: DDR to be added here
         try:
             DDR = {'eta_model': 'polynomial',
-                   'use_pade': params_values_dict['use_pade'],
+                   'use_pade': self.use_pade,
                    'parameters': {k:v for k,v in params_values_dict.items() if k in DDRpars}}
         except:
-            print('DDR not violated')
+            print('WTF')
             DDR = None
 
         theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial,DDR=DDR)
