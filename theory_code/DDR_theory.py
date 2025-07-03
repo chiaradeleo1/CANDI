@@ -11,19 +11,16 @@ from scipy.interpolate import interp1d
 
 class DDRCalcs:
 
-    def __init__(self,settings,params,zcalc):
+    def __init__(self,DDR_info,zcalc):
 
         self.zcalc = zcalc
-        self.settings = settings
+        self.settings = {'eta_model': DDR_info['eta_model'], 'pade': DDR_info['use_pade']}
+        params = DDR_info['parameters'] 
         self.z_LSS = 1100
 
-        if settings['epsilon_model'] == 'polynomial':
+        if self.settings['eta_model'] == 'polynomial':
             self.eta_EM = self.get_eta(params['epsilon0_EM'],params['n_EM'], params['a_EM'])
             self.eta_GW = self.get_eta(params['epsilon0_GW'], params['n_GW'], params['a_GW'])    
-           
-
-
-                
         else:
             sys.exit('Unknown DDR breaking model: {}'.format(settings['epsilon_model']))
 

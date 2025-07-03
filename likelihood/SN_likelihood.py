@@ -12,11 +12,6 @@ class SNLike(Likelihood):
         covmat          = pd.read_csv(self.SN_data_path+'_covmat.txt',sep='\s+',header=0)
         self.invcovmat  = np.linalg.inv(covmat)
 
-        if self.use_noisy_data:
-            self.suffix = '_noisy'
-        else:
-            self.suffix = ''
-
 
     def get_requirements(self):
         # Requirements are the output of the theory code that you are using

@@ -98,7 +98,7 @@ class TheoryCalcs:
                 print('Computing DDR functions...')
             try:
                 tini = time()
-                ddr_results  = DDRCalcs(self.DDR_model,params,self.zcalc)
+                ddr_results  = DDRCalcs(DDR,self.zcalc)
                 self.eta_EM = ddr_results.eta_EM
                 self.eta_GW = ddr_results.eta_GW
                 tend = time()
