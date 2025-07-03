@@ -21,7 +21,7 @@ class SNLike(Likelihood):
     
     def logp(self, **params_values): 
 
-        diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'+self.suffix].values)
+        diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'].values)
 
         loglike = -0.5*np.dot((diffvec_SN),np.dot(self.invcovmat,(diffvec_SN)))
 
