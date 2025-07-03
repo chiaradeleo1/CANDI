@@ -70,7 +70,6 @@ class CalcDist(Theory):
                    'use_pade': self.use_pade,
                    'parameters': {k:v for k,v in params_values_dict.items() if k in DDRpars}}
         except:
-            print('WTF')
             DDR = None
 
         theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial,DDR=DDR)
