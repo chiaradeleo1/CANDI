@@ -19,7 +19,7 @@ params:
     derived: True
   rdrag:
     derived: True
-  rd: 200
+  rd: 0
 camb_path:
 use_pade: 
 BBN:

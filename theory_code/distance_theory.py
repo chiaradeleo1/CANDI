@@ -26,6 +26,12 @@ class TheoryCalcs:
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
+        if 'rd' in cosmosets['parameters']:
+            no_BBN_flag = True
+            real_rdrag  = cosmosets['parameters'].pop('rd')
+        else:
+            no_BBN_flag = False
+
         ############################
         #Getting baseline cosmology#
         ############################
@@ -60,8 +66,8 @@ class TheoryCalcs:
         for k, v in cosmo_results.items():
             setattr(self,k,v)
 
-        #MM!!! Put here switch to use external rdrag
-        #self.rdrag = something
+        if no_BBN_flag: 
+            self.rdrag = real_rdrag
 
         ################
         #BAO quantities#
@@ -83,6 +89,8 @@ class TheoryCalcs:
 
             self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/(fidcosmo['DV'](x)/fidcosmo['rdrag']) 
             self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/(fidcosmo['DH'](x)/fidcosmo['DM'](x))
+
+        print(self.alpha_iso(1))
 
         self.DV_rd     = lambda x: self.DV(x)/self.rdrag
         self.DM_DH     = lambda x: self.DM(x)/self.DH(x)

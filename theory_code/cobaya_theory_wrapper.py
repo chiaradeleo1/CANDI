@@ -56,6 +56,9 @@ class CalcDist(Theory):
 
         ##MM: to be improved!!!
         cosmopars = ['H0','omch2','omk','ombh2','omnuh2','num_nu_massive','num_nu_massless']
+        if params_values_dict['rd'] != 0.:
+            cosmopars = cosmopars+['rd']
+
         DDRpars   = ['a_EM','n_EM','epsilon0_EM','a_GW','n_GW','epsilon0_GW']
         
         SNmodel   = {'model': 'constant', 'MB': params_values_dict.pop('MB')}
