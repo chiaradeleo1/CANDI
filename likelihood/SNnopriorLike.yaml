@@ -2,4 +2,3 @@ aliases: [SNnopriorLike]
 speed: 500
 params:
 SN_data_path: 
-use_noisy_data:

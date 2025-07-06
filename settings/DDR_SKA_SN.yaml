@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/DDR_SKA
+output: chains/DDR_SKA_SN
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -7,7 +7,10 @@ BAO_data:
   path: mock_data/BAOmock_SKA_DHDM
   data_format: SKA
 SN_data:
+  path: mock_data/SNmock_DDRbroken
 GW_data:
+
+SH0ES_prior: False
 
 fiducial_path: null
 

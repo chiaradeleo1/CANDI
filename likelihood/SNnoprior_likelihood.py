@@ -12,12 +12,6 @@ class SNnopriorLike(Likelihood):
         covmat          = pd.read_csv(self.SN_data_path+'_covmat.txt',sep='\s+',header=0)
         self.invcovmat  = np.linalg.inv(covmat)
 
-        if self.use_noisy_data:
-            self.suffix = '_noisy'
-        else:
-            self.suffix = ''
-
-
     def get_requirements(self):
         # Requirements are the output of the theory code that you are using
         requirements = {'mB': None}
@@ -26,7 +20,7 @@ class SNnopriorLike(Likelihood):
     
     def logp(self, **params_values): 
 
-        diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'+self.suffix].values)
+        diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'].values)
     
         unit = np.ones(len(diffvec_SN))
 
