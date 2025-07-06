@@ -28,8 +28,8 @@ info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
                                      'BAO_data_path': info['BAO_data']['path'],
-                                     'DESI_table': info['BAO_data']['DESI_table']}
-    if info['BAO_data']['DESI_table']:
+                                     'data_format': info['BAO_data']['data_format']}
+    if 'observables' in info['BAO_data']:
         info['likelihood']['BAOLike']['observables'] = info['BAO_data']['observables']
 
 if info['SN_data'] != None:

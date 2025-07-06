@@ -1,22 +1,16 @@
 #Choose root of output files
-output: chains/test_alphas_fiducial
+output: chains/DESI_alphas
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: /home/Matteo/data/DESI_BAO/DESI_table
+  path: ./data/DESI_table
   data_format: DESI
   observables: alphas
 SN_data:
 GW_data:
-    #path: mock_data/GWmock_epsilon=0.0_n=1.0
-    #noisy: True
-
-#Available options for DDR_model: constant, padè
-DDR_model: constant
 
 fiducial_path: null
-  #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
 
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
@@ -25,13 +19,9 @@ sampler:
   options:
     num_threads: 1
     pool: 1
-    n_live: 500
-      #4000
-    n_batch: 64
-      #512
-    n_networks: 2
-      #16
-
+    n_live: 4000
+    n_batch: 512
+    n_networks: 16
 
 params: 
   omegam:

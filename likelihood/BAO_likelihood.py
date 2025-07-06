@@ -9,7 +9,7 @@ class BAOLike(Likelihood):
     
     def initialize(self):
 
-        if self.DESI_table:
+        if self.data_format == 'DESI':
             data_table = pd.read_csv(self.BAO_data_path+'.txt',sep='\t',header=0)
 
             #Single observable points
@@ -30,23 +30,22 @@ class BAOLike(Likelihood):
                 alpha_covs = self.transform_covmat(data_table)
                 self.inv_covmats = [pd.DataFrame(np.linalg.inv(covmat.values),
                                                  columns=covmat.columns,index=covmat.index) for covmat in alpha_covs]
-        else:
-            self.data = []
-            try:
-                self.dataset_DHDM = pd.read_csv(self.BAO_data_path + '_data_DHDM.txt', sep='\s+', header=0)
-                covmat_DHDM = pd.read_csv(self.BAO_data_path + '_covmat_DHDM.txt', sep='\s+', header=0)
-                self.invcov_DHDM = np.linalg.inv(covmat_DHDM)
-                self.data.append('DHDM')
-            except FileNotFoundError as e:
-                print(f"Attention!! DH and DM files are missing.")
+        elif self.data_format == 'SKA':
+            data_table = pd.read_csv(self.BAO_data_path+'.txt',sep='\t',header=0)
+            self.z_vec = data_table['z'].values
+            self.datavectors = [np.array([row['DM_rd'],row['DH_rd']]) for ind,row in data_table.iterrows()]
+            self.inv_covmats = []
+            for ind,row in data_table.iterrows():
 
-            try:
-                self.dataset_DV = pd.read_csv(self.BAO_data_path+'_data_DV.txt',sep='\s+',header=0)
-                covmat_DV       = pd.read_csv(self.BAO_data_path+'_covmat_DV.txt',sep='\s+',header=0)
-                self.invcov_DV  = np.linalg.inv(covmat_DV)
-                self.data.append('DV')
-            except FileNotFoundError as e:
-                print(f"Attention!! DV files are missing.")
+                cov = pd.DataFrame([[row['DM_rd_err']**2,row['r_MH']*row['DM_rd_err']*row['DH_rd_err']],
+                                    [row['r_MH']*row['DM_rd_err']*row['DH_rd_err'],row['DH_rd_err']**2]],
+                                    columns=['DM_rd_{}'.format(ind),'DH_rd_{}'.format(ind)],
+                                    index=['DM_rd_{}'.format(ind),'DH_rd_{}'.format(ind)])
+
+                self.inv_covmats.append(pd.DataFrame(np.linalg.inv(cov.values),columns=cov.columns,index=cov.index))
+
+        else:
+            sys.exit('Unknown data format: {}'.format(self.data_format))
 
         zmax = 4.
         self.z_camb = np.linspace(0.001, zmax, 10000)
@@ -90,9 +89,9 @@ class BAOLike(Likelihood):
         # Requirements are the output of the theory code that you are using
         requirements = {'DM_DH': None,
                         'DV_rd': None,
-                        'DM': None,
-                        'DH': None,
-                        'DV': None,
+                        'DM_rd': None,
+                        'DH_rd': None,
+                        #'DV': None,
                         'alpha_iso': None,
                         'alpha_AP': None,
                         'rdrag': None}
@@ -101,9 +100,7 @@ class BAOLike(Likelihood):
     
     def logp(self, **params_values): 
 
-        if self.DESI_table:
-            #MM: add rdrag switch here
-            rdrag = params_values['rdrag']
+        if self.data_format == 'DESI':
 
             if self.observables == 'distances':
                 obs = 'DV_rd'
@@ -111,26 +108,18 @@ class BAOLike(Likelihood):
                 obs = 'alpha_iso'
             chi2_single = sum([(row[obs]-self.provider.get_result(obs)(row['z']))**2/row[obs+'_err']**2 for ind,row in self.single_data.iterrows()])
 
-            chi2_vec = []
-            for z,data,invcov in zip(self.z_vec,self.datavectors,self.inv_covmats):
-                obs = ['_'.join(item for item in col.split('_')[:2]) for col in invcov.columns]
-                theoryvec = np.array([self.provider.get_result(o)(z) for o in obs])
-                chi2_vec.append(np.dot(theoryvec-data,np.dot(invcov,theoryvec-data)))
-
-            chi2_binned = sum(chi2_vec)
-
-            chi2 = chi2_binned+chi2_single
         else:
-            chi2 = 0
-            if 'DHDM' in self.data:
-                diffvec_DH   = self.provider.get_result('DH')(self.dataset_DHDM['z'])-self.dataset_DHDM['DH']
-                diffvec_DM   = self.provider.get_result('DM')(self.dataset_DHDM['z'])-self.dataset_DHDM['DM']
-                diffvec_DHDM = np.concatenate((diffvec_DH, diffvec_DM),axis=0)
-                chi2  = np.dot((diffvec_DHDM),np.dot(self.invcov_DHDM,(diffvec_DHDM)))
-            if 'DV' in self.data:
-                diffvec_DV   = self.provider.get_result('DV')(self.dataset_DV['z'])-self.dataset_DV['DV']
-                chi2 += np.dot((diffvec_DV),np.dot(self.invcov_DV,(diffvec_DV)))
+            chi2_single = 0.
 
+        chi2_vec = []
+        for z,data,invcov in zip(self.z_vec,self.datavectors,self.inv_covmats):
+            obs = ['_'.join(item for item in col.split('_')[:2]) for col in invcov.columns]
+            theoryvec = np.array([self.provider.get_result(o)(z) for o in obs])
+            chi2_vec.append(np.dot(theoryvec-data,np.dot(invcov,theoryvec-data)))
+
+        chi2_binned = sum(chi2_vec)
+
+        chi2 = chi2_binned+chi2_single
 
         loglike = -0.5*chi2
 

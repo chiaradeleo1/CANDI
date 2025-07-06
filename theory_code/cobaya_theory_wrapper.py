@@ -46,7 +46,7 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV','DL_EM','DL_GW','mB','DV_rd','DM_DH','alpha_iso','alpha_AP']
+        return ['DM','DH','DV','DL_EM','DL_GW','mB','DV_rd','DM_DH','DM_rd','DH_rd','alpha_iso','alpha_AP']
 
     def get_can_provide_params(self):
 
@@ -75,12 +75,16 @@ class CalcDist(Theory):
         except:
             DDR = None
 
+        DDR = None
+
         theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial,DDR=DDR)
 
         state['DM'] = theory.DM 
         state['DH'] = theory.DH
         state['DV'] = theory.DV
         state['DV_rd'] = theory.DV_rd
+        state['DM_rd'] = theory.DM_rd
+        state['DH_rd'] = theory.DH_rd
         state['DM_DH'] = theory.DM_DH
         state['alpha_iso'] = theory.alpha_iso
         state['alpha_AP'] = theory.alpha_AP

@@ -1,11 +1,11 @@
 #Choose root of output files
-output: chains/test_alphas_fiducial
+output: chains/testestest
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
   path: /home/Matteo/data/DESI_BAO/DESI_table
-  data_format: DESI
+  DESI_table: True
   observables: alphas
 SN_data:
 GW_data:
@@ -21,17 +21,12 @@ fiducial_path: null
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
 sampler:
-  name: nautilus
+  name: evaluate
   options:
-    num_threads: 1
-    pool: 1
-    n_live: 500
-      #4000
-    n_batch: 64
-      #512
-    n_networks: 2
-      #16
-
+    override:
+      omegam: 0.29733
+      H0: 68.79
+      ombh2: 0.022153
 
 params: 
   omegam:

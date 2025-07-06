@@ -1,22 +1,16 @@
 #Choose root of output files
-output: chains/test_alphas_noBBN
+output: chains/DESI_alphas_noBBN
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: /home/Matteo/data/DESI_BAO/DESI_table
-  DESI_table: True
+  path: ./data/DESI_table
+  data_format: DESI
   observables: alphas
 SN_data:
 GW_data:
-    #path: mock_data/GWmock_epsilon=0.0_n=1.0
-    #noisy: True
-
-#Available options for DDR_model: constant, padè
-DDR_model: constant
 
 fiducial_path: null
-  #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
 
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
@@ -25,12 +19,9 @@ sampler:
   options:
     num_threads: 1
     pool: 1
-    n_live: 500
-      #4000
-    n_batch: 64
-      #512
-    n_networks: 2
-      #16
+    n_live: 4000
+    n_batch: 512
+    n_networks: 16
 
 
 params: 
@@ -79,9 +70,9 @@ params:
   omnuh2: 0.00064420
     #  nnu: 3
 
-  H0_rdrag:
-    derived: "lambda H0,rd: H0*rd"
-    latex: 'H_0\,r_\mathrm{d}'
+  h_rdrag:
+    derived: "lambda H0,rd: H0*rd/100"
+    latex: 'h\,r_\mathrm{d}'
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

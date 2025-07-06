@@ -90,8 +90,6 @@ class TheoryCalcs:
             self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/(fidcosmo['DV'](x)/fidcosmo['rdrag']) 
             self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/(fidcosmo['DH'](x)/fidcosmo['DM'](x))
 
-        print(self.alpha_iso(1))
-
         self.DV_rd     = lambda x: self.DV(x)/self.rdrag
         self.DM_DH     = lambda x: self.DM(x)/self.DH(x)
         self.DM_rd     = lambda x: self.DM(x)/self.rdrag

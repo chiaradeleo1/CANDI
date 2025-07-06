@@ -2,6 +2,7 @@ aliases: [BAOLike]
 speed: 500
 params:
 BAO_data_path: 
-DESI_table:
+#Data format can currently be either DESI or SKA
+data_format:
 #Observables can be "alphas" or "distances"
 observables: 
