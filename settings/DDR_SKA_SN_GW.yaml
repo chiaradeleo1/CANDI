@@ -7,9 +7,9 @@ BAO_data:
   path: mock_data/BAOmock_SKA_DHDM
   data_format: SKA
 SN_data:
-  path: mock_data/SNmock_DDRbroken
+  path: mock_data/SNmock_LCDM
 GW_data:
-  path: mock_data/GWmock_realistic
+  path: mock_data/GWmock_LCDM
 
 SH0ES_prior: False
 
