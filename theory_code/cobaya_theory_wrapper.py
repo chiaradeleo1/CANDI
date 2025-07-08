@@ -67,15 +67,12 @@ class CalcDist(Theory):
 
         cosmosets['parameters']['num_nu_massive'] = int(cosmosets['parameters']['num_nu_massive'])
        
-        #MM: DDR to be added here
         try:
             DDR = {'eta_model': 'polynomial',
                    'use_pade': self.use_pade,
                    'parameters': {k:v for k,v in params_values_dict.items() if k in DDRpars}}
         except:
             DDR = None
-
-        DDR = None
 
         theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial,DDR=DDR)
 
