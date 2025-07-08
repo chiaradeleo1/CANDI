@@ -4,7 +4,7 @@ output: chains/DDR_SKA_SN_GW
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: mock_data/BAOmock_SKA_DHDM
+  path: mock_data/SKAOmock_data_DHDM
   data_format: SKA
 SN_data:
   path: mock_data/SNmock_LCDM
