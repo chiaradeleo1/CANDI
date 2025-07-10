@@ -1,4 +1,7 @@
-import sys
+import sys,os
+import importlib.util
+import inspect
+
 import numpy  as np
 import pandas as pd
 
@@ -8,7 +11,7 @@ from time import time
 from scipy.interpolate import interp1d
 from scipy.integrate   import trapezoid,quad
 
-from theory_code.DDR_theory import DDRCalcs
+from theory_code.DDR_parametrizations import DDRCalcs
 
 clight = 299792.458
 
@@ -20,6 +23,7 @@ class TheoryCalcs:
         ##################
         #General settings#
         ##################
+        self.settings  = settings
         self.zmin      = settings['zmin']
         self.zmax      = settings['zmax']
         self.Nz        = settings['Nz']
@@ -35,65 +39,52 @@ class TheoryCalcs:
         ############################
         #Getting baseline cosmology#
         ############################
-        if cosmosets['cosmology'] == 'Standard':
-            if feedback:
-                print('Running standard CAMB...')
-            try:
-                tini = time()
-                cosmo_results = self.call_camb(cosmosets['parameters'])
-                tend = time()
-                if feedback:
-                    print('CAMB done in {:.2f} s'.format(tend-tini))
-            except Exception as e:
-                sys.exit('CAMB FAILED!\n {}'.format(e))
 
-        elif cosmosets['cosmology'] == 'Custom':
-            if feedback:
-                print('Running custom cosmology...')
-            try:
-                tini = time()
-                cosmo_results = self.call_custom(cosmosets['parameters'])
-                tend = time()
-                if feedback:
-                    print('Custom cosmology done in {:.2f} s'.format(tend-tini))
-            except Exception as e:
-                sys.exit('CUSTOM COSMOLOGY FAILED!\n {}'.format(e))
+        #############################################
+        #MM: this is a quite involved method to load
+        #all modules contained in the expansion_models folder
+        folder = 'theory_code/expansion_models'
+        imported_classes = self.import_classes_from_folder(folder)
 
-        else:
+        cosmo_module = []
+        if imported_classes:
+            for class_name, class_obj in imported_classes.items():
+                test = class_obj(cosmosets['cosmology'],settings)
+                if test.used:
+                    cosmo_module.append(test)
+
+        if len(cosmo_module) > 1:
+            sys.exit('Error in importing possible expansion modules (probably same label for multiple modules)')
+        elif len(cosmo_module) == 0:
             sys.exit('UNKNOWN COSMOLOGY: {}'.format(cosmosets['cosmology']))
+        else:
+            cosmo_module = cosmo_module[0]
+        ##############################################
+
+        try:
+            tini = time()
+            cosmo_results = cosmo_module.get_cosmology(cosmosets['parameters'])
+            tend = time()
+            if feedback:
+                print('Basic cosmology done in {:.2f} s'.format(tend-tini))
+        except Exception as e:
+            sys.exit('COSMOLOGY CALCULATIONS FAILED!!\n {}'.format(e))
+
 
         #Changing theory dict elements into class attributes
         for k, v in cosmo_results.items():
             setattr(self,k,v)
 
+        self.dA = interp1d(self.zcalc,self.comoving(self.zcalc)/(1+self.zcalc))
+
         if no_BBN_flag: 
             self.rdrag = real_rdrag
 
-        ################
-        #BAO quantities#
-        ################
-        if feedback:
-            print('')
-            print('Computing LCDM fiducial')
+        ##########################
+        #Computing BAO quantities#
+        ##########################
+        self.get_BAO_observables(fiducial)
 
-        if type(fiducial) == str:
-            fidtable = pd.read_csv(fiducial,header=0,sep='\t')
-            fidcosmo = {'DV_rd': interp1d(fidtable['z'],fidtable['DV_rd']),
-                        'DH_DM': interp1d(fidtable['z'],fidtable['DH_DM'])}
-
-            self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/fidcosmo['DV_rd'](x)
-            self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/fidcosmo['DH_DM'](x)
-
-        elif type(fiducial) == dict:
-            fidcosmo = self.call_camb(fiducial)
-
-            self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/(fidcosmo['DV'](x)/fidcosmo['rdrag']) 
-            self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/(fidcosmo['DH'](x)/fidcosmo['DM'](x))
-
-        self.DV_rd     = lambda x: self.DV(x)/self.rdrag
-        self.DM_DH     = lambda x: self.DM(x)/self.DH(x)
-        self.DM_rd     = lambda x: self.DM(x)/self.rdrag
-        self.DH_rd     = lambda x: self.DH(x)/self.rdrag
 
         ###############
         #Computing DDR#
@@ -127,53 +118,38 @@ class TheoryCalcs:
         ########################
         self.mB = self.get_mB(self.DL_EM,SNmodel)
 
-    def call_camb(self,params):
+    def get_BAO_observables(self,fiducial):
 
-        #MM: path to camb to be made customizable
-        import camb
-        pars = camb.set_params(**params)
-        results = camb.get_background(pars)
+        self.DM = interp1d(self.zcalc,self.comoving(self.zcalc))
+        self.DH = interp1d(self.zcalc,1/(self.H_Mpc(self.zcalc)))
+        self.DV = interp1d(self.zcalc, (self.zcalc*self.comoving(self.zcalc)**2/self.H_Mpc(self.zcalc))**(1/3))
+        self.dA = interp1d(self.zcalc,self.comoving(self.zcalc)/(1+self.zcalc))
 
-        Hz    = results.h_of_z
-        comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
+        if type(fiducial) == str:
+            fidtable = pd.read_csv(fiducial,header=0,sep='\t')
+            fidcosmo = {'DV_rd': interp1d(fidtable['z'],fidtable['DV_rd']),
+                        'DH_DM': interp1d(fidtable['z'],fidtable['DH_DM'])}
 
-        theory = {'H_Mpc': Hz,
-                  'H_kmsMpc': results.hubble_parameter,
-                  'DM': interp1d(self.zcalc,comov),
-                  'DH': interp1d(self.zcalc,1/(Hz(self.zcalc))),
-                  'DV': interp1d(self.zcalc, (self.zcalc*comov**2/Hz(self.zcalc))**(1/3)),
-                  'dA': results.angular_diameter_distance,
-                  'comoving': results.comoving_radial_distance,
-                  'rdrag': results.get_derived_params()['rdrag'],
-                  'omegaL': results.get_Omega('de',z=0)}
+            self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/fidcosmo['DV_rd'](x)
+            self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/fidcosmo['DH_DM'](x)
 
-        return theory
+        elif type(fiducial) == dict:
+            from theory_code.expansion_models.standard_cosmology import StandardExpansion
+            fidmodule = StandardExpansion('Standard',self.settings)
+            fidcosmo = fidmodule.get_cosmology(fiducial)
+            fidcosmo['DM'] = interp1d(self.zcalc,fidcosmo['comoving'](self.zcalc))
+            fidcosmo['DH'] = interp1d(self.zcalc,1/(fidcosmo['H_Mpc'](self.zcalc)))
+            fidcosmo['DV'] = interp1d(self.zcalc, (self.zcalc*fidcosmo['comoving'](self.zcalc)**2/fidcosmo['H_Mpc'](self.zcalc))**(1/3))
 
-    def call_custom(self,params):
+            self.alpha_iso = lambda x: (self.DV(x)/self.rdrag)/(fidcosmo['DV'](x)/fidcosmo['rdrag'])
+            self.alpha_AP  = lambda x: (self.DH(x)/self.DM(x))/(fidcosmo['DH'](x)/fidcosmo['DM'](x))
 
-        zfine  = np.linspace(min(self.zcalc),max(self.zcalc),len(self.zcalc)*10)
-        hubble = params['H0']*np.sqrt(params['omegam']*(1+zfine)**(3+params['Delta'])+(1-params['omegam']))
-        Hz = interp1d(zfine,hubble/clight)
+        self.DV_rd     = lambda x: self.DV(x)/self.rdrag
+        self.DM_DH     = lambda x: self.DM(x)/self.DH(x)
+        self.DM_rd     = lambda x: self.DM(x)/self.rdrag
+        self.DH_rd     = lambda x: self.DH(x)/self.rdrag
 
-        comov_vec = []
-        for z in self.zcalc:
-            zint = np.linspace(0.001,z,10)
-            comov_vec.append(trapezoid([1/Hz(zi) for zi in zint],x=zint))
-        comov = np.array(comov_vec)
-
-        rdrag = 1. #MM: to be updated
-
-        theory = {'H_Mpc': Hz,
-                  'H_kmsMpc': interp1d(zfine,hubble),
-                  'DM': interp1d(self.zcalc,comov),
-                  'DH': interp1d(self.zcalc,1/(Hz(self.zcalc))),
-                  'DV': interp1d(self.zcalc, (self.zcalc*comov**2/Hz(self.zcalc))**(1/3)),
-                  'dA': interp1d(self.zcalc,comov/(1+self.zcalc)),
-                  'comoving': interp1d(self.zcalc,comov),
-                  'rdrag': rdrag,
-                  'omegaL': 1-params['omegam']}
-
-        return theory
+        return None
 
     def get_dL(self,dA,eta):
 
@@ -191,5 +167,49 @@ class TheoryCalcs:
         mB = interp1d(self.zcalc,5*np.log10(dL(self.zcalc))+MB(self.zcalc)+25,kind='linear')
 
         return mB
+
+    def import_classes_from_folder(self,folder_path):
+        #MM: this was done by Gemini
+        #Thank you, our Lord and Saviour!
+    
+        if not os.path.isdir(folder_path):
+            print(f"Error: Folder '{folder_path}' not found.")
+            return {}
+
+        classes = {}
+        sys.path.insert(0, folder_path)
+
+        for filename in os.listdir(folder_path):
+            if filename.endswith(".py") and filename != "__init__.py":
+                module_name = filename[:-3]  # Remove .py extension
+                file_path = os.path.join(folder_path, filename)
+
+                try:
+                    # Create a module spec
+                    spec = importlib.util.spec_from_file_location(module_name, file_path)
+                    if spec is None:
+                        print(f"Warning: Could not create spec for {file_path}")
+                        continue
+
+                    # Load the module
+                    module = importlib.util.module_from_spec(spec)
+                    sys.modules[module_name] = module
+                    spec.loader.exec_module(module)
+
+                    # Inspect the module for classes
+                    for name, obj in inspect.getmembers(module, inspect.isclass):
+                        # Ensure the class is defined in the current module, not an imported one
+                        if obj.__module__ == module_name:
+                            classes[name] = obj
+                            #print(f"Imported class: {name} from {filename}")
+
+                except Exception as e:
+                    print(f"Error importing module {filename}: {e}")
+
+        # Clean up sys.path
+        if folder_path in sys.path:
+            sys.path.remove(folder_path)
+
+        return classes
     
     
