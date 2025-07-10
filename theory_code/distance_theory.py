@@ -18,8 +18,33 @@ clight = 299792.458
 
 class TheoryCalcs:
 
-    def __init__(self,settings,cosmosets,SNmodel,fiducial,DDR=None,feedback=False):
+    def __init__(self,settings,cosmosets,SNmodel,fiducial,DDR=None,feedback=False,run_all=True):
         
+        #############################################
+        #MM: this is a quite involved method to load
+        #all modules contained in the expansion_models folder
+        folder = 'theory_code/expansion_models'
+        imported_classes = self.import_classes_from_folder(folder)
+
+        cosmo_module = []
+        if imported_classes:
+            for class_name, class_obj in imported_classes.items():
+                test = class_obj(cosmosets['cosmology'])
+                if test.used:
+                    cosmo_module.append(test)
+
+        if len(cosmo_module) > 1:
+            sys.exit('Error in importing possible expansion modules (probably same label for multiple modules)')
+        elif len(cosmo_module) == 0:
+            sys.exit('UNKNOWN COSMOLOGY: {}'.format(cosmosets['cosmology']))
+        else:
+            cosmo_module = cosmo_module[0]
+        ##############################################
+
+        if not run_all:
+            self.recognized_params = cosmo_module.recognized_params
+            return
+
         ##################
         #General settings#
         ##################
@@ -40,30 +65,9 @@ class TheoryCalcs:
         #Getting baseline cosmology#
         ############################
 
-        #############################################
-        #MM: this is a quite involved method to load
-        #all modules contained in the expansion_models folder
-        folder = 'theory_code/expansion_models'
-        imported_classes = self.import_classes_from_folder(folder)
-
-        cosmo_module = []
-        if imported_classes:
-            for class_name, class_obj in imported_classes.items():
-                test = class_obj(cosmosets['cosmology'],settings)
-                if test.used:
-                    cosmo_module.append(test)
-
-        if len(cosmo_module) > 1:
-            sys.exit('Error in importing possible expansion modules (probably same label for multiple modules)')
-        elif len(cosmo_module) == 0:
-            sys.exit('UNKNOWN COSMOLOGY: {}'.format(cosmosets['cosmology']))
-        else:
-            cosmo_module = cosmo_module[0]
-        ##############################################
-
         try:
             tini = time()
-            cosmo_results = cosmo_module.get_cosmology(cosmosets['parameters'])
+            cosmo_results = cosmo_module.get_cosmology(cosmosets['parameters'],settings)
             tend = time()
             if feedback:
                 print('Basic cosmology done in {:.2f} s'.format(tend-tini))
@@ -135,8 +139,8 @@ class TheoryCalcs:
 
         elif type(fiducial) == dict:
             from theory_code.expansion_models.standard_cosmology import StandardExpansion
-            fidmodule = StandardExpansion('Standard',self.settings)
-            fidcosmo = fidmodule.get_cosmology(fiducial)
+            fidmodule = StandardExpansion('Standard')
+            fidcosmo = fidmodule.get_cosmology(fiducial,self.settings)
             fidcosmo['DM'] = interp1d(self.zcalc,fidcosmo['comoving'](self.zcalc))
             fidcosmo['DH'] = interp1d(self.zcalc,1/(fidcosmo['H_Mpc'](self.zcalc)))
             fidcosmo['DV'] = interp1d(self.zcalc, (self.zcalc*fidcosmo['comoving'](self.zcalc)**2/fidcosmo['H_Mpc'](self.zcalc))**(1/3))

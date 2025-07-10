@@ -1,8 +1,4 @@
 params:
-  H0:
-  omch2:
-  omk:
-  ombh2:
   MB:
   epsilon0_EM: 0.
   epsilon0_GW: 0.
@@ -12,16 +8,11 @@ params:
   n_GW: 1.
   w: -1.
   wa: 0.
-  omnuh2: 0.00064420 
-  num_nu_massive: 1
-  num_nu_massless: 2.044
   omegaL:
     derived: True
   rdrag:
     derived: True
   rd: 0
-camb_path:
-use_pade: 
-BBN:
-cosmology: Standard
+cosmology: null
+DDR_options: null
 fiducial: null

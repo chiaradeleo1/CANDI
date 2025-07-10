@@ -21,9 +21,22 @@ pp = pprint.PrettyPrinter(indent=4)
 
 info = read(sys.argv[1])
 
+#####PREPARING OUTPUT#####
+if 'resume' not in info:
+    info['force'] = True
+output_folder = [ ]
+
+
+for folder in output_folder:
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+
+
 tini = time.time()
 #MM: we should find a better and more general way to fill the likelihood
 
+#####LOAD LIKELIHOODS#####
 info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
@@ -49,28 +62,32 @@ if len(list(info['likelihood'].keys())) == 0:
 else:
     print('Likelihoods loaded: ',list(info['likelihood'].keys()))
 
+#####LOAD THEORY#####
 #MMnote: pass theory options
 info['theory'] = {'CalcDist': {'external': CalcDist,
+                               'cosmology': info['cosmology'],
                                'fiducial': info['fiducial_path']}}
-if 'use_pade' in info:
-    info['theory']['CalcDist']['use_pade'] = info['use_pade']
-else:
-    info['theory']['CalcDist']['use_pade'] = False
+if 'DDR_options' in info:
+    info['theory']['CalcDist']['DDR_options'] = info['DDR_options']
 
-if 'BBN' in info:
-    info['theory']['CalcDist']['BBN'] = info['BBN']
-else:
-    info['theory']['CalcDist']['BBN'] = False
+#MM: this is a workaround to make Cobaya aware of the theory
+#parameters defined in the model module
+#PROBABLY CAN BE DONE BETTER
+basic_params = read('theory_code/basic_parameters.yaml')
+from theory_code.distance_theory import TheoryCalcs
 
-if 'resume' not in info:    
-    info['force'] = True
-output_folder = [ ]
+pre_init = TheoryCalcs(None,{'cosmology': info['cosmology'],'parameters': None},None,None,run_all=False)
+
+full_params = deepcopy(basic_params)
+for par,val in pre_init.recognized_params.items():
+    full_params['params'][par] = val
+
+import yaml
+f = open('theory_code/CalcDist.yaml', 'w+')
+yaml.dump(full_params,f)
 
 
-for folder in output_folder:    
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-
+#####SAMPLING#####
 if info['sampler']['name'] in ['mcmc','minimize','evaluate']:
     print('Running with Metropolis-Hastings')
     from cobaya.run import run

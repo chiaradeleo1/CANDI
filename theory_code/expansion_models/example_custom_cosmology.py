@@ -10,28 +10,30 @@ clight = 299792.458
 
 class CustomExpansion:
 
-    def __init__(self,call_name,settings):
+    def __init__(self,call_name):
 
         label = 'Custom'
+        self.recognized_params = {'omegam': 0.32,
+                                  'H0': 67.,
+                                  'Delta': 0.,
+                                  'ombh2': 0.02218}
 
         if call_name == label:
             print('')
             print('Selected cosmology: {}'.format(label))
             self.used = True
 
-            self.zmin      = settings['zmin']
-            self.zmax      = settings['zmax']
-            self.Nz        = settings['Nz']
-
-            self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
         else:
             self.used = False 
 
 
-    def get_cosmology(self,params):
+    def get_cosmology(self,params,settings):
 
-        #Check parameters:
-        self.recognized_params = ['omegam','H0','Delta']
+        self.zmin      = settings['zmin']
+        self.zmax      = settings['zmax']
+        self.Nz        = settings['Nz']
+
+        self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
         unknown = [par for par in params.keys() if par not in self.recognized_params]
 

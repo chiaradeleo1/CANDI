@@ -22,8 +22,7 @@ class CalcDist(Theory):
         self.settings = {'zmin': 0.001,
                          'zmax': 5.,
                          'Nz': 1000,
-                         'zdrag': 1060,
-                         'BBN': self.BBN}
+                         'zdrag': 1060}
 
         if self.fiducial == None:
             self.fiducial = {'H0': 67.36,
@@ -65,29 +64,25 @@ class CalcDist(Theory):
         cosmosets = {'cosmology': 'Standard',
                      'parameters': {k:v for k,v in params_values_dict.items() if k in cosmopars}}
 
-        cosmosets['parameters']['num_nu_massive'] = int(cosmosets['parameters']['num_nu_massive'])
+        if 'num_nu_massive' in cosmosets['parameters']:
+            cosmosets['parameters']['num_nu_massive'] = int(cosmosets['parameters']['num_nu_massive'])
        
-        try:
-            DDR = {'eta_model': 'polynomial',
-                   'use_pade': self.use_pade,
-                   'parameters': {k:v for k,v in params_values_dict.items() if k in DDRpars}}
-        except:
-            DDR = None
+        DDR = self.DDR_options
+        if DDR != None:
+            DDR['parameters'] = {k:v for k,v in params_values_dict.items() if k in DDRpars}
 
         theory = TheoryCalcs(self.settings,cosmosets,SNmodel,self.fiducial,DDR=DDR)
 
-        state['DM'] = theory.DM 
-        state['DH'] = theory.DH
-        state['DV'] = theory.DV
-        state['DV_rd'] = theory.DV_rd
-        state['DM_rd'] = theory.DM_rd
-        state['DH_rd'] = theory.DH_rd
-        state['DM_DH'] = theory.DM_DH
+        state['DM']        = theory.DM 
+        state['DH']        = theory.DH
+        state['DV']        = theory.DV
+        state['DV_rd']     = theory.DV_rd
+        state['DM_rd']     = theory.DM_rd
+        state['DH_rd']     = theory.DH_rd
+        state['DM_DH']     = theory.DM_DH
         state['alpha_iso'] = theory.alpha_iso
-        state['alpha_AP'] = theory.alpha_AP
-        #MM: this to be generalized
-        state['DL_EM']  = theory.DL_EM
-        state['DL_GW']  = theory.DL_GW
-        ###########################
-        state['mB']   = theory.mB
-        state['derived'] = {'rdrag': theory.rdrag, 'omegaL': theory.omegaL}
+        state['alpha_AP']  = theory.alpha_AP
+        state['DL_EM']     = theory.DL_EM
+        state['DL_GW']     = theory.DL_GW
+        state['mB']        = theory.mB
+        state['derived']   = {'rdrag': theory.rdrag, 'omegaL': theory.omegaL}
