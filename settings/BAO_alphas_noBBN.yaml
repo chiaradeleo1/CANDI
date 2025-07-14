@@ -10,7 +10,13 @@ BAO_data:
 SN_data:
 GW_data:
 
+#####THEORY OPTIONS#####
+#Cosmological model: Standard, Custom
+cosmology: Standard
+
+
 fiducial_path: null
+  #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
 
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
@@ -68,7 +74,7 @@ params:
   w: -1.
   wa: 0.
   omnuh2: 0.00064420
-    #  nnu: 3
+  nnu: 3
 
   h_rdrag:
     derived: "lambda H0,rd: H0*rd/100"

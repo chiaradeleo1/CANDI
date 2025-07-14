@@ -9,11 +9,20 @@ class StandardExpansion:
 
     def __init__(self,call_name):
 
-        label = 'Standard'
+        self.label = 'Standard'
+        #MM: this needs to be done better!!!
+        #How the fuck do I get a list of CAMB parameters??
 
-        if call_name == label:
-            print('')
-            print('Selected cosmology: {}'.format(label))
+        self.recognized_params = {'H0': None,
+                                  'omch2': None,
+                                  'ombh2': None,
+                                  'omk': None,
+                                  'w': None,
+                                  'wa': None,
+                                  'omnuh2': None,
+                                  'nnu': None}
+
+        if call_name == self.label:
             self.used = True
 
         else:
@@ -28,13 +37,11 @@ class StandardExpansion:
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
-        unknown = []#Add check on CAMB params par for par in parameters.keys() if par not in self.params]
+        unknown = []#par for par in params.keys() if par not in self.recognized_params]
 
         if unknown != []:
-            sys.exit('Error in {} cosmology code!\n Unknown parameters: {}'.format(label,unknown))
+            sys.exit('Error in {} cosmology code!\n Unknown parameters: {}'.format(self.label,unknown))
 
-        #MM: path to camb to be made customizable
-        import camb
         pars = camb.set_params(**params)
         results = camb.get_background(pars)
 

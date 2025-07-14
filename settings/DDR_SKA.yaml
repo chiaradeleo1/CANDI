@@ -9,7 +9,19 @@ BAO_data:
 SN_data:
 GW_data:
 
+#####THEORY OPTIONS#####
+#Cosmological model: Standard, Custom
+cosmology: Standard
+
+
+#Available options for DDR:
+#eta_model: polynomial
+DDR_options:
+  eta_model: polynomial
+  use_pade: False
+
 fiducial_path: null
+  #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
 
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
@@ -69,7 +81,7 @@ params:
   w: -1.
   wa: 0.
   omnuh2: 0.00064420
-    #  nnu: 3
+  nnu: 3
   
   a_EM: 1
   n_EM: 1

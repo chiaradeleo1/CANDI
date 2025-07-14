@@ -8,11 +8,11 @@ params:
   n_GW: 1.
   w: -1.
   wa: 0.
+  rd: 0.
   omegaL:
     derived: True
   rdrag:
     derived: True
-  rd: 0
 cosmology: null
 DDR_options: null
 fiducial: null

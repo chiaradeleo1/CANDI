@@ -13,7 +13,19 @@ GW_data:
 
 SH0ES_prior: False
 
+#####THEORY OPTIONS#####
+#Cosmological model: Standard, Custom
+cosmology: Standard
+
+
+#Available options for DDR:
+#eta_model: polynomial
+DDR_options:
+  eta_model: polynomial
+  use_pade: False
+
 fiducial_path: null
+  #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
 
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
@@ -25,9 +37,6 @@ sampler:
     n_live: 4000
     n_batch: 512
     n_networks: 16
-
-#Theory options
-use_pade: False
 
 params: 
   omegam:
@@ -73,7 +82,7 @@ params:
   w: -1.
   wa: 0.
   omnuh2: 0.00064420
-    #  nnu: 3
+  nnu: 3
   
   a_EM: 1
   n_EM: 1

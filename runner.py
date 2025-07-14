@@ -37,6 +37,7 @@ tini = time.time()
 #MM: we should find a better and more general way to fill the likelihood
 
 #####LOAD LIKELIHOODS#####
+#MM: this can probably be made way nicer
 info['likelihood'] = {}
 if info['BAO_data'] != None:
     info['likelihood']['BAOLike'] = {'external': BAOLike,
@@ -76,7 +77,7 @@ if 'DDR_options' in info:
 basic_params = read('theory_code/basic_parameters.yaml')
 from theory_code.distance_theory import TheoryCalcs
 
-pre_init = TheoryCalcs(None,{'cosmology': info['cosmology'],'parameters': None},None,None,run_all=False)
+pre_init = TheoryCalcs(None,{'cosmology': info['cosmology']},None,None,run_all=False)
 
 full_params = deepcopy(basic_params)
 for par,val in pre_init.recognized_params.items():
@@ -106,3 +107,5 @@ elif info['sampler']['name'] == 'nautilus':
 else:
     sys.exit('Unknown sampler: {}'.format(info['sampler']))
 
+
+os.remove('theory_code/CalcDist.yaml')

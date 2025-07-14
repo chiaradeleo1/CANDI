@@ -19,6 +19,8 @@ clight = 299792.458
 class TheoryCalcs:
 
     def __init__(self,settings,cosmosets,SNmodel,fiducial,DDR=None,feedback=False,run_all=True):
+
+        self.feedback = feedback
         
         #############################################
         #MM: this is a quite involved method to load
@@ -32,6 +34,9 @@ class TheoryCalcs:
                 test = class_obj(cosmosets['cosmology'])
                 if test.used:
                     cosmo_module.append(test)
+                    if self.feedback:
+                        print('')
+                        print('Selected cosmology: {}'.format(class_name))
 
         if len(cosmo_module) > 1:
             sys.exit('Error in importing possible expansion modules (probably same label for multiple modules)')
@@ -55,21 +60,20 @@ class TheoryCalcs:
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
-        if 'rd' in cosmosets['parameters']:
-            no_BBN_flag = True
-            real_rdrag  = cosmosets['parameters'].pop('rd')
-        else:
-            no_BBN_flag = False
-
         ############################
         #Getting baseline cosmology#
         ############################
+
+        if 'rd' in cosmosets['parameters']:
+            true_rdrag  = cosmosets['parameters'].pop('rd')
+        else:
+            true_rdrag = None
 
         try:
             tini = time()
             cosmo_results = cosmo_module.get_cosmology(cosmosets['parameters'],settings)
             tend = time()
-            if feedback:
+            if self.feedback:
                 print('Basic cosmology done in {:.2f} s'.format(tend-tini))
         except Exception as e:
             sys.exit('COSMOLOGY CALCULATIONS FAILED!!\n {}'.format(e))
@@ -79,10 +83,30 @@ class TheoryCalcs:
         for k, v in cosmo_results.items():
             setattr(self,k,v)
 
-        self.dA = interp1d(self.zcalc,self.comoving(self.zcalc)/(1+self.zcalc))
 
-        if no_BBN_flag: 
-            self.rdrag = real_rdrag
+        ###############
+        #Computing DDR#
+        ###############
+        #MM: DDR is only possible in dL, should we change to allow
+        #for dA to be broken as well? It might be needed for some 
+        #weird torsion thingy
+
+        if DDR != None:
+            try:
+                self.eta_EM,self.eta_GW = self.get_parameterized_DDR(DDR)
+            except Exception as e:
+                sys.exit('DDR FAILED!\n {}'.format(e))
+        else:
+            self.eta_EM = lambda x: 1.
+            self.eta_GW = lambda x: 1.
+
+        self.dA     = interp1d(self.zcalc,self.comoving(self.zcalc)/(1+self.zcalc))
+        self.DL_EM  = self.get_dL(self.dA,self.eta_EM)
+        self.DL_GW  = self.get_dL(self.dA,self.eta_GW)
+
+        if true_rdrag != None:
+            self.rdrag  = true_rdrag
+
 
         ##########################
         #Computing BAO quantities#
@@ -90,37 +114,27 @@ class TheoryCalcs:
         self.get_BAO_observables(fiducial)
 
 
-        ###############
-        #Computing DDR#
-        ###############
-
-        if DDR != None:
-            if feedback:
-                print('Computing DDR functions...')
-            try:
-                tini = time()
-                ddr_results  = DDRCalcs(DDR,self.zcalc)
-                self.eta_EM = ddr_results.eta_EM
-                self.eta_GW = ddr_results.eta_GW
-                tend = time()
-                if feedback:
-                    print('DDR done in {:.2f} s'.format(tend-tini))
-            except Exception as e:
-                sys.exit('DDR FAILED!\n {}'.format(e))
-
-        else:
-            self.eta_EM = lambda x: 1.
-            self.eta_GW = lambda x: 1.
-
-
-        self.DL_EM  = self.get_dL(self.dA,self.eta_EM)
-        self.DL_GW  = self.get_dL(self.dA,self.eta_GW)
-
-
         ########################
         #Computing SN magnitude#
         ########################
         self.mB = self.get_mB(self.DL_EM,SNmodel)
+
+    def get_parameterized_DDR(self,DDR):
+
+        from theory_code.DDR_parametrizations import DDRCalcs
+
+        if self.feedback:
+            print('Computing DDR functions...')
+        tini = time()
+        ddr_results  = DDRCalcs(DDR,self.zcalc)
+        eta_EM = ddr_results.eta_EM
+        eta_GW = ddr_results.eta_GW
+        tend = time()
+        if self.feedback:
+            print('DDR done in {:.2f} s'.format(tend-tini))
+
+        return eta_EM,eta_GW
+
 
     def get_BAO_observables(self,fiducial):
 

@@ -12,15 +12,13 @@ class CustomExpansion:
 
     def __init__(self,call_name):
 
-        label = 'Custom'
+        self.label = 'Custom'
         self.recognized_params = {'omegam': 0.32,
                                   'H0': 67.,
                                   'Delta': 0.,
                                   'ombh2': 0.02218}
 
-        if call_name == label:
-            print('')
-            print('Selected cosmology: {}'.format(label))
+        if call_name == self.label:
             self.used = True
 
         else:
@@ -38,7 +36,7 @@ class CustomExpansion:
         unknown = [par for par in params.keys() if par not in self.recognized_params]
 
         if unknown != []:
-            sys.exit('Error in {} cosmology code!\n Unknown parameters: {}'.format(label,unknown))
+            sys.exit('Error in {} cosmology code!\n Unknown parameters: {}'.format(self.label,unknown))
 
         zfine  = np.linspace(min(self.zcalc),max(self.zcalc),len(self.zcalc)*10)
         hubble = params['H0']*np.sqrt(params['omegam']*(1+zfine)**(3+params['Delta'])+(1-params['omegam']))
