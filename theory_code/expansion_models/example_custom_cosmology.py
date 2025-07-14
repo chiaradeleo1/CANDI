@@ -48,7 +48,8 @@ class CustomExpansion:
             comov_vec.append(trapezoid([1/Hz(zi) for zi in zint],x=zint))
         comov = np.array(comov_vec)
 
-        rdrag = 1. #MM: to be updated
+        Neff  = 3.044
+        rdrag = 147.05*(params['omegam']*(params['H0']/100)**2/0.1432)**(-0.23) * (Neff/3.04)**(-0.1) * (params['ombh2']/0.02236)**(-0.13)
 
         theory = {'H_Mpc': Hz,
                   'H_kmsMpc': interp1d(zfine,hubble),

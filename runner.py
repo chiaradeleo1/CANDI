@@ -24,12 +24,13 @@ info = read(sys.argv[1])
 #####PREPARING OUTPUT#####
 if 'resume' not in info:
     info['force'] = True
-output_folder = [ ]
+
+#output_folder = [ ]
 
 
-for folder in output_folder:
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+#for folder in output_folder:
+#    if not os.path.exists(folder):
+#        os.makedirs(folder)
 
 
 

@@ -54,18 +54,16 @@ class CalcDist(Theory):
     def calculate(self, state, want_derived=True, **params_values_dict):
 
         ##MM: to be improved!!!
-        cosmopars = ['H0','omch2','omk','ombh2','omnuh2','num_nu_massive','num_nu_massless']
-        if params_values_dict['rd'] != 0.:
-            cosmopars = cosmopars+['rd']
 
         DDRpars   = ['a_EM','n_EM','epsilon0_EM','a_GW','n_GW','epsilon0_GW']
         
         SNmodel   = {'model': 'constant', 'MB': params_values_dict.pop('MB')}
-        cosmosets = {'cosmology': 'Standard',
-                     'parameters': {k:v for k,v in params_values_dict.items() if k in cosmopars}}
+        cosmosets = {'cosmology': self.cosmology,
+                     'parameters': {k:v for k,v in params_values_dict.items() if k not in DDRpars+list(SNmodel.keys())}}
 
-        if 'num_nu_massive' in cosmosets['parameters']:
-            cosmosets['parameters']['num_nu_massive'] = int(cosmosets['parameters']['num_nu_massive'])
+        if params_values_dict['rd'] == 0.:
+            del cosmosets['parameters']['rd']
+
        
         DDR = self.DDR_options
         if DDR != None:

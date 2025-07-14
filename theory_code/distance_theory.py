@@ -107,7 +107,6 @@ class TheoryCalcs:
         if true_rdrag != None:
             self.rdrag  = true_rdrag
 
-
         ##########################
         #Computing BAO quantities#
         ##########################
@@ -182,7 +181,8 @@ class TheoryCalcs:
         else:
             sys.exit('UNKNOWN SN MODEL: {}'.format(MBpars['model']))
 
-        mB = interp1d(self.zcalc,5*np.log10(dL(self.zcalc))+MB(self.zcalc)+25,kind='linear')
+        #MM: ugly fix to avoid log10(0). To be fixed
+        mB = interp1d(self.zcalc[1:],5*np.log10(dL(self.zcalc[1:]))+MB(self.zcalc[1:])+25,kind='linear')
 
         return mB
 
