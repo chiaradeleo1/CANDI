@@ -91,14 +91,15 @@ class TheoryCalcs:
         #for dA to be broken as well? It might be needed for some 
         #weird torsion thingy
 
-        if DDR != None:
-            try:
-                self.eta_EM,self.eta_GW = self.get_parameterized_DDR(DDR)
-            except Exception as e:
-                sys.exit('DDR FAILED!\n {}'.format(e))
-        else:
-            self.eta_EM = lambda x: 1.
-            self.eta_GW = lambda x: 1.
+        if not hasattr(self,'eta_EM') or not hasattr(self,'eta_GW'):
+            if DDR != None:
+                try:
+                    self.eta_EM,self.eta_GW = self.get_parameterized_DDR(DDR)
+                except Exception as e:
+                    sys.exit('DDR FAILED!\n {}'.format(e))
+            else:
+                self.eta_EM = lambda x: 1.
+                self.eta_GW = lambda x: 1.
 
         self.dA     = interp1d(self.zcalc,self.comoving(self.zcalc)/(1+self.zcalc))
         self.DL_EM  = self.get_dL(self.dA,self.eta_EM)
@@ -182,7 +183,8 @@ class TheoryCalcs:
             sys.exit('UNKNOWN SN MODEL: {}'.format(MBpars['model']))
 
         #MM: ugly fix to avoid log10(0). To be fixed
-        mB = interp1d(self.zcalc[1:],5*np.log10(dL(self.zcalc[1:]))+MB(self.zcalc[1:])+25,kind='linear')
+        eps_dL = 1.e-6
+        mB = interp1d(self.zcalc,5*np.log10(dL(self.zcalc)+eps_dL)+MB(self.zcalc)+25,kind='linear')
 
         return mB
 

@@ -6,8 +6,6 @@ params:
   n_EM: 1.
   a_GW: 1.
   n_GW: 1.
-  w: -1.
-  wa: 0.
   rd: 0.
   omegaL:
     derived: True

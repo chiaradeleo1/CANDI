@@ -59,7 +59,7 @@ class CalcDist(Theory):
         
         SNmodel   = {'model': 'constant', 'MB': params_values_dict.pop('MB')}
         cosmosets = {'cosmology': self.cosmology,
-                     'parameters': {k:v for k,v in params_values_dict.items() if k not in DDRpars+list(SNmodel.keys())}}
+                     'parameters': {k:v for k,v in params_values_dict.items() if k not in DDRpars}}
 
         if params_values_dict['rd'] == 0.:
             del cosmosets['parameters']['rd']

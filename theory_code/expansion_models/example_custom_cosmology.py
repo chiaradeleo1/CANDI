@@ -13,9 +13,14 @@ class CustomExpansion:
     def __init__(self,call_name):
 
         self.label = 'Custom'
+        #MM: do we want default value to be used if
+        #nothing is passed? Right now, if you don't
+        #pass the value of even one parameter,
+        #it dies a horrible death
         self.recognized_params = {'omegam': 0.32,
                                   'H0': 67.,
                                   'Delta': 0.,
+                                  'Gamma': 0.,
                                   'ombh2': 0.02218}
 
         if call_name == self.label:
@@ -39,6 +44,9 @@ class CustomExpansion:
             sys.exit('Error in {} cosmology code!\n Unknown parameters: {}'.format(self.label,unknown))
 
         zfine  = np.linspace(min(self.zcalc),max(self.zcalc),len(self.zcalc)*10)
+
+        #MM: completely fake model for expansion
+        #DO NOT USE THIS FOR PAPERS!
         hubble = params['H0']*np.sqrt(params['omegam']*(1+zfine)**(3+params['Delta'])+(1-params['omegam']))
         Hz = interp1d(zfine,hubble/clight)
 
@@ -57,4 +65,19 @@ class CustomExpansion:
                   'rdrag': rdrag,
                   'omegaL': 1-params['omegam']}
 
+        theory['eta_EM'],theory['eta_GW'] = self.get_custom_DDR(params,theory['H_kmsMpc'])
+
         return theory
+
+    def get_custom_DDR(self,params,H):
+        #MM: this is a completely fake model of
+        #DDR violation!
+
+        Om = (params['H0']/H(self.zcalc))**2*params['omegam']*(1+self.zcalc)**(3+params['Delta'])
+        if 'Gamma' in params:        
+            eta_EM = interp1d(self.zcalc,1+params['Gamma']*Om)
+        else:
+            eta_EM = lambda x: 1.
+        eta_GW = lambda x: 1.
+
+        return eta_EM, eta_GW
