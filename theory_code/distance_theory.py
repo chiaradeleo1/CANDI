@@ -141,7 +141,6 @@ class TheoryCalcs:
         self.DM = interp1d(self.zcalc,self.comoving(self.zcalc))
         self.DH = interp1d(self.zcalc,1/(self.H_Mpc(self.zcalc)))
         self.DV = interp1d(self.zcalc, (self.zcalc*self.comoving(self.zcalc)**2/self.H_Mpc(self.zcalc))**(1/3))
-        self.dA = interp1d(self.zcalc,self.comoving(self.zcalc)/(1+self.zcalc))
 
         if type(fiducial) == str:
             fidtable = pd.read_csv(fiducial,header=0,sep='\t')
