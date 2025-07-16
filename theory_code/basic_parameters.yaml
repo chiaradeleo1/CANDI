@@ -7,10 +7,7 @@ params:
   a_GW: 1.
   n_GW: 1.
   rd: 0.
-  omegaL:
-    derived: True
-  rdrag:
-    derived: True
 cosmology: null
 DDR_options: null
 fiducial: null
+derived_pars: null

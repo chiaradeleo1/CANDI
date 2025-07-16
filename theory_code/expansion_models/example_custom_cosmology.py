@@ -23,6 +23,8 @@ class CustomExpansion:
                                   'Gamma': 0.,
                                   'ombh2': 0.02218}
 
+        self.derived_params = ['rdrag','omegaL','Xi']
+
         if call_name == self.label:
             self.used = True
 
@@ -63,7 +65,8 @@ class CustomExpansion:
                   'H_kmsMpc': interp1d(zfine,hubble),
                   'comoving': interp1d(self.zcalc,comov),
                   'rdrag': rdrag,
-                  'omegaL': 1-params['omegam']}
+                  'omegaL': 1-params['omegam'],
+                  'Xi': params['Gamma']+params['Delta']}
 
         theory['eta_EM'],theory['eta_GW'] = self.get_custom_DDR(params,theory['H_kmsMpc'])
 

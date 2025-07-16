@@ -1,13 +1,13 @@
 #Choose root of output files
-output: chains/LCDM_DESI_noBBN
+output: chains/LCDM_Pantheon_gaussprior
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: ./data/DESI_table
-  data_format: DESI
-  observables: alphas
 SN_data:
+  path: data/Pantheon
+  use_Pantheon: True
+  calibration: SH0ES
 GW_data:
 
 #####THEORY OPTIONS#####
@@ -22,13 +22,7 @@ fiducial_path: null
 #samplers options hard-coded in runner.py
 sampler:
   name: nautilus
-  options:
-    num_threads: 1
-    pool: 1
-    n_live: 4000
-    n_batch: 512
-    n_networks: 16
-
+  options: poor
 
 params: 
   omegam:
@@ -47,7 +41,17 @@ params:
     value: "lambda omegam, ombh2, omnuh2, H0: omegam*(H0/100)**2-ombh2-omnuh2"
     latex: '\Omega_\mathrm{c} h^2'
 
-  ombh2: 0.02218
+  ombh2:
+    latex: '\Omega_\mathrm{b} h^2'
+    prior:
+      dist: norm
+      loc: 0.02218
+      scale: 0.00055 
+    proposal: 0.0001
+    ref:
+      dist: norm
+      loc: 0.0222
+      scale: 0.0001
 
   H0:
     latex: 'H_0'
@@ -59,26 +63,23 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
-  rd:
-    latex: 'r_\mathrm{d}'
-    prior:
-      max: 200
-      min: 100
-    proposal: 1.
+  MB:
+    latex: 'M_B'
+    proposal: 0.01
     ref:
       dist: norm
-      loc: 150.
-      scale: 1.
-  MB: -19.2435
+      loc: -19.2435
+      scale: 0.01
+    prior:
+      dist: norm
+      loc: -19.2435
+      scale: 0.0373 
   omk: 0.
   w: -1.
   wa: 0.
   omnuh2: 0.00064420
   nnu: 3
 
-  h_rdrag:
-    derived: "lambda H0,rd: H0*rd/100"
-    latex: 'h\,r_\mathrm{d}'
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

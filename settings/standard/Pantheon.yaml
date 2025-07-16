@@ -1,12 +1,9 @@
 #Choose root of output files
-output: chains/LCDM_DESI_Pantheon_SH0ES
+output: chains/LCDM_Pantheon_SH0ES
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: data/DESI_table
-  data_format: DESI
-  observables: alphas
 SN_data:
   path: data/Pantheon
   use_Pantheon: True
@@ -25,12 +22,7 @@ fiducial_path: null
 #samplers options hard-coded in runner.py
 sampler:
   name: nautilus
-  options:
-    num_threads: 1
-    pool: 1
-    n_live: 4000
-    n_batch: 512
-    n_networks: 16
+  options: poor
 
 params: 
   omegam:
@@ -72,7 +64,7 @@ params:
       loc: 67.0
       scale: 0.5
   MB:
-    latex: M_B
+    latex: 'M_B'
     proposal: 0.01
     ref:
       dist: norm

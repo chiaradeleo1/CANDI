@@ -48,6 +48,7 @@ class TheoryCalcs:
 
         if not run_all:
             self.recognized_params = cosmo_module.recognized_params
+            self.derived_params    = cosmo_module.derived_params
             return
 
         ##################
@@ -117,7 +118,7 @@ class TheoryCalcs:
         ########################
         #Computing SN magnitude#
         ########################
-        self.mB = self.get_mB(self.DL_EM,SNmodel)
+        self.mB,self.MB = self.get_magnitudes(self.DL_EM,SNmodel)
 
     def get_parameterized_DDR(self,DDR):
 
@@ -174,7 +175,7 @@ class TheoryCalcs:
 
         return dL
 
-    def get_mB(self,dL,MBpars):
+    def get_magnitudes(self,dL,MBpars):
 
         if MBpars['model'] == 'constant':
             MB = lambda x: MBpars['MB']
@@ -185,7 +186,7 @@ class TheoryCalcs:
         eps_dL = 1.e-6
         mB = interp1d(self.zcalc,5*np.log10(dL(self.zcalc)+eps_dL)+MB(self.zcalc)+25,kind='linear')
 
-        return mB
+        return mB,MB
 
     def import_classes_from_folder(self,folder_path):
         #MM: this was done by Gemini

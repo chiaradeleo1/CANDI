@@ -86,7 +86,7 @@ class SNLike(Likelihood):
 
     def get_requirements(self):
         # Requirements are the output of the theory code that you are using
-        requirements = {'mB': None}
+        requirements = {'mB': None,'abs_mag': None}
 
         return requirements
     
@@ -96,7 +96,7 @@ class SNLike(Likelihood):
             if self.calibration == 'SH0ES':
                 z = self.dataset_SN['z'].values
                 mB_theory = np.zeros_like(z)
-                mB_theory[self.is_calibrator] = self.cepheid_distance[self.is_calibrator]
+                mB_theory[self.is_calibrator] = self.cepheid_distance[self.is_calibrator]+self.provider.get_result('abs_mag')(z[self.is_calibrator])
                 mB_theory[~self.is_calibrator] = self.provider.get_result('mB')(z[~self.is_calibrator])
                 diffvec_SN = mB_theory - self.dataset_SN['mB'].values
             elif self.calibration == 'Gaussian':
@@ -104,7 +104,7 @@ class SNLike(Likelihood):
             else:
                 sys.exit('Unknown SN calibration: {}'.format(self.calibration))
 
-            loglike = -0.5*np.dot((diffvec_SN),np.dot(self.invcovmat,(diffvec_SN)))
+            loglike = -0.5*np.dot(diffvec_SN,np.dot(self.invcovmat,diffvec_SN))
         else:
             diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'].values)
 
@@ -117,5 +117,6 @@ class SNLike(Likelihood):
             chi2_marg = a+ np.log(e/(2*np.pi)) - b**2/e
 
             loglike = -0.5 * chi2_marg
+
 
         return loglike

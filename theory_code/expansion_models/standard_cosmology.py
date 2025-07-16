@@ -22,6 +22,8 @@ class StandardExpansion:
                                   'omnuh2': None,
                                   'nnu': None}
 
+        self.derived_params = ['rdrag','omegaL']
+
         if call_name == self.label:
             self.used = True
 

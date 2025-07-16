@@ -88,6 +88,12 @@ full_params = deepcopy(basic_params)
 for par,val in pre_init.recognized_params.items():
     full_params['params'][par] = val
 
+#Adding derived parameters
+for par in pre_init.derived_params:
+    full_params['params'][par] = {'derived': True}
+
+info['theory']['CalcDist']['derived_pars'] = pre_init.derived_params
+
 import yaml
 f = open('theory_code/CalcDist.yaml', 'w+')
 yaml.dump(full_params,f)
@@ -105,6 +111,21 @@ if info['sampler']['name'] in ['mcmc','minimize','evaluate']:
 elif info['sampler']['name'] == 'nautilus':
     print('Running with Nautilus')
     from samplers.samplers_interface import nautilus_interface
+
+    #MM: this is a switch for nautilus options
+    #I got sick of switching from one to the other
+    if info['sampler']['options'] == 'poor':
+        info['sampler']['options'] = {'num_threads': 1,
+                                      'pool': 1,
+                                      'n_live': 500,
+                                      'n_batch': 64,
+                                      'n_networks': 2}
+    elif info['sampler']['options'] == 'good':
+        info['sampler']['options'] = {'num_threads': 1,
+                                      'pool': 1,
+                                      'n_live': 4000,
+                                      'n_batch': 512,
+                                      'n_networks': 16}
 
     info['sampler'] = {'nautilus': info['sampler']['options']}
 

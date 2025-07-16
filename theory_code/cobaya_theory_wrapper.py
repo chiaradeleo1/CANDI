@@ -19,7 +19,7 @@ class CalcDist(Theory):
         #MM: eventually to be made options
         #They should be ok in most cases
         
-        self.settings = {'zmin': 0.001,
+        self.settings = {'zmin': 0.0001,
                          'zmax': 5.,
                          'Nz': 1000,
                          'zdrag': 1060}
@@ -31,6 +31,9 @@ class CalcDist(Theory):
                              'omk': 0.,
                              'mnu': 0.06,
                              'nnu': 3.}
+
+        print('AAAAAAAAAAAA')
+        print(self.derived_pars)
        
         ##################################
 
@@ -45,11 +48,11 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV','DL_EM','DL_GW','mB','DV_rd','DM_DH','DM_rd','DH_rd','alpha_iso','alpha_AP']
+        return ['DM','DH','DV','DL_EM','DL_GW','mB','abs_mag','DV_rd','DM_DH','DM_rd','DH_rd','alpha_iso','alpha_AP']
 
     def get_can_provide_params(self):
 
-        return ['rdrag','omegaL']
+        return self.derived_pars#['rdrag','omegaL']
 
     def calculate(self, state, want_derived=True, **params_values_dict):
 
@@ -83,4 +86,5 @@ class CalcDist(Theory):
         state['DL_EM']     = theory.DL_EM
         state['DL_GW']     = theory.DL_GW
         state['mB']        = theory.mB
-        state['derived']   = {'rdrag': theory.rdrag, 'omegaL': theory.omegaL}
+        state['abs_mag']   = theory.MB
+        state['derived']   = {par: getattr(theory,par) for par in self.derived_pars}

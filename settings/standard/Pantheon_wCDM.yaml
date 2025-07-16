@@ -1,18 +1,19 @@
 #Choose root of output files
-output: chains/LCDM_DESI_distances
+output: chains/wCDM_Pantheon_SH0ES
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: ./data/DESI_table
-  data_format: DESI
-  observables: distances
 SN_data:
+  path: data/Pantheon
+  use_Pantheon: True
+  calibration: SH0ES
 GW_data:
 
 #####THEORY OPTIONS#####
 #Cosmological model: Standard, Custom
 cosmology: Standard
+
 
 fiducial_path: null
   #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
@@ -21,13 +22,7 @@ fiducial_path: null
 #samplers options hard-coded in runner.py
 sampler:
   name: nautilus
-  options:
-    num_threads: 1
-    pool: 1
-    n_live: 4000
-    n_batch: 512
-    n_networks: 16
-
+  options: poor
 
 params: 
   omegam:
@@ -68,9 +63,27 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
-  MB: -19.2435
+  MB:
+    latex: 'M_B'
+    proposal: 0.01
+    ref:
+      dist: norm
+      loc: -19.2435
+      scale: 0.01
+    prior:
+      min: -22.
+      max: -15.
   omk: 0.
-  w: -1.
+  w:
+    latex: 'w_0'
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: -1.
+      scale: 0.01
+    prior:
+      min: -3.
+      max: -0.5
   wa: 0.
   omnuh2: 0.00064420
   nnu: 3
