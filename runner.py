@@ -9,7 +9,6 @@ from copy import deepcopy
 
 from likelihood.BAO_likelihood         import BAOLike
 from likelihood.SN_likelihood          import SNLike
-from likelihood.SNnoprior_likelihood   import SNnopriorLike
 from likelihood.GW_likelihood          import GWLike
 from theory_code.cobaya_theory_wrapper import CalcDist
 
