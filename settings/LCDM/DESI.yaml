@@ -1,23 +1,19 @@
 #Choose root of output files
-output: chains/DDR_GW
+output: chains/LCDM_DESI
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
+  path: ./data/DESI_table
+  data_format: DESI
+  observables: alphas
 SN_data:
 GW_data:
-  path: mock_data/GWmock_LCDM
 
 #####THEORY OPTIONS#####
 #Cosmological model: Standard, Custom
 cosmology: Standard
 
-
-#Available options for DDR:
-#eta_model: polynomial
-DDR_options:
-  eta_model: polynomial
-  use_pade: False
 
 fiducial_path: null
   #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
@@ -78,29 +74,6 @@ params:
   wa: 0.
   omnuh2: 0.00064420
   nnu: 3
-  
-  a_EM: 1
-  n_EM: 1
-  epsilon0_EM: 
-    prior: 
-      min: -0.5
-      max: 0.5
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.1
-    latex: '\epsilon_0^\mathrm{EM}'
-  a_GW: 1
-  n_GW: 1
-  epsilon0_GW:
-    prior:
-      min: -0.5
-      max: 0.5
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.1
-    latex: '\epsilon_0^\mathrm{GW}'
 
   rdrag:
     latex: 'r_\mathrm{d}'

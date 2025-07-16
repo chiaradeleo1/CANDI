@@ -1,13 +1,12 @@
 #Choose root of output files
-output: chains/test_alphas_fiducial
+output: chains/LCDM_DESI_distances
 
-#####DATA OPTIONS#####
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: /home/Matteo/data/DESI_BAO/DESI_table
+  path: ./data/DESI_table
   data_format: DESI
-  observables: alphas
+  observables: distances
 SN_data:
 GW_data:
 
@@ -15,28 +14,21 @@ GW_data:
 #Cosmological model: Standard, Custom
 cosmology: Standard
 
-
-#Available options for DDR:
-#eta_model: polynomial
-DDR_options: 
-  eta_model: polynomial
-  use_pade: False
-
 fiducial_path: null
   #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
 
-#####SAMPLER OPTIONS#####
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
 sampler:
-  name: evaluate
+  name: nautilus
   options:
-    override:
-      H0: 68.51
-      omegam: 0.2977
-      ombh2: 0.02218
+    num_threads: 1
+    pool: 1
+    n_live: 4000
+    n_batch: 512
+    n_networks: 16
 
-#####PARAMETERS OPTIONS#####
+
 params: 
   omegam:
     latex: '\Omega_\mathrm{m}'

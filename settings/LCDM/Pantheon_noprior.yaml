@@ -1,27 +1,23 @@
 #Choose root of output files
-output: chains/DCDM_BAO_GW
+output: chains/LCDM_Pantheon_noprior
 
-#####DATA OPTIONS#####
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: ./data/DESI_table
-  data_format: DESI
-  observables: alphas
 SN_data:
+  path: data/Pantheon
+  use_Pantheon: True
+  calibration: SH0ES
 GW_data:
-  path: mock_data/GWmock_LCDM
-
 
 #####THEORY OPTIONS#####
 #Cosmological model: Standard, Custom
-cosmology: Custom
+cosmology: Standard
 
 
 fiducial_path: null
   #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
 
-#####SAMPLER OPTIONS#####
 #Available options: mcmc,nautilus,minimize
 #samplers options hard-coded in runner.py
 sampler:
@@ -29,11 +25,10 @@ sampler:
   options:
     num_threads: 1
     pool: 1
-    n_live: 500
-    n_batch: 64
-    n_networks: 2
+    n_live: 4000
+    n_batch: 512
+    n_networks: 16
 
-#####PARAMETERS OPTIONS#####
 params: 
   omegam:
     latex: '\Omega_\mathrm{m}'
@@ -45,6 +40,11 @@ params:
       dist: norm
       loc: 0.3
       scale: 0.01
+    drop: True
+
+  omch2: 
+    value: "lambda omegam, ombh2, omnuh2, H0: omegam*(H0/100)**2-ombh2-omnuh2"
+    latex: '\Omega_\mathrm{c} h^2'
 
   ombh2:
     latex: '\Omega_\mathrm{b} h^2'
@@ -68,17 +68,12 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
-  Delta:
-    latex: '\Delta'
-    prior:
-      max: 0.5
-      min: -0.5
-    proposal: 0.1
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.05
   MB: -19.2435
+  omk: 0.
+  w: -1.
+  wa: 0.
+  omnuh2: 0.00064420
+  nnu: 3
 
   rdrag:
     latex: 'r_\mathrm{d}'

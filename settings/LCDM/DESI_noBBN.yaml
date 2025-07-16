@@ -1,18 +1,19 @@
 #Choose root of output files
-output: chains/DESI_distances
+output: chains/LCDM_DESI_noBBN
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
   path: ./data/DESI_table
   data_format: DESI
-  observables: distances
+  observables: alphas
 SN_data:
 GW_data:
 
 #####THEORY OPTIONS#####
 #Cosmological model: Standard, Custom
 cosmology: Standard
+
 
 fiducial_path: null
   #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
@@ -46,17 +47,7 @@ params:
     value: "lambda omegam, ombh2, omnuh2, H0: omegam*(H0/100)**2-ombh2-omnuh2"
     latex: '\Omega_\mathrm{c} h^2'
 
-  ombh2:
-    latex: '\Omega_\mathrm{b} h^2'
-    prior:
-      dist: norm
-      loc: 0.02218
-      scale: 0.00055 
-    proposal: 0.0001
-    ref:
-      dist: norm
-      loc: 0.0222
-      scale: 0.0001
+  ombh2: 0.02218
 
   H0:
     latex: 'H_0'
@@ -68,6 +59,16 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
+  rd:
+    latex: 'r_\mathrm{d}'
+    prior:
+      max: 200
+      min: 100
+    proposal: 1.
+    ref:
+      dist: norm
+      loc: 150.
+      scale: 1.
   MB: -19.2435
   omk: 0.
   w: -1.
@@ -75,6 +76,9 @@ params:
   omnuh2: 0.00064420
   nnu: 3
 
+  h_rdrag:
+    derived: "lambda H0,rd: H0*rd/100"
+    latex: 'h\,r_\mathrm{d}'
   rdrag:
     latex: 'r_\mathrm{d}'
     derived: True

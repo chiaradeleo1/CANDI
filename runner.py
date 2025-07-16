@@ -48,12 +48,17 @@ if info['BAO_data'] != None:
         info['likelihood']['BAOLike']['observables'] = info['BAO_data']['observables']
 
 if info['SN_data'] != None:
-    if info['SH0ES_prior']  == True:
-        info['likelihood']['SNLike'] =  {'external': SNLike,
-                                         'SN_data_path': info['SN_data']['path']}
+    if info['SN_data']['calibration'] == 'SH0ES':
+        calibration = 'SH0ES'
+    elif type(info['params']['MB']) == dict and info['params']['MB']['prior']['dist'] == 'norm':
+        calibration = 'Gaussian'
     else:
-        info['likelihood']['SNnopriorLike'] =  {'external': SNnopriorLike,
-                                                'SN_data_path': info['SN_data']['path']}
+        calibration = None
+
+    info['likelihood']['SNLike'] =  {'external': SNLike,
+                                     'SN_data_path': info['SN_data']['path'],
+                                     'use_Pantheon': info['SN_data']['use_Pantheon'],
+                                     'calibration': calibration}
     
 if info['GW_data'] != None:
     info['likelihood']['GWLike'] =  {'external': GWLike,

@@ -1,27 +1,22 @@
 #Choose root of output files
-output: chains/DDR_SKA_SN
+output: chains/LCDM_DESI_Pantheon_SH0ES
 
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: mock_data/SKAOmock_data_DHDM
-  data_format: SKA
+  path: data/DESI_table
+  data_format: DESI
+  observables: alphas
 SN_data:
-  path: mock_data/SNmock_LCDM
+  path: data/Pantheon
+  use_Pantheon: True
+  calibration: SH0ES
 GW_data:
-
-SH0ES_prior: False
 
 #####THEORY OPTIONS#####
 #Cosmological model: Standard, Custom
 cosmology: Standard
 
-
-#Available options for DDR:
-#eta_model: polynomial
-DDR_options:
-  eta_model: polynomial
-  use_pade: False
 
 fiducial_path: null
   #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
@@ -36,7 +31,6 @@ sampler:
     n_live: 4000
     n_batch: 512
     n_networks: 16
-
 
 params: 
   omegam:
@@ -77,35 +71,21 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
-  MB: -19.2435
+  MB:
+    latex: M_B
+    proposal: 0.01
+    ref:
+      dist: norm
+      loc: -19.2435
+      scale: 0.01
+    prior:
+      min: -22.
+      max: -15.
   omk: 0.
   w: -1.
   wa: 0.
   omnuh2: 0.00064420
   nnu: 3
-  
-  a_EM: 1
-  n_EM: 1
-  epsilon0_EM: 
-    prior: 
-      min: -0.5
-      max: 0.5
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.1
-    latex: '\epsilon_0^\mathrm{EM}'
-  a_GW: 1
-  n_GW: 1
-  epsilon0_GW:
-    prior:
-      min: -0.5
-      max: 0.5
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.1
-    latex: '\epsilon_0^\mathrm{GW}'
 
   rdrag:
     latex: 'r_\mathrm{d}'
