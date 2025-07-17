@@ -8,6 +8,8 @@ BAO_data:
   data_format: SKA
 SN_data:
   path: mock_data/SNmock_LCDM
+  use_Pantheon: False
+  calibration: null
 GW_data:
   path: mock_data/GWmock_LCDM
 

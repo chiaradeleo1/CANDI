@@ -6,6 +6,8 @@ output: chains/DDR_SN
 BAO_data: 
 SN_data:
   path: mock_data/SNmock_LCDM
+  use_Pantheon: False
+  calibration: null
 GW_data:
 
 #####THEORY OPTIONS#####
@@ -26,12 +28,7 @@ fiducial_path: null
 #samplers options hard-coded in runner.py
 sampler:
   name: nautilus
-  options:
-    num_threads: 1
-    pool: 1
-    n_live: 4000
-    n_batch: 512
-    n_networks: 16
+  options: poor
 
 params: 
   omegam:
