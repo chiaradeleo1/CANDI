@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/DCDM/DCDM_BAO
+output: chains/DCDM/DCDM_BAO_LCDMlimit
 
 #####DATA OPTIONS#####
 #Choose which data to use (path+root)
@@ -61,26 +61,8 @@ params:
       dist: norm
       loc: 67.0
       scale: 0.5
-  Delta:
-    latex: '\Delta'
-    prior:
-      max: 0.5
-      min: -0.5
-    proposal: 0.1
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.05
-  Gamma:
-    latex: '\Gamma'
-    prior:
-      max: 0.5
-      min: -0.5
-    proposal: 0.1
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.05
+  Delta: 0.
+  Gamma: 0.
   MB: -19.2435
 
   rdrag:

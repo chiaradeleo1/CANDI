@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/DCDM/DCDM_BAO
+output: chains/DCDM/DCDM_BAO_SN
 
 #####DATA OPTIONS#####
 #Choose which data to use (path+root)
@@ -9,6 +9,9 @@ BAO_data:
   data_format: DESI
   observables: alphas
 SN_data:
+  path: data/Pantheon
+  use_Pantheon: True
+  calibration: SH0ES
 GW_data:
 
 #####THEORY OPTIONS#####
@@ -81,7 +84,16 @@ params:
       dist: norm
       loc: 0.
       scale: 0.05
-  MB: -19.2435
+  MB:
+    latex: 'M_B'
+    proposal: 0.01
+    ref:
+      dist: norm
+      loc: -19.2435
+      scale: 0.01
+    prior:
+      min: -22.
+      max: -15. 
 
   rdrag:
     latex: 'r_\mathrm{d}'
