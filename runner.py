@@ -24,22 +24,16 @@ info = read(sys.argv[1])
 if 'resume' not in info:
     info['force'] = True
 
-#output_folder = [ ]
-
-
-#for folder in output_folder:
-#    if not os.path.exists(folder):
-#        os.makedirs(folder)
-
-
-
 tini = time.time()
 #MM: we should find a better and more general way to fill the likelihood
 
 #####LOAD LIKELIHOODS#####
-#MM: this can probably be made way nicer
+#MM: this can probably be made way nicer or at least moved under the carpet in a separate module
 info['likelihood'] = {}
 if info['BAO_data'] != None:
+    print('')
+    print('BAO DATA INFO')
+    print('')
     info['likelihood']['BAOLike'] = {'external': BAOLike,
                                      'BAO_data_path': info['BAO_data']['path'],
                                      'data_format': info['BAO_data']['data_format']}
@@ -47,12 +41,22 @@ if info['BAO_data'] != None:
         info['likelihood']['BAOLike']['observables'] = info['BAO_data']['observables']
 
 if info['SN_data'] != None:
+    print('')
+    print('SN DATA INFO')
+    print('')
     if info['SN_data']['calibration'] == 'SH0ES':
+        print('Using SH0ES calibration')
         calibration = 'SH0ES'
     elif type(info['params']['MB']) == dict and info['params']['MB']['prior']['dist'] == 'norm':
+        print('Using Gaussian prior on MB')
         calibration = 'Gaussian'
     else:
         calibration = None
+        print('')
+        print('Using the SN likelihood analytically marginalized for H0 and MB.\n These parameters will be removed from the sampling if present')
+        print('')
+        info['params']['H0'] = 73.4
+        info['params']['MB'] = -19.2435
 
     info['likelihood']['SNLike'] =  {'external': SNLike,
                                      'SN_data_path': info['SN_data']['path'],
@@ -60,6 +64,9 @@ if info['SN_data'] != None:
                                      'calibration': calibration}
     
 if info['GW_data'] != None:
+    print('')
+    print('GW DATA INFO')
+    print('')
     info['likelihood']['GWLike'] =  {'external': GWLike,
                                      'GW_data_path': info['GW_data']['path']}
 

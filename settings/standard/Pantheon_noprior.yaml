@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/LCDM_Pantheon_noprior
+output: chains/standard/LCDM_Pantheon_noprior
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -7,7 +7,7 @@ BAO_data:
 SN_data:
   path: data/Pantheon
   use_Pantheon: True
-  calibration: SH0ES
+  calibration: null
 GW_data:
 
 #####THEORY OPTIONS#####

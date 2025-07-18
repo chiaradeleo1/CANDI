@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/LCDM_DESI_Pantheon_SH0ES
+output: chains/standard/LCDM_DESI_Pantheon_SH0ES
 
 #Choose which data to use (path+root)
 #if empty, data are not used
