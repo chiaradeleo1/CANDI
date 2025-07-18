@@ -32,9 +32,6 @@ class CalcDist(Theory):
                              'mnu': 0.06,
                              'nnu': 3.}
 
-        print('AAAAAAAAAAAA')
-        print(self.derived_pars)
-       
         ##################################
 
         self.zcalc = np.linspace(self.settings['zmin'],self.settings['zmax'],self.settings['Nz'])
