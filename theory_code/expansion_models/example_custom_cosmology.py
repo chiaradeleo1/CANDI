@@ -54,7 +54,7 @@ class CustomExpansion:
 
         comov_vec = []
         for z in self.zcalc:
-            zint = np.linspace(0.001,z,10)
+            zint = np.linspace(min(self.zcalc),z,10)
             comov_vec.append(trapezoid([1/Hz(zi) for zi in zint],x=zint))
         comov = np.array(comov_vec)
 

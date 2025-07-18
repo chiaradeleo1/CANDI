@@ -32,6 +32,7 @@ class SNLike(Likelihood):
         
         data = pd.read_csv(self.SN_data_path+'_data.txt',sep='\s+')
         self.origlen = len(data)
+        print(self.calibration)
         if self.calibration == 'SH0ES': ## use the calibrated Pantheon data to include the SH0ES prior instead of including it as a gaussian prior
             self.ww = (data['zHD'] > 0.01) | (np.array(data['IS_CALIBRATOR'], dtype=bool))
         else:
@@ -92,6 +93,7 @@ class SNLike(Likelihood):
     
     def logp(self, **params_values): 
 
+        print(self.calibration)
         if self.calibration != None:
             if self.calibration == 'SH0ES':
                 z = self.dataset_SN['z'].values
