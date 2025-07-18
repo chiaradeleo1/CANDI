@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/DDR_SN
+output: chains/DDR/DDR_SN
 
 #Choose which data to use (path+root)
 #if empty, data are not used

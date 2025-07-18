@@ -1,5 +1,5 @@
 #Choose root of output files
-output: chains/DDR_SKA_SN
+output: chains/DDR/DDR_SKA_SN
 
 #Choose which data to use (path+root)
 #if empty, data are not used
@@ -30,13 +30,7 @@ fiducial_path: null
 #samplers options hard-coded in runner.py
 sampler:
   name: nautilus
-  options:
-    num_threads: 1
-    pool: 1
-    n_live: 4000
-    n_batch: 512
-    n_networks: 16
-
+  options: poor
 
 params: 
   omegam:
