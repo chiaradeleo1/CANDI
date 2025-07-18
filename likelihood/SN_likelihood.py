@@ -61,6 +61,7 @@ class SNLike(Likelihood):
         # to match the only rows of data that are used for cosmology
 
         f = open(filename)
+        line = f.readline()
         n = int(len(self.zCMB))
         C = np.zeros((n,n))
         ii = -1
