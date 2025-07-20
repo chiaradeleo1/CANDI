@@ -14,12 +14,11 @@ import pprint
 
 class Analyzer:
 
-    def __init__(self,settings,fiducial):
+    def __init__(self,fiducial):
 
         self.fiducial = fiducial.values()
 
-        self.MH       = settings['Metropolis-Hastings']
-        self.Nautilus = settings['Nautilus']
+        self.MH       = {'ignore_rows': 0.3}
         #self.emcee    = settings['emcee']
 
     def print_dict(self,d,indent=4):
@@ -32,14 +31,6 @@ class Analyzer:
         return None
 
     def get_chain_info(self,info):
-        #This functions reads in all the files associated with a given chain
-        #It looks for different files depending on the sampler
-        #MH:
-        # - chain txt file for different number of chains
-        # - .minimum file (not required)
-        #Nautilus:
-        # - _chain.txt file
-        # - _params.npy file
 
         chain_info = deepcopy(info)
 
@@ -62,17 +53,9 @@ class Analyzer:
 
         elif info['sampler'] == 'Nautilus':
 
-            chain_info['outyaml'] = read(info['path']+'.params.yaml', file_type='yaml')
+            chain_info['params'] = read(info['path']+'.params.yaml', file_type='yaml')
 
-            primary_pars = {par: chain_info['outyaml']['params'][par]['latex'] 
-                            for par in chain_info['outyaml']['params']
-                            if type(chain_info['outyaml']['params'][par]) == dict and 'prior' in chain_info['outyaml']['params'][par]}
-            
-            derived_pars = {par: chain_info['outyaml']['params'][par]['latex']
-                            for par in chain_info['outyaml']['params']
-                            if type(chain_info['outyaml']['params'][par]) == dict and 'prior' not in chain_info['outyaml']['params'][par]}
-
-            pars = primary_pars | derived_pars
+            pars = deepcopy(chain_info['params']) 
 
             raw_chains = pd.read_csv(info['path']+'_chain.txt',sep='\s+',
                                      header=None,names=['weight','minuslogpost']+list(pars.keys()))
@@ -123,7 +106,7 @@ class Analyzer:
 
        
         #Common analysis part
-        chain_report['MCsamples'] = sample
+        chain_report['sample'] = sample
         chain_report['bounds'] = sample.getTable(limit=1).tableTex()
 
         print(chain_report['bounds'])
@@ -150,6 +133,7 @@ class Analyzer:
             best_fit['chi2'] = 2*best_fit['loglike']
         except:
             print('Best fit chi2 not available')
+
         chain_report['Estimators'] = pd.DataFrame.from_dict({par: [means[par],best_fit[par]] for par in all_pars if par not in discard})
         chain_report['Estimators']['Type']      = ['Mean','Best-Fit']
         chain_report['Estimators']['Cosmology'] = name
