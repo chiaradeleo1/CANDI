@@ -5,9 +5,6 @@ output: chains/DCDM/DCDM_SN_nogamma
 #Choose which data to use (path+root)
 #if empty, data are not used
 BAO_data: 
-  path: ./data/DESI_table
-  data_format: DESI
-  observables: alphas
 SN_data:
   path: data/Pantheon
   use_Pantheon: True
