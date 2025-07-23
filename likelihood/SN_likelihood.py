@@ -100,24 +100,26 @@ class SNLike(Likelihood):
                 mB_theory[self.is_calibrator] = self.cepheid_distance[self.is_calibrator]+self.provider.get_result('abs_mag')(z[self.is_calibrator])
                 mB_theory[~self.is_calibrator] = self.provider.get_result('mB')(z[~self.is_calibrator])
                 diffvec_SN = mB_theory - self.dataset_SN['mB'].values
-            elif self.calibration == 'Gaussian':
-                diffvec_SN = self.provider.get_result('mB')(self.dataset_SN['z'].values)-self.dataset_SN['mB'].values
+                loglike = -0.5*np.dot(diffvec_SN,np.dot(self.invcovmat,diffvec_SN))
+            elif self.calibration == 'Marginalized':
+                diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'].values)
+
+                unit = np.ones(len(diffvec_SN))
+
+                a = np.dot(diffvec_SN,np.dot(self.invcovmat,diffvec_SN))
+                b = np.dot(diffvec_SN,np.dot(self.invcovmat,unit))
+                e = np.dot(unit,np.dot(self.invcovmat,unit))
+
+                chi2_marg = a+ np.log(e/(2*np.pi)) - b**2/e
+
+                loglike = -0.5 * chi2_marg
             else:
                 sys.exit('Unknown SN calibration: {}'.format(self.calibration))
 
-            loglike = -0.5*np.dot(diffvec_SN,np.dot(self.invcovmat,diffvec_SN))
         else:
-            diffvec_SN = (self.provider.get_result('mB')(self.dataset_SN['z'].values))-(self.dataset_SN['mB'].values)
-
-            unit = np.ones(len(diffvec_SN))
-
-            a = np.dot(diffvec_SN,np.dot(self.invcovmat,diffvec_SN))
-            b = np.dot(diffvec_SN,np.dot(self.invcovmat,unit))
-            e = np.dot(unit,np.dot(self.invcovmat,unit))
-
-            chi2_marg = a+ np.log(e/(2*np.pi)) - b**2/e
-
-            loglike = -0.5 * chi2_marg
+            
+            diffvec_SN = self.provider.get_result('mB')(self.dataset_SN['z'].values)-self.dataset_SN['mB'].values
+            loglike = -0.5*np.dot(diffvec_SN,np.dot(self.invcovmat,diffvec_SN))
 
 
         return loglike

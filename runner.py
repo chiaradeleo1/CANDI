@@ -47,16 +47,21 @@ if info['SN_data'] != None:
     if info['SN_data']['calibration'] == 'SH0ES':
         print('Using SH0ES calibration')
         calibration = 'SH0ES'
-    elif type(info['params']['MB']) == dict and info['params']['MB']['prior']['dist'] == 'norm':
-        print('Using Gaussian prior on MB')
-        calibration = 'Gaussian'
-    else:
+    elif info['SN_data']['calibration'] == 'Marginalized':
         calibration = None
         print('')
         print('Using the SN likelihood analytically marginalized for H0 and MB.\n These parameters will be removed from the sampling if present')
         print('')
         info['params']['H0'] = 73.4
         info['params']['MB'] = -19.2435
+    else:
+        calibration = None
+        print('')
+        if 'dist' in info['params']['MB']['prior'].keys() and info['params']['MB']['prior']['dist'] == 'norm':
+            print('Using the SN likelihood with a prior gaussian prior on MB')
+        else:
+            print('Using the SN likelihood with a flat prior on MB')
+        
 
     info['likelihood']['SNLike'] =  {'external': SNLike,
                                      'SN_data_path': info['SN_data']['path'],

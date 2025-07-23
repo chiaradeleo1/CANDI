@@ -7,7 +7,7 @@ BAO_data:
 SN_data:
   path: mock_data/SNmock_LCDM
   use_Pantheon: False
-  calibration: null
+  calibration: Marginalized
 GW_data:
 
 #####THEORY OPTIONS#####
