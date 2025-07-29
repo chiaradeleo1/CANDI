@@ -50,10 +50,10 @@ if info['SN_data'] != None:
     elif info['SN_data']['calibration'] == 'Marginalized':
         calibration = None
         print('')
-        print('Using the SN likelihood analytically marginalized for H0 and MB.\n These parameters will be removed from the sampling if present')
+        print('Using the SN likelihood analytically marginalized for H0 and MB.')#\n These parameters will be removed from the sampling if present')
         print('')
-        info['params']['H0'] = 73.4
-        info['params']['MB'] = -19.2435
+#        info['params']['H0'] = 73.4
+#        info['params']['MB'] = -19.2435
     else:
         calibration = None
         print('')
