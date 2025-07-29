@@ -36,7 +36,7 @@ class Analyzer:
 
         if info['sampler'] == 'MH':
             #Read parameters
-            chain_info['outyaml'] = read(info['path']+'.updated.yaml', file_type='yaml')
+            #chain_info['outyaml'] = read(info['path']+'.updated.yaml', file_type='yaml')
             
             columns = open(info['path']+'.1.txt').readline().rstrip().split()
             columns.pop(0)
@@ -71,7 +71,7 @@ class Analyzer:
 
         return chain_info
 
-    def analyze_chain(self,name,info):
+    def analyze_chain(self,name,info,print_bounds=False):
         #This function analyzes the chains depending on sampler.
         #it returns
         # - getdist objects for contour plotting
@@ -109,14 +109,16 @@ class Analyzer:
         chain_report['sample'] = sample
         chain_report['bounds'] = sample.getTable(limit=1).tableTex()
 
-        print(chain_report['bounds'])
+        if print_bounds:
+            print(chain_report['bounds'])
         
         all_pars     = sample.getParamNames().list()
         labels       = sample.getParamNames().labels()
         primary_pars = sample.getParamNames().getRunningNames()
    
     
-        means    = {par:val for par,val in zip(all_pars,sample.getMeans())}
+        chain_report['means']  = {par:val for par,val in zip(all_pars,sample.getMeans())}
+        chain_report['errors'] = {par: np.sqrt(val) for par,val in zip(all_pars,sample.getVars())}
         discard  = ['weight','minuslogpost','minuslogprior', 
                     'minuslogprior__0']
         try:
@@ -127,14 +129,14 @@ class Analyzer:
                 best_fit = sample.getParamBestFitDict(best_sample=True)
             except:
                 print('Best sample unavailable for some reason. Using means as best fit (DO NOT TRUST THIS!)')
-                best_fit = deepcopy(means)
+                best_fit = deepcopy(chain_reports['means'])
 
         try:
             best_fit['chi2'] = 2*best_fit['loglike']
         except:
             print('Best fit chi2 not available')
 
-        chain_report['Estimators'] = pd.DataFrame.from_dict({par: [means[par],best_fit[par]] for par in all_pars if par not in discard})
+        chain_report['Estimators'] = pd.DataFrame.from_dict({par: [chain_report['means'][par],best_fit[par]] for par in all_pars if par not in discard})
         chain_report['Estimators']['Type']      = ['Mean','Best-Fit']
         chain_report['Estimators']['Cosmology'] = name
     
