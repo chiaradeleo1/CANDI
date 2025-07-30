@@ -71,7 +71,7 @@ class Analyzer:
 
         return chain_info
 
-    def analyze_chain(self,name,info,print_bounds=False):
+    def analyze_chain(self,name,info,print_bounds=False,feedback=False):
         #This function analyzes the chains depending on sampler.
         #it returns
         # - getdist objects for contour plotting
@@ -82,18 +82,20 @@ class Analyzer:
         chain_info   = self.get_chain_info(info)
         chain_report = deepcopy(chain_info)
 
-        print('')
-        print('\x1b[1;31m Analyzing {} \x1b[0m'.format(name))
+        if feedback:
+            print('')
+            print('\x1b[1;31m Analyzing {} \x1b[0m'.format(name))
 
         #Here creates MCsamples object from different sampler
         if info['sampler'] == 'MH':
             sample = loadMCSamples(info['path'], settings=self.MH)
 
-            if info['Nchains']>1:
-                print('R-1({}) with {:.0f}% of points ignored = {:.3f}'.format(name,100*self.MH['ignore_rows'],
+            if feedback:
+                if info['Nchains']>1:
+                    print('R-1({}) with {:.0f}% of points ignored = {:.3f}'.format(name,100*self.MH['ignore_rows'],
                                                                            sample.getGelmanRubin()))
-            else:
-                print('Single chain, no R-1 computed. Trust Cobaya and hope for the best')
+                else:
+                    print('Single chain, no R-1 computed. Trust Cobaya and hope for the best')
 
         elif info['sampler'] == 'Nautilus':
             sample    = MCSamples(samples=chain_info['Raw chains'][list(chain_info['Nautilus pars'].keys())].values,
@@ -109,7 +111,7 @@ class Analyzer:
         chain_report['sample'] = sample
         chain_report['bounds'] = sample.getTable(limit=1).tableTex()
 
-        if print_bounds:
+        if print_bounds and feedback:
             print(chain_report['bounds'])
         
         all_pars     = sample.getParamNames().list()
@@ -124,17 +126,20 @@ class Analyzer:
         try:
             best_fit = sample.getParamBestFitDict()
         except:
-            print('no .minimum file available for {}. Switching to best sample'.format(name))
+            if feedback:
+                print('no .minimum file available for {}. Switching to best sample'.format(name))
             try:
                 best_fit = sample.getParamBestFitDict(best_sample=True)
             except:
-                print('Best sample unavailable for some reason. Using means as best fit (DO NOT TRUST THIS!)')
-                best_fit = deepcopy(chain_reports['means'])
+                if feedback:
+                    print('Best sample unavailable for some reason. Using means as best fit (DO NOT TRUST THIS!)')
+                best_fit = deepcopy(chain_report['means'])
 
         try:
             best_fit['chi2'] = 2*best_fit['loglike']
         except:
-            print('Best fit chi2 not available')
+            if feedback:
+                print('Best fit chi2 not available')
 
         chain_report['Estimators'] = pd.DataFrame.from_dict({par: [chain_report['means'][par],best_fit[par]] for par in all_pars if par not in discard})
         chain_report['Estimators']['Type']      = ['Mean','Best-Fit']
