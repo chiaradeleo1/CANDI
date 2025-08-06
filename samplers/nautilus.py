@@ -62,7 +62,7 @@ def nautilus_interface(info):
 
     print('Starting to sample with Nautilus...')
     nautilus_options = {k:v for k,v in info['sampler']['nautilus'].items() if k != 'num_threads'}
-    if 'output' in info:
+    if 'output' in info and info['output'] != '':
         nautilus_options['filepath'] = info['output']+'.hdf5'
 
     sampler = Sampler(prior,likelihood_nautilus,**nautilus_options,blobs_dtype=blob_vec)
@@ -74,7 +74,7 @@ def nautilus_interface(info):
 
     nautilus_dict = {par: info['params'][par]['latex'] for par in prior.keys} | {par: info['params'][par]['latex'] for par in derived_pars}
 
-    if info['output'] != '':
+    if 'output' in info and info['output'] != '':
         with open(info['output']+'.params.yaml', 'w') as outfile:
             yaml.dump(nautilus_dict, outfile, default_flow_style=False)
 
@@ -87,5 +87,5 @@ def nautilus_interface(info):
 
     print('NAUTILUS SAMPLING FINISHED')
 
-    return results
+    return results,nautilus_dict
 

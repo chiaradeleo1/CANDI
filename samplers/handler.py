@@ -22,7 +22,7 @@ class SamplingHandler:
 
         from cobaya.run import run
 
-        samp_dict        = {info['sampler']['name']: samp_info['options']}
+        samp_dict        = {samp_info['name']: samp_info['options']}
         running_function = run
 
         return samp_dict,running_function
