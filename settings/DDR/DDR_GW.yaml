@@ -45,17 +45,7 @@ params:
     value: "lambda omegam, ombh2, omnuh2, H0: omegam*(H0/100)**2-ombh2-omnuh2"
     latex: '\Omega_\mathrm{c} h^2'
 
-  ombh2:
-    latex: '\Omega_\mathrm{b} h^2'
-    prior:
-      dist: norm
-      loc: 0.02218
-      scale: 0.00055 
-    proposal: 0.0001
-    ref:
-      dist: norm
-      loc: 0.0222
-      scale: 0.0001
+  ombh2: 0.02218
 
   H0:
     latex: 'H_0'
@@ -76,15 +66,7 @@ params:
   
   a_EM: 1
   n_EM: 1
-  epsilon0_EM: 
-    prior: 
-      min: -0.5
-      max: 0.5
-    ref:
-      dist: norm
-      loc: 0.
-      scale: 0.1
-    latex: '\epsilon_0^\mathrm{EM}'
+  epsilon0_EM: 0.0
   a_GW: 1
   n_GW: 1
   epsilon0_GW:
