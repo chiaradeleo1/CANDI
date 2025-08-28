@@ -1,7 +1,7 @@
-# 🍬 CANDi
-**C**osmology with **A**strophysical probes (SN / BAO / GW) for **D**istance **i**nference
+# 🍬 CANDI
+**C**ode for **AN**alysis of modified **D**istance-duality with cosmological Inference
 
-Welcome to the CANDi code!
+Welcome to the CANDI code!
 
 This repository provides a cosmological analysis code to place constraints from **supernovae (SN)**, **baryon acoustic oscillations (BAO)**, and **gravitational waves (GW)** through distance measurements.  
 
@@ -31,11 +31,17 @@ Here you can find:
 - `cobaya`, `camb`, `getdist`, `nautilus`  
 - Optional: `matplotlib`, `jupyter`  
 
-Install dependencies with:
+
+### ⚡ Quickstart
+
 ```bash
+# Clone the repository
+git clone https://github.com/your-username/CANDi.git
+cd CANDi
+
+# Install dependencies
 pip install -r requirements.txt
 ```
-
 ## 📂 Data
 
 The data are **not included** in this repository.  
@@ -63,11 +69,6 @@ Key entries include:
 
 Examples can be found in the `settings/` folder for different cosmological models, while interactive notebook examples are provided under the name **DEMO_**
 
-To run an analysis with:  
-```bash
-python runner.py settings/cosmology_name/case_name.yaml
-```
----
 
 ## 🧩 Custom Cosmology
 
@@ -87,24 +88,11 @@ This makes it easy to go **beyond ΛCDM** and test custom scenarios with SN, BAO
 ## 📜 License & Citation
 
 - License: to be specified (e.g. MIT).  
-- If you use this code, please cite our papers:  
+- If you use this code, please cite our papers:
+  
   > C. De Leo et. al , *Distinguishing Distance Duality breaking models using electromagnetic and gravitational waves measurements*, [arXiv:2505.13613](https://arxiv.org/abs/2505.13613)
 
   > E. Fazzari, C. De Leo et. al , *Investigating f(R)-Inflation: background evolution and constraints*, [arXiv:2507.13890](https://arxiv.org/abs/2507.13890)  
 
 ---
-
-## ⚡ Quickstart
-
-```bash
-# Clone the repository
-git clone https://github.com/your-username/CANDi.git
-cd CANDi
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run a demo analysis
-python runner.py settings/standard/Pantheon.yaml
-```
 
