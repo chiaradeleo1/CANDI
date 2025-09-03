@@ -1,5 +1,5 @@
 # 🍬 CANDI
-**C**ode for **AN**alysis of modified **D**istance-duality with cosmological Inference
+**C**ode for **AN**alysis of modified **D**istance-duality with cosmological **I**nference
 
 Welcome to the CANDI code!
 
@@ -29,15 +29,14 @@ Here you can find:
 - Python ≥ 3.9  
 - `numpy`, `scipy`, `pandas`, `pyyaml`  
 - `cobaya`, `camb`, `getdist`, `nautilus`  
-- Optional: `matplotlib`, `jupyter`  
 
 
 ### ⚡ Quickstart
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/CANDi.git
-cd CANDi
+git clone https://github.com/chiaradeleo1/CANDI.git
+cd CANDI
 
 # Install dependencies
 pip install -r requirements.txt
@@ -46,15 +45,14 @@ pip install -r requirements.txt
 
 The data are **not included** in this repository.  
 
-For reproducibility of the results in our paper ([arXiv:2505.13613](https://arxiv.org/abs/2505.13613)), the **simulated datasets** and **MCMC chains** can be downloaded from [LINK HERE].  
+To reproduce the results in of ([arXiv:2505.13613](https://arxiv.org/abs/2505.13613)), you can **simulate datasets** and run **chains** using the package in Zenodo ([https://doi.org/10.5281/zenodo.17043955](https://doi.org/10.5281/zenodo.17043955)).  
 
-The repository contains:  
+The package contains a notebook to generate simulated data for:  
 - 🟠 **LSST Supernovae (SN)**  
 - 🔵 **SKAO Baryon Acoustic Oscillations (BAO)**  
 - 🟣 **Einstein Telescope (ET) Standard Sirens (GW)**  
 
-The chains correspond to the different scenarios discussed in the paper.  
-The corresponding configuration files are provided in the `settings/` folder.  
+The settings files to run the different scenarios discussed in the paper are provided in the `settings/` folder and can be run using `run_paper.py`
 
 ## How to run it?
 
@@ -67,7 +65,7 @@ Key entries include:
 - `DDR_options`: enable DDR-breaking models  
 - `sampler`: choose between `mcmc` or `nautilus`  
 
-Examples can be found in the `settings/` folder for different cosmological models, while interactive notebook examples are provided under the name **DEMO_**
+Examples of YAML files can be found in the `settings/` folder for different cosmological models, while interactive notebook examples are provided under the name **DEMO_**
 
 
 ## 🧩 Custom Cosmology
@@ -85,9 +83,8 @@ With this interface you can:
 
 This makes it easy to go **beyond ΛCDM** and test custom scenarios with SN, BAO, and GW probes.  
 
-## 📜 License & Citation
+## 📜 Citation
 
-- License: to be specified (e.g. MIT).  
 - If you use this code, please cite our papers:
   
   > C. De Leo et. al , *Distinguishing Distance Duality breaking models using electromagnetic and gravitational waves measurements*, [arXiv:2505.13613](https://arxiv.org/abs/2505.13613)
