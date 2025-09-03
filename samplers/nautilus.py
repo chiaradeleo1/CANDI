@@ -5,7 +5,8 @@ import pandas as pd
 
 def nautilus_interface(info):
 
-    #done by GCH. Ask how to credit
+    #We thank Guadalupe Cañas-Herrera for the contribution to this script.
+
     from cobaya.model import get_model
     from scipy.stats  import norm
     from nautilus     import Prior
