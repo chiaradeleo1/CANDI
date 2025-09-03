@@ -1,0 +1,83 @@
+#Choose root of output files
+output: chains/standard/LCDM_DESI_noBBN
+
+#Choose which data to use (path+root)
+#if empty, data are not used
+BAO_data: 
+  path: ./data/DESI_table
+  data_format: DESI
+  observables: alphas
+SN_data:
+GW_data:
+
+#####THEORY OPTIONS#####
+#Cosmological model: Standard, Custom
+cosmology: Standard
+
+
+fiducial_path: null
+  #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
+
+#Available options: mcmc,nautilus,minimize
+#samplers options hard-coded in runner.py
+sampler:
+  name: nautilus
+  options: poor
+
+
+params: 
+  omegam:
+    latex: '\Omega_\mathrm{m}'
+    prior:
+      min: 0.001
+      max: 0.99
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.3
+      scale: 0.01
+    drop: True
+
+  omch2: 
+    value: "lambda omegam, ombh2, omnuh2, H0: omegam*(H0/100)**2-ombh2-omnuh2"
+    latex: '\Omega_\mathrm{c} h^2'
+
+  ombh2: 0.02218
+
+  H0:
+    latex: 'H_0'
+    prior: 
+      max: 100.0
+      min: 20.0
+    proposal: 0.5
+    ref:
+      dist: norm
+      loc: 67.0
+      scale: 0.5
+  rd:
+    latex: 'r_\mathrm{d}'
+    prior:
+      max: 200
+      min: 100
+    proposal: 1.
+    ref:
+      dist: norm
+      loc: 150.
+      scale: 1.
+  MB: -19.2435
+  omk: 0.
+  w: -1.
+  wa: 0.
+  omnuh2: 0.00064420
+  nnu: 3
+
+  h_rdrag:
+    derived: "lambda H0,rd: H0*rd/100"
+    latex: 'h\,r_\mathrm{d}'
+  rdrag:
+    latex: 'r_\mathrm{d}'
+    derived: True
+  omegaL:
+    latex: '\Omega_\Lambda'
+    derived: True
+
