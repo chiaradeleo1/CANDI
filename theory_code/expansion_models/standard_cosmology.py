@@ -39,7 +39,7 @@ class StandardExpansion:
 
         self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
 
-        unknown = []#par for par in params.keys() if par not in self.recognized_params]
+        unknown = [par for par in params.keys() if par not in self.recognized_params]
 
         if unknown != []:
             sys.exit('Error in {} cosmology code!\n Unknown parameters: {}'.format(self.label,unknown))
