@@ -84,6 +84,15 @@ class TheoryCalcs:
         for k, v in cosmo_results.items():
             setattr(self,k,v)
 
+        #############################
+        #Computing comoving distance#
+        #############################
+        #The code checks if the comoving distance is provided
+        #by the expansion module. If not, this is computed here
+        if not hasattr(self,'comoving'):
+            self.comoving = self.get_comoving_distance()
+
+
 
         ###############
         #Computing DDR#
@@ -119,6 +128,16 @@ class TheoryCalcs:
         #Computing SN magnitude#
         ########################
         self.mB,self.MB = self.get_magnitudes(self.DL_EM,SNmodel)
+
+    def get_comoving_distance(self):
+        #MM: WARNING! Curvature to be added!!
+
+        integrand = lambda x: 1/self.H_Mpc(x)
+        
+        comov_vec = [quad(integrand,self.zmin,z)[0] for z in self.zcalc]
+        comoving = interp1d(self.zcalc,comov_vec)
+
+        return comoving
 
     def get_parameterized_DDR(self,DDR):
 

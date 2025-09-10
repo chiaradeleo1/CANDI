@@ -52,18 +52,11 @@ class CustomExpansion:
         hubble = params['H0']*np.sqrt(params['omegam']*(1+zfine)**(3+params['Delta'])+(1-params['omegam']))
         Hz = interp1d(zfine,hubble/clight)
 
-        comov_vec = []
-        for z in self.zcalc:
-            zint = np.linspace(min(self.zcalc),z,10)
-            comov_vec.append(trapezoid([1/Hz(zi) for zi in zint],x=zint))
-        comov = np.array(comov_vec)
-
         Neff  = 3.044
         rdrag = 147.05*(params['omegam']*(params['H0']/100)**2/0.1432)**(-0.23) * (Neff/3.04)**(-0.1) * (params['ombh2']/0.02236)**(-0.13)
 
         theory = {'H_Mpc': Hz,
                   'H_kmsMpc': interp1d(zfine,hubble),
-                  'comoving': interp1d(self.zcalc,comov),
                   'rdrag': rdrag,
                   'omegaL': 1-params['omegam'],
                   'Xi': params['Gamma']+params['Delta']}
