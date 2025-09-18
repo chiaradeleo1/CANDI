@@ -1,0 +1,24 @@
+
+name: Sync DDR to CANDI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror to CANDI
+        uses: repo-sync/github-sync@v2
+        with:
+          source_repo: "chiaradeleo1/DDR"
+          source_branch: "main"
+          destination_repo: "chiaradeleo1/CANDI"
+          destination_branch: "main"
+          github_token: ${{ secrets.CANDI_PUSH_TOKEN }}
+
