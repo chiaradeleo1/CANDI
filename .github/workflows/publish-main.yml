@@ -31,12 +31,11 @@ jobs:
             echo "✅ Secret is set (not showing value for security)"
           fi
 
-      - name: Add/Update public remote (CANDI)
+      - name: Push DDR main to CANDI main
+        env:
+          CANDI_PUSH_TOKEN: ${{ secrets.CANDI_PUSH_TOKEN }}
         run: |
           git remote remove public 2>/dev/null || true
-          git remote add public https://x-access-token:${{ secrets.CANDI_PUSH_TOKEN }}@github.com/chiaradeleo1/CANDI.git
-
-      - name: Push DDR main to CANDI main
-        run: |
+          git remote add public https://x-access-token:${CANDI_PUSH_TOKEN}@github.com/chiaradeleo1/CANDI.git
           git push public HEAD:main
 
