@@ -57,7 +57,7 @@ class LikelihoodHandler:
             print('Using SH0ES calibration')
             calibration = 'SH0ES'
         elif SNinfo['calibration'] == 'Marginalized':
-            calibration = None
+            calibration = 'Marginalized'
             print('')
             print('Using the SN likelihood analytically marginalized for H0 and MB.')
             print('WARNING! If you have these parameters free to vary, you will get no information coming from SN')
