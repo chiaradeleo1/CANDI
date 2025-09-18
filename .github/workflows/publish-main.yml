@@ -1,0 +1,29 @@
+
+name: Publish main to CANDI
+
+on:
+  push:
+    branches: [ "main" ]   # run every time you push to DDR/main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DDR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add public remote (CANDI)
+        run: |
+          git remote add public https://x-access-token:${{ secrets.CANDI_PUSH_TOKEN }}@github.com/chiaradeleo1/CANDI.git
+
+      - name: Push DDR main to CANDI main
+        run: |
+          git push public HEAD:main
+
