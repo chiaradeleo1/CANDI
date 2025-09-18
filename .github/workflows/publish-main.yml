@@ -22,13 +22,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Setup credentials
+      - name: Setup credentials and push
         env:
           CANDI_PUSH_TOKEN: ${{ secrets.CANDI_PUSH_TOKEN }}
         run: |
-          echo "echo \"x-access-token:${CANDI_PUSH_TOKEN}\"" > askpass.sh
-          chmod +x askpass.sh
-          export GIT_ASKPASS=$PWD/askpass.sh
+          # configura git per usare il token come credenziale globale
+          git config credential.helper store
+          echo "https://x-access-token:${CANDI_PUSH_TOKEN}@github.com" > ~/.git-credentials
+          
+          # aggiungi il remote pubblico e push
           git remote remove public 2>/dev/null || true
           git remote add public https://github.com/chiaradeleo1/CANDI.git
           git push public HEAD:main
