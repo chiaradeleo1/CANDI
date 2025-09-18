@@ -1,0 +1,13 @@
+params:
+  MB:
+  epsilon0_EM: 0.
+  epsilon0_GW: 0.
+  a_EM: 1.
+  n_EM: 1.
+  a_GW: 1.
+  n_GW: 1.
+  rd: 0.
+cosmology: null
+DDR_options: null
+fiducial: null
+derived_pars: null

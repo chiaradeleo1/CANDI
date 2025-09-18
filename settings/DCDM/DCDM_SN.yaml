@@ -1,0 +1,104 @@
+#Choose root of output files
+output: chains/DCDM/DCDM_SN
+
+#####DATA OPTIONS#####
+#Choose which data to use (path+root)
+#if empty, data are not used
+BAO_data: 
+SN_data:
+  path: data/Pantheon
+  use_Pantheon: True
+  calibration: SH0ES
+GW_data:
+
+#####THEORY OPTIONS#####
+#Cosmological model: Standard, Custom
+cosmology: Custom
+
+
+fiducial_path: null
+  #/home/Matteo/data/DESI_BAO/DESI_fiducial.txt
+
+#####SAMPLER OPTIONS#####
+#Available options: mcmc,nautilus,minimize
+#samplers options hard-coded in runner.py
+sampler:
+  name: nautilus
+  options: poor
+
+#####PARAMETERS OPTIONS#####
+params: 
+  omegam:
+    latex: '\Omega_\mathrm{m}'
+    prior:
+      min: 0.001
+      max: 0.99
+    proposal: 0.05
+    ref:
+      dist: norm
+      loc: 0.3
+      scale: 0.01
+
+  ombh2:
+    latex: '\Omega_\mathrm{b} h^2'
+    prior:
+      dist: norm
+      loc: 0.02218
+      scale: 0.00055 
+    proposal: 0.0001
+    ref:
+      dist: norm
+      loc: 0.0222
+      scale: 0.0001
+
+  H0:
+    latex: 'H_0'
+    prior: 
+      max: 100.0
+      min: 20.0
+    proposal: 0.5
+    ref:
+      dist: norm
+      loc: 67.0
+      scale: 0.5
+  Delta:
+    latex: '\Delta'
+    prior:
+      max: 0.5
+      min: -0.5
+    proposal: 0.1
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.05
+  Gamma:
+    latex: '\Gamma'
+    prior:
+      max: 0.5
+      min: -0.5
+    proposal: 0.1
+    ref:
+      dist: norm
+      loc: 0.
+      scale: 0.05
+  MB:
+    latex: 'M_B'
+    proposal: 0.01
+    ref:
+      dist: norm
+      loc: -19.2435
+      scale: 0.01
+    prior:
+      min: -22.
+      max: -15. 
+
+  rdrag:
+    latex: 'r_\mathrm{d}'
+    derived: True
+  omegaL:
+    latex: '\Omega_\Lambda'
+    derived: True
+  Xi:
+    latex: '\Xi'
+    derived: True
+
