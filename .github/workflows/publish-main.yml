@@ -22,20 +22,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Debug secrets
-        run: |
-          if [ -z "${{ secrets.CANDI_PUSH_TOKEN }}" ]; then
-            echo "❌ Secret is missing!"
-            exit 1
-          else
-            echo "✅ Secret is set (not showing value for security)"
-          fi
-
       - name: Push DDR main to CANDI main
-        env:
-          TOKEN: ${{ secrets.CANDI_PUSH_TOKEN }}
         run: |
-          git remote remove public 2>/dev/null || true
-          git remote add public https://x-access-token:$TOKEN@github.com/chiaradeleo1/CANDI.git
-          git push public HEAD:main
+          git push https://x-access-token:${{ secrets.CANDI_PUSH_TOKEN }}@github.com/chiaradeleo1/CANDI.git HEAD:main
 
