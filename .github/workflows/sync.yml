@@ -9,16 +9,15 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout DDR
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Mirror to CANDI
-        uses: repo-sync/github-sync@v2
+      - name: Push to CANDI
+        uses: ad-m/github-push-action@v0.8.0
         with:
-          source_repo: "chiaradeleo1/DDR"
-          source_branch: "main"
-          destination_repo: "chiaradeleo1/CANDI"
-          destination_branch: "main"
           github_token: ${{ secrets.CANDI_PUSH_TOKEN }}
+          repository: chiaradeleo1/CANDI
+          branch: main
 
