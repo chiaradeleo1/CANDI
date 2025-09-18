@@ -37,5 +37,6 @@ jobs:
         run: |
           git remote remove public 2>/dev/null || true
           git remote add public https://x-access-token:${CANDI_PUSH_TOKEN}@github.com/chiaradeleo1/CANDI.git
+          git config credential.helper store
           git push public HEAD:main
 
