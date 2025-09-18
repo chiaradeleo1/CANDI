@@ -5,6 +5,9 @@ on:
   push:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -19,6 +22,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Debug secrets
+        run: |
+          if [ -z "${{ secrets.CANDI_PUSH_TOKEN }}" ]; then
+            echo "❌ Secret is missing!"
+            exit 1
+          else
+            echo "✅ Secret is set (not showing value for security)"
+          fi
+
       - name: Add/Update public remote (CANDI)
         run: |
           git remote remove public 2>/dev/null || true
@@ -27,3 +39,4 @@ jobs:
       - name: Push DDR main to CANDI main
         run: |
           git push public HEAD:main
+
