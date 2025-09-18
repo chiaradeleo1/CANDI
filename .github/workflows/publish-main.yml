@@ -22,7 +22,73 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Push DDR main to CANDI main
+      - name: Debug secrets
         run: |
-          git push https://x-access-token:${{ secrets.CANDI_PUSH_TOKEN }}@github.com/chiaradeleo1/CANDI.git HEAD:main
+          if [ -z "${{ secrets.CANDI_PUSH_TOKEN }}" ]; then
+            echo "❌ Secret is missing!"
+            exit 1
+          else
+            echo "✅ Secret is set"
+          fi
+
+      - name: Debug PAT length
+        run: |
+          echo "Token length: ${#CANDI_PUSH_TOKEN}"
+        env:
+          CANDI_PUSH_TOKEN: ${{ secrets.CANDI_PUSH_TOKEN }}
+
+      - name: Push DDR main to CANDI main
+        env:
+          CANDI_PUSH_TOKEN: ${{ secrets.CANDI_PUSH_TOKEN }}
+        run: |
+          git remote remove public 2>/dev/null || true
+          git remote add public https://x-access-token:${CANDI_PUSH_TOKEN}@github.com/chiaradeleo1/CANDI.git
+          git push public HEAD:main
+
+YAMç
+name: Publish main to CANDI
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DDR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Debug secrets
+        run: |
+          if [ -z "${{ secrets.CANDI_PUSH_TOKEN }}" ]; then
+            echo "❌ Secret is missing!"
+            exit 1
+          else
+            echo "✅ Secret is set"
+          fi
+
+      - name: Debug PAT length
+        run: |
+          echo "Token length: ${#CANDI_PUSH_TOKEN}"
+        env:
+          CANDI_PUSH_TOKEN: ${{ secrets.CANDI_PUSH_TOKEN }}
+
+      - name: Push DDR main to CANDI main
+        env:
+          CANDI_PUSH_TOKEN: ${{ secrets.CANDI_PUSH_TOKEN }}
+        run: |
+          git remote remove public 2>/dev/null || true
+          git remote add public https://x-access-token:${CANDI_PUSH_TOKEN}@github.com/chiaradeleo1/CANDI.git
+          git push public HEAD:main
 
