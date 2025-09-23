@@ -36,11 +36,14 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV','DL_EM','DL_GW','mB','abs_mag','DV_rd','DM_DH','DM_rd','DH_rd','alpha_iso','alpha_AP']
+        return ['DM','DH','DV','DL_EM','DL_GW',
+                'mB','abs_mag',
+                'DV_rd','DM_DH','DM_rd','DH_rd',
+                'alpha_iso','alpha_AP']
 
     def get_can_provide_params(self):
 
-        return self.derived_pars#['rdrag','omegaL']
+        return self.derived_pars
 
     def calculate(self, state, want_derived=True, **params_values_dict):
 
