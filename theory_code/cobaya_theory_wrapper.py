@@ -16,23 +16,14 @@ class CalcDist(Theory):
         """called from __init__ to initialize"""
         
 
-        #MM: eventually to be made options
-        #They should be ok in most cases
-        
-        self.settings = {'zmin': 0.0001,
-                         'zmax': 5.,
-                         'Nz': 1000,
-                         'zdrag': 1060}
-
         if self.fiducial == None:
             self.fiducial = {'H0': 67.36,
                              'omch2': 0.1200,
                              'ombh2': 0.02237,
                              'omk': 0.,
-                             'mnu': 0.06,
+                             'omnuh2': 0.00064420,
                              'nnu': 3.}
 
-        ##################################
 
         self.zcalc = np.linspace(self.settings['zmin'],self.settings['zmax'],self.settings['Nz'])
 
@@ -45,11 +36,14 @@ class CalcDist(Theory):
 
     def get_can_provide(self):
 
-        return ['DM','DH','DV','DL_EM','DL_GW','mB','abs_mag','DV_rd','DM_DH','DM_rd','DH_rd','alpha_iso','alpha_AP']
+        return ['DM','DH','DV','DL_EM','DL_GW',
+                'mB','abs_mag',
+                'DV_rd','DM_DH','DM_rd','DH_rd',
+                'alpha_iso','alpha_AP']
 
     def get_can_provide_params(self):
 
-        return self.derived_pars#['rdrag','omegaL']
+        return self.derived_pars
 
     def calculate(self, state, want_derived=True, **params_values_dict):
 

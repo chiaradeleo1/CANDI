@@ -37,9 +37,7 @@ class StandardExpansion:
         self.zmax      = settings['zmax']
         self.Nz        = settings['Nz']
 
-        self.zcalc = np.linspace(self.zmin,self.zmax,self.Nz)
-
-        unknown = []#par for par in params.keys() if par not in self.recognized_params]
+        unknown = [par for par in params.keys() if par not in self.recognized_params]
 
         if unknown != []:
             sys.exit('Error in {} cosmology code!\n Unknown parameters: {}'.format(self.label,unknown))
@@ -48,7 +46,6 @@ class StandardExpansion:
         results = camb.get_background(pars)
 
         Hz    = results.h_of_z
-        comov = (1+self.zcalc)*results.angular_diameter_distance2(self.zmin,np.array([z for z in self.zcalc]))
 
         theory = {'H_Mpc': Hz,
                   'H_kmsMpc': results.hubble_parameter,

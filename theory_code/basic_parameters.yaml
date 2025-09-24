@@ -11,3 +11,8 @@ cosmology: null
 DDR_options: null
 fiducial: null
 derived_pars: null
+settings:
+  zmin: 0.0001
+  zmax: 5.
+  Nz: 1000
+  zdrag: 1060
