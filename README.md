@@ -1,6 +1,7 @@
 # 🍬 CANDI
 **C**ode for **AN**alysis of modified **D**istance-duality with cosmological **I**nference
-
+# [🔗 View Source Code on GitHub](https://github.com/chiaradeleo1/CANDI/)
+---
 Welcome to the CANDI code!
 
 This repository provides a cosmological analysis code to place constraints from **supernovae (SN)**, **baryon acoustic oscillations (BAO)**, and **gravitational waves (GW)** through distance measurements.  
